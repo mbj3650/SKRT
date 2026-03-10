@@ -5,6 +5,8 @@
 #include "renderer.h"
 #include "logmanager.h"
 #include "sprite.h"
+#include <time.h>
+#include <cstdlib>
 // Static Members:
 Game* Game::sm_pInstance = 0;
 Game& Game::GetInstance()
@@ -34,8 +36,8 @@ void Game::Quit()
 }
 bool Game::Initialise()
 {
-	int bbWidth = 1024;
-	int bbHeight = 768;
+	int bbWidth = 1680;
+	int bbHeight = 1050;
 	m_pRenderer = new Renderer();
 
 	if (!m_pRenderer->Initialise(true, bbWidth, bbHeight))
@@ -47,33 +49,18 @@ bool Game::Initialise()
 	bbHeight = m_pRenderer->GetHeight();
 	m_iLastTime = SDL_GetPerformanceCounter();
 	m_pRenderer->SetClearColour(0, 255, 255);
-
-	for (int i = 0; i < 5; i++) {
-		SpriteArray[i] = m_pRenderer->CreateSprite("..\\assets\\board8x8.png");
-		SpriteArray[i]->SetScale(0.75);
+	srand(time(NULL));
+	for (int i = 0; i < 100; i++) {
+		SpriteArray[i] = m_pRenderer->CreateSprite("..\\assets\\ball.png");
+		SpriteArray[i]->SetRedTint((rand() % 100) * 0.01);
+		SpriteArray[i]->SetBlueTint((rand() % 100) * 0.01);
+		SpriteArray[i]->SetGreenTint((rand() % 100) * 0.01);
+		SpriteArray[i]->SetScale((rand() % 100) * 0.001);
+		
+		SpriteArray[i]->SetX((rand() % bbWidth)+1);
+		SpriteArray[i]->SetY((rand() % bbWidth) + 1);
 	}
 	
-	SpriteArray[0]->SetX(0 + SpriteArray[0]->GetWidth() / 2);
-	SpriteArray[0]->SetY(0 + SpriteArray[0]->GetHeight() / 2);
-
-	SpriteArray[1]->SetBlueTint(0);
-	SpriteArray[1]->SetGreenTint(0);
-	SpriteArray[1]->SetX(m_pRenderer->GetWidth() - SpriteArray[1]->GetWidth() / 2);
-	SpriteArray[1]->SetY(0 + SpriteArray[0]->GetHeight() / 2);
-	
-	SpriteArray[2]->SetRedTint(0);
-	SpriteArray[2]->SetBlueTint(0);
-	SpriteArray[2]->SetX(0 + SpriteArray[0]->GetWidth() / 2);
-	SpriteArray[2]->SetY(m_pRenderer->GetHeight() - SpriteArray[2]->GetHeight() / 2);
-
-	SpriteArray[3]->SetRedTint(0);
-	SpriteArray[3]->SetGreenTint(0);
-	SpriteArray[3]->SetX(m_pRenderer->GetWidth() - SpriteArray[3]->GetWidth() / 2);
-	SpriteArray[3]->SetY(m_pRenderer->GetHeight() - SpriteArray[3]->GetHeight() / 2);
-
-	SpriteArray[4]->SetX(m_pRenderer->GetWidth()/2);
-	SpriteArray[4]->SetY(m_pRenderer->GetHeight() / 2);
-	SpriteArray[4]->SetAngle(45.0);
 
 
 	return true;
@@ -105,6 +92,9 @@ bool Game::DoGameLoop()
 			++innerLag;
 		}
 #endif //USE_LAG
+		for (int i = 0; i < 100; i++) {
+			SpriteArray[i]->Process(deltaTime);
+		}
 		Draw(*m_pRenderer);
 	}
 	return m_bLooping;
@@ -113,8 +103,44 @@ void Game::Process(float deltaTime)
 {
 	
 	ProcessFrameCounting(deltaTime);
-	for (int i = 0; i < 5; i++) {
-		SpriteArray[i]->Process(deltaTime);
+	for (int i = 0; i < 100; i++) {
+		switch (rand() % 4) {
+		case 0:
+			if ((SpriteArray[i]->GetX() + 1.0* SpriteArray[i]->GetScale()) > m_pRenderer->GetWidth()) {
+				SpriteArray[i]->GetX() - 1;
+			}
+			else {
+				SpriteArray[i]->SetX(SpriteArray[i]->GetX() + 1);
+			}
+
+			break;
+		case 1:
+			if ((SpriteArray[i]->GetX() - 1.0 * SpriteArray[i]->GetScale()) < 0) {
+				SpriteArray[i]->GetX() + 1;
+			}
+			else {
+				SpriteArray[i]->SetX(SpriteArray[i]->GetX() - 1);
+			}
+			break;
+		case 2:
+			if ((SpriteArray[i]->GetY() + 1.0 * SpriteArray[i]->GetScale()) > m_pRenderer->GetHeight()) {
+				SpriteArray[i]->GetY() - 1;
+			}
+			else {
+				SpriteArray[i]->SetY(SpriteArray[i]->GetY() + 1);
+			}
+
+			break;
+		case 3:
+			if ((SpriteArray[i]->GetY() - 1.0 * SpriteArray[i]->GetScale()) < 0) {
+				SpriteArray[i]->GetY() + 1;
+			}
+			else {
+				SpriteArray[i]->SetY(SpriteArray[i]->GetY() - 1);
+			}
+			break;
+		}
+		
 	}
 	// TODO: Add game objects to process here!
 }
@@ -123,7 +149,7 @@ void Game::Draw(Renderer& renderer)
 	++m_iFrameCount;
 	renderer.Clear();
 	// TODO: Add game objects to draw here!
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 100; i++) {
 		SpriteArray[i]->Draw(renderer);
 	}
 	renderer.Present();
