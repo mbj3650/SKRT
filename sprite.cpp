@@ -38,7 +38,7 @@ Sprite::Process(float deltaTime)
 void
 Sprite::Draw(Renderer& renderer)
 {
-	m_pTexture->SetActive();
+		m_pTexture->SetActive();
 	renderer.DrawSprite(*this);
 }
 void

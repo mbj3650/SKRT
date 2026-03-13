@@ -1,9 +1,13 @@
 // COMP710 GP Framework
+// Library includes:
+#include <vector>
+#include "ball.h"
 #ifndef GAME_H
 #define GAME_H
 // Forward declarations:
 class Sprite;
 class Renderer;
+class Scene;
 class Game
 {
 	// Member methods:
@@ -27,14 +31,16 @@ private:
 public:
 	Sprite* SpriteArray[100];
 protected:
-	
+	std::vector<Scene*> m_scenes;
+	int m_iCurrentScene;
 	static Game* sm_pInstance;
 	Renderer* m_pRenderer;
-	int m_iLastTime;
+	_int64 m_iLastTime;
 	float m_fExecutionTime;
 	float m_fElapsedSeconds;
 	int m_iFrameCount;
 	int m_iFPS;
+	Ball* testball;
 #ifdef USE_LAG
 	float m_fLag;
 	int m_iUpdateCount;

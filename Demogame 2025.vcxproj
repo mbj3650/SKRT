@@ -140,26 +140,39 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ball.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="logmanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix4.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="scene.cpp" />
+    <ClCompile Include="SceneBouncingBalls.cpp" />
+    <ClCompile Include="SceneCheckerboards.cpp" />
+    <ClCompile Include="SceneCheckerboards.h" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="SceneSplashAut.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="vector2.cpp" />
     <ClCompile Include="VertexArray.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ball.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="inlinehelpers.h" />
     <ClInclude Include="logmanager.h" />
     <ClInclude Include="matrix4.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="scene.h" />
+    <ClInclude Include="SceneBouncingBalls.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="SceneSplashAut.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="vector2.h" />
     <ClInclude Include="VertexArray.h" />
   </ItemGroup>
   <ItemGroup>

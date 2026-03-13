@@ -5,8 +5,12 @@
 #include "renderer.h"
 #include "logmanager.h"
 #include "sprite.h"
+#include "SceneCheckerboards.h"
+#include "SceneBouncingBalls.h"
+#include "SceneSplashAut.h"
 #include <time.h>
 #include <cstdlib>
+#include <iostream>
 // Static Members:
 Game* Game::sm_pInstance = 0;
 Game& Game::GetInstance()
@@ -49,20 +53,18 @@ bool Game::Initialise()
 	bbHeight = m_pRenderer->GetHeight();
 	m_iLastTime = SDL_GetPerformanceCounter();
 	m_pRenderer->SetClearColour(0, 255, 255);
-	srand(time(NULL));
-	for (int i = 0; i < 100; i++) {
-		SpriteArray[i] = m_pRenderer->CreateSprite("..\\assets\\ball.png");
-		SpriteArray[i]->SetRedTint((rand() % 100) * 0.01);
-		SpriteArray[i]->SetBlueTint((rand() % 100) * 0.01);
-		SpriteArray[i]->SetGreenTint((rand() % 100) * 0.01);
-		SpriteArray[i]->SetScale((rand() % 100) * 0.001);
-		
-		SpriteArray[i]->SetX((rand() % bbWidth)+1);
-		SpriteArray[i]->SetY((rand() % bbWidth) + 1);
-	}
+	Scene* pScene = 0;
+	pScene = new SceneBouncingBalls();
+	pScene->Initialise(*m_pRenderer);
+
+	Scene* pSplash = 0;
+	pSplash = new SceneSplashAUT();
+	pSplash->Initialise(*m_pRenderer);
+
+	m_scenes.push_back(pSplash);
+	m_scenes.push_back(pScene);
+	m_iCurrentScene = 0;
 	
-
-
 	return true;
 }
 bool Game::DoGameLoop()
@@ -81,6 +83,7 @@ bool Game::DoGameLoop()
 		m_iLastTime = current;
 		m_fExecutionTime += deltaTime;
 		Process(deltaTime);
+
 #ifdef USE_LAG
 		m_fLag += deltaTime;
 		int innerLag = 0;
@@ -92,66 +95,27 @@ bool Game::DoGameLoop()
 			++innerLag;
 		}
 #endif //USE_LAG
-		for (int i = 0; i < 100; i++) {
-			SpriteArray[i]->Process(deltaTime);
+		if (m_fExecutionTime > 4 && m_iCurrentScene != 1) {
+			m_iCurrentScene = 1;
 		}
+		
 		Draw(*m_pRenderer);
 	}
+
 	return m_bLooping;
 }
 void Game::Process(float deltaTime)
 {
-	
 	ProcessFrameCounting(deltaTime);
-	for (int i = 0; i < 100; i++) {
-		switch (rand() % 4) {
-		case 0:
-			if ((SpriteArray[i]->GetX() + 1.0* SpriteArray[i]->GetScale()) > m_pRenderer->GetWidth()) {
-				SpriteArray[i]->GetX() - 1;
-			}
-			else {
-				SpriteArray[i]->SetX(SpriteArray[i]->GetX() + 1);
-			}
-
-			break;
-		case 1:
-			if ((SpriteArray[i]->GetX() - 1.0 * SpriteArray[i]->GetScale()) < 0) {
-				SpriteArray[i]->GetX() + 1;
-			}
-			else {
-				SpriteArray[i]->SetX(SpriteArray[i]->GetX() - 1);
-			}
-			break;
-		case 2:
-			if ((SpriteArray[i]->GetY() + 1.0 * SpriteArray[i]->GetScale()) > m_pRenderer->GetHeight()) {
-				SpriteArray[i]->GetY() - 1;
-			}
-			else {
-				SpriteArray[i]->SetY(SpriteArray[i]->GetY() + 1);
-			}
-
-			break;
-		case 3:
-			if ((SpriteArray[i]->GetY() - 1.0 * SpriteArray[i]->GetScale()) < 0) {
-				SpriteArray[i]->GetY() + 1;
-			}
-			else {
-				SpriteArray[i]->SetY(SpriteArray[i]->GetY() - 1);
-			}
-			break;
-		}
-		
-	}
 	// TODO: Add game objects to process here!
+	m_scenes[m_iCurrentScene]->Process(deltaTime);
 }
 void Game::Draw(Renderer& renderer)
 {
 	++m_iFrameCount;
 	renderer.Clear();
 	// TODO: Add game objects to draw here!
-	for (int i = 0; i < 100; i++) {
-		SpriteArray[i]->Draw(renderer);
-	}
+	m_scenes[m_iCurrentScene]->Draw(renderer);
 	renderer.Present();
 }
 void
