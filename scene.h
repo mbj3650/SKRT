@@ -1,4 +1,5 @@
 // COMP710 GP Framework 2025
+#include "inputsystem.h"
 #ifndef __SCENE_H_
 #define __SCENE_H_
 // Forward declarations:
@@ -11,8 +12,9 @@ public:
 	Scene();
 	virtual ~Scene();
 	virtual bool Initialise(Renderer& renderer) = 0;
-	virtual void Process(float deltaTime) = 0;
+	virtual void DebugDraw() = 0;
 	virtual void Draw(Renderer& renderer) = 0;
+	virtual void Process(float deltaTime, InputSystem& inputSystem) = 0;
 protected:
 private:
 	Scene(const Scene& scene);

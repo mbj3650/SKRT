@@ -20,6 +20,7 @@ public:
 	void RandomiseColour();
 	void RandomiseSize();
 	Vector2& Position();
+	virtual void DebugDraw();
 protected:
 	void ComputeBounds(int width, int height);
 private:

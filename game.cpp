@@ -11,6 +11,10 @@
 #include <time.h>
 #include <cstdlib>
 #include <iostream>
+#include "lib/imgui/imgui.h"
+#include "lib/imgui/imgui_impl_sdl2.h"
+#include "inputsystem.h"
+#include "XboxController.h"
 // Static Members:
 Game* Game::sm_pInstance = 0;
 Game& Game::GetInstance()
@@ -43,12 +47,13 @@ bool Game::Initialise()
 	int bbWidth = 1680;
 	int bbHeight = 1050;
 	m_pRenderer = new Renderer();
-
+	m_pInputSystem = new InputSystem();
 	if (!m_pRenderer->Initialise(true, bbWidth, bbHeight))
 	{
 		LogManager::GetInstance().Log("Renderer failed to initialise!");
 		return false;
 	}
+	m_pInputSystem->Initialise();
 	bbWidth = m_pRenderer->GetWidth();
 	bbHeight = m_pRenderer->GetHeight();
 	m_iLastTime = SDL_GetPerformanceCounter();
@@ -71,11 +76,7 @@ bool Game::DoGameLoop()
 {
 	const float stepSize = 1.0f / 60.0f;
 	// TODO: Process input here!
-	SDL_Event event;
-	while (SDL_PollEvent(&event) != 0)
-	{
-		continue;
-	}
+	m_pInputSystem->ProcessInput();
 	if (m_bLooping)
 	{
 		Uint64 current = SDL_GetPerformanceCounter();
@@ -106,9 +107,48 @@ bool Game::DoGameLoop()
 }
 void Game::Process(float deltaTime)
 {
-	ProcessFrameCounting(deltaTime);
-	// TODO: Add game objects to process here!
-	m_scenes[m_iCurrentScene]->Process(deltaTime);
+	m_pInputSystem->ProcessInput();
+	int result = m_pInputSystem->GetMouseButtonState(SDL_BUTTON_LEFT);
+	if (result == BS_PRESSED)
+	{
+		LogManager::GetInstance().Log("Left mouse button pressed.");
+	}
+	else if (result == BS_RELEASED)
+	{
+		LogManager::GetInstance().Log("Left mouse button released.");
+	}
+	//ButtonState xboxA = m_pInputSystem->GetController(0)->GetButtonState(SDL_CONTROLLER_BUTTON_A);
+	//ButtonState xboxX = m_pInputSystem->GetController(0)->GetButtonState(SDL_CONTROLLER_BUTTON_X);
+	//ButtonState xboxLeft = m_pInputSystem->GetController(0)->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+	//ButtonState xboxRight = m_pInputSystem->GetController(0)->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+	//if (xboxA == BS_PRESSED)
+	//{
+	//	LogManager::GetInstance().Log("Xbox A Pressed");
+	//}
+	//if (xboxLeft == BS_PRESSED)
+	//{
+	//	LogManager::GetInstance().Log("Xbox Left Pressed");
+	//	ProcessFrameCounting(deltaTime);
+	//	// TODO: Add game objects to process here!
+	//	
+	//}
+	m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
+}
+void Game::DebugDraw()
+{
+	if (m_bShowDebugWindow)
+	{
+		bool open = true;
+		ImGui::Begin("Debug Window", &open, ImGuiWindowFlags_MenuBar);
+		ImGui::Text("COMP710 GP Framework (%s)", "2024, S2");
+		if (ImGui::Button("Quit"))
+		{
+			Quit();
+		}
+		ImGui::SliderInt("Active scene", &m_iCurrentScene, 0, m_scenes.size() - 1, "%d");
+		m_scenes[m_iCurrentScene]->DebugDraw();
+		ImGui::End();
+	}
 }
 void Game::Draw(Renderer& renderer)
 {
@@ -116,8 +156,10 @@ void Game::Draw(Renderer& renderer)
 	renderer.Clear();
 	// TODO: Add game objects to draw here!
 	m_scenes[m_iCurrentScene]->Draw(renderer);
+	DebugDraw();
 	renderer.Present();
 }
+
 void
 Game::ProcessFrameCounting(float deltaTime)
 {
@@ -130,4 +172,10 @@ Game::ProcessFrameCounting(float deltaTime)
 		m_iFPS = m_iFrameCount;
 		m_iFrameCount = 0;
 	}
+}
+void Game::ToggleDebugWindow
+()
+{
+	m_bShowDebugWindow = !m_bShowDebugWindow;
+	m_pInputSystem->ShowMouseCursor(m_bShowDebugWindow);
 }

@@ -31,7 +31,7 @@ bool SceneSplashAUT::Initialise(Renderer& renderer)
 	return true;
 }
 void
-SceneSplashAUT::Process(float deltaTime)
+SceneSplashAUT::Process(float deltaTime, InputSystem& inputSystem)
 {
 	float currentalpha = m_pCentre->GetAlpha();
 	if (currentalpha >= 1){
@@ -45,4 +45,9 @@ SceneSplashAUT::Draw(Renderer& renderer)
 {
 	renderer.SetClearColour(0, 0, 0);
 	m_pCentre->Draw(renderer);
+}
+void SceneSplashAUT::DebugDraw
+()
+{
+
 }

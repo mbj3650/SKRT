@@ -8,6 +8,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
+#include "lib/imgui/imgui.h"
 SceneBouncingBalls::SceneBouncingBalls()
 	: m_pBalls{ 0 }
 	, m_iShowCount(0)
@@ -37,7 +38,7 @@ SceneBouncingBalls::Initialise(Renderer& renderer)
 	return true;
 }
 void
-SceneBouncingBalls::Process(float deltaTime)
+SceneBouncingBalls::Process(float deltaTime, InputSystem& inputSystem)
 {
 	for (int k = 0; k < m_iShowCount; ++k)
 	{
@@ -51,4 +52,14 @@ SceneBouncingBalls::Draw(Renderer& renderer)
 	{
 		m_pBalls[k]->Draw(renderer);
 	}
+}
+
+void SceneBouncingBalls::DebugDraw
+()
+{
+	ImGui::Text("Scene: Bouncing Balls");
+	ImGui::SliderInt("Show Count", &m_iShowCount, 1, 100);
+	static int editBallNumber = 0;
+	ImGui::SliderInt("Edit ball", &editBallNumber, 0, 99);
+	m_pBalls[editBallNumber]->DebugDraw();
 }

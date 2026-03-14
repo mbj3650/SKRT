@@ -14,8 +14,9 @@ public:
 	SceneSplashAUT();
 	virtual ~SceneSplashAUT();
 	virtual bool Initialise(Renderer& renderer);
-	virtual void Process(float deltaTime);
+	virtual void Process(float deltaTime, InputSystem& inputSystem);
 	virtual void Draw(Renderer& renderer);
+	virtual void DebugDraw();
 protected:
 private:
 	SceneSplashAUT(const SceneSplashAUT& SplashScreen);

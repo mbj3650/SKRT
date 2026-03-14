@@ -14,6 +14,9 @@
 #include <glew.h>
 #include <cassert>
 #include <cmath>
+#include "lib/imgui/imgui.h"
+#include "lib/imgui/imgui_impl_sdl2.h"
+#include "lib/imgui/imgui_impl_opengl3.h"
 Renderer::Renderer()
 	: m_pTextureManager(0)
 	, m_pSpriteShader(0)
@@ -28,6 +31,9 @@ Renderer::Renderer()
 }
 Renderer::~Renderer()
 {
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
 	delete m_pSpriteShader;
 	m_pSpriteShader = 0;
 	delete m_pSpriteVertexData;
@@ -78,6 +84,10 @@ bool Renderer::Initialise(bool windowed, int width, int height)
 		assert(m_pTextureManager);
 		initialised = m_pTextureManager->Initialise();
 	}
+	ImGui::CreateContext();
+	ImGui_ImplSDL2_InitForOpenGL(m_pWindow, m_glContext);
+	ImGui_ImplOpenGL3_Init();
+	ImGui::SetMouseCursor(ImGuiMouseCursor_None);
 	return initialised;
 }
 bool Renderer::InitialiseOpenGL(int screenWidth, int screenHeight)
@@ -110,9 +120,14 @@ void Renderer::Clear()
 {
 	glClearColor(m_fClearRed, m_fClearGreen, m_fClearBlue, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+	ImGui::NewFrame();
 }
 void Renderer::Present()
 {
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	SDL_GL_SwapWindow(m_pWindow);
 }
 void Renderer::SetFullscreen(bool fullscreen)

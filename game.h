@@ -2,6 +2,7 @@
 // Library includes:
 #include <vector>
 #include "ball.h"
+#include "inputsystem.h"
 #ifndef GAME_H
 #define GAME_H
 // Forward declarations:
@@ -16,7 +17,8 @@ public:
 	static void DestroyInstance();
 	bool Initialise();
 	bool DoGameLoop();
-
+	void DebugDraw();
+	void ToggleDebugWindow();
 	void Quit();
 protected:
 	void Process(float deltaTime);
@@ -31,10 +33,12 @@ private:
 public:
 	Sprite* SpriteArray[100];
 protected:
+	bool m_bShowDebugWindow;
 	std::vector<Scene*> m_scenes;
 	int m_iCurrentScene;
 	static Game* sm_pInstance;
 	Renderer* m_pRenderer;
+	InputSystem* m_pInputSystem;
 	_int64 m_iLastTime;
 	float m_fExecutionTime;
 	float m_fElapsedSeconds;

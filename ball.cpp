@@ -9,6 +9,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
+#include "lib/imgui/imgui.h"
 // Static members:
 float Ball::sm_fBoundaryWidth = 0.0f;
 float Ball::sm_fBoundaryHeight = 0.0f;
@@ -104,4 +105,28 @@ Ball::ComputeBounds(int width, int height)
 	m_boundaryLow.y = (m_pSprite->GetHeight() / 2.0f);
 	m_boundaryHigh.x = width - (m_pSprite->GetWidth() / 2.0f);
 	m_boundaryHigh.y = height - (m_pSprite->GetHeight() / 2.0f);
+}
+
+void Ball::DebugDraw
+()
+{
+	ImGui::InputFloat2("Position", reinterpret_cast<float*>(&m_position));
+	ImGui::InputFloat2("Velocity", reinterpret_cast<float*>(&m_velocity));
+	ImGui::Text("Size (%d, %d)", m_pSprite->GetWidth(), m_pSprite->GetHeight());
+	ImGui::Text("Lowerbound (%f, %f)", m_boundaryLow.x, m_boundaryLow.y);
+	ImGui::Text("Upperbound (%f, %f)", m_boundaryHigh.x, m_boundaryHigh.y);
+	float spriteScale = m_pSprite->GetScale();
+	ImGui::InputFloat("Scale", &spriteScale, 0.05f);
+	m_pSprite->SetScale(spriteScale);
+	ComputeBounds(static_cast<int>(sm_fBoundaryWidth), static_cast<int>(sm_fBoundaryHeight));
+	float colour[4];
+	colour[0] = m_pSprite->GetRedTint();
+	colour[1] = m_pSprite->GetGreenTint();
+	colour[2] = m_pSprite->GetBlueTint();
+	colour[3] = m_pSprite->GetAlpha();
+	ImGui::ColorEdit4("Ball colour", colour);
+	m_pSprite->SetRedTint(colour[0]);
+	m_pSprite->SetGreenTint(colour[1]);
+	m_pSprite->SetBlueTint(colour[2]);
+	m_pSprite->SetAlpha(colour[3]);
 }

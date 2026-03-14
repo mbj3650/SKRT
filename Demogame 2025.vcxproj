@@ -142,6 +142,14 @@
   <ItemGroup>
     <ClCompile Include="ball.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="inputsystem.cpp" />
+    <ClCompile Include="lib\imgui\imgui.cpp" />
+    <ClCompile Include="lib\imgui\imgui_demo.cpp" />
+    <ClCompile Include="lib\imgui\imgui_draw.cpp" />
+    <ClCompile Include="lib\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="lib\imgui\imgui_impl_sdl2.cpp" />
+    <ClCompile Include="lib\imgui\imgui_tables.cpp" />
+    <ClCompile Include="lib\imgui\imgui_widgets.cpp" />
     <ClCompile Include="logmanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix4.cpp" />
@@ -157,11 +165,22 @@
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="vector2.cpp" />
     <ClCompile Include="VertexArray.cpp" />
+    <ClCompile Include="XboxController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ball.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="inlinehelpers.h" />
+    <ClInclude Include="inputsystem.h" />
+    <ClInclude Include="lib\imgui\imconfig.h" />
+    <ClInclude Include="lib\imgui\imgui.h" />
+    <ClInclude Include="lib\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="lib\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="lib\imgui\imgui_impl_sdl2.h" />
+    <ClInclude Include="lib\imgui\imgui_internal.h" />
+    <ClInclude Include="lib\imgui\imstb_rectpack.h" />
+    <ClInclude Include="lib\imgui\imstb_textedit.h" />
+    <ClInclude Include="lib\imgui\imstb_truetype.h" />
     <ClInclude Include="logmanager.h" />
     <ClInclude Include="matrix4.h" />
     <ClInclude Include="renderer.h" />
@@ -174,6 +193,7 @@
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="vector2.h" />
     <ClInclude Include="VertexArray.h" />
+    <ClInclude Include="XboxController.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\board8x8.png" />
