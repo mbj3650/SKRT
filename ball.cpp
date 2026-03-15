@@ -14,7 +14,8 @@
 float Ball::sm_fBoundaryWidth = 0.0f;
 float Ball::sm_fBoundaryHeight = 0.0f;
 Ball::Ball()
-	: m_pSprite(0)
+	: m_pSprite(0),
+	radius(0)
 {
 }
 Ball::~Ball()
@@ -91,6 +92,7 @@ void Ball::RandomiseColour
 	m_pSprite->SetGreenTint(GetRandomPercentage());
 	m_pSprite->SetBlueTint(GetRandomPercentage());
 }
+
 void Ball::RandomiseSize
 ()
 {

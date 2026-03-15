@@ -141,6 +141,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ball.cpp" />
+    <ClCompile Include="EntityBall.cpp" />
+    <ClCompile Include="SceneBallGame.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="inputsystem.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
@@ -169,6 +171,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ball.h" />
+    <ClInclude Include="EntityBall.h" />
+    <ClInclude Include="SceneBallGame.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="inlinehelpers.h" />
     <ClInclude Include="inputsystem.h" />

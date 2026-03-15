@@ -7,6 +7,7 @@
 #include "sprite.h"
 #include "SceneCheckerboards.h"
 #include "SceneBouncingBalls.h"
+#include "SceneBallGame.h"
 #include "SceneSplashAut.h"
 #include <time.h>
 #include <cstdlib>
@@ -58,15 +59,24 @@ bool Game::Initialise()
 	bbHeight = m_pRenderer->GetHeight();
 	m_iLastTime = SDL_GetPerformanceCounter();
 	m_pRenderer->SetClearColour(0, 255, 255);
+
 	Scene* pScene = 0;
 	pScene = new SceneBouncingBalls();
-	pScene->Initialise(*m_pRenderer);
+	
 
 	Scene* pSplash = 0;
 	pSplash = new SceneSplashAUT();
+
+	Scene* pBallGame = 0;
+	pBallGame = new SceneBallGame();
+
+
+	pScene->Initialise(*m_pRenderer);
 	pSplash->Initialise(*m_pRenderer);
+	pBallGame->Initialise(*m_pRenderer);
 
 	m_scenes.push_back(pSplash);
+	m_scenes.push_back(pBallGame);
 	m_scenes.push_back(pScene);
 	m_iCurrentScene = 0;
 	
@@ -96,7 +106,7 @@ bool Game::DoGameLoop()
 			++innerLag;
 		}
 #endif //USE_LAG
-		if (m_fExecutionTime > 4 && m_iCurrentScene != 1) {
+		if (m_fExecutionTime > 4 && m_iCurrentScene == 0) {
 			m_iCurrentScene = 1;
 		}
 		

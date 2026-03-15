@@ -37,6 +37,8 @@ protected:
 	bool m_bAlive;
 	static float sm_fBoundaryWidth;
 	static float sm_fBoundaryHeight;
+	float radius;
 private:
+
 };
 #endif // BALL_H
