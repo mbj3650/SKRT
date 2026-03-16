@@ -14,6 +14,7 @@ public:
 	~TextureManager();
 	bool Initialise();
 	Texture* GetTexture(const char* pcFilename);
+	void AddTexture(const char* key, Texture* pTexture);
 protected:
 private:
 	TextureManager(const TextureManager& textureManager);

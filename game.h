@@ -31,6 +31,7 @@ private:
 	Game& operator=(const Game& game);
 	// Member data:
 public:
+	Sprite* m_pWelcomeText;
 	Sprite* SpriteArray[100];
 protected:
 	bool m_bShowDebugWindow;
@@ -44,6 +45,7 @@ protected:
 	float m_fElapsedSeconds;
 	int m_iFrameCount;
 	int m_iFPS;
+	
 	Ball* testball;
 #ifdef USE_LAG
 	float m_fLag;

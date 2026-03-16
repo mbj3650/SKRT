@@ -78,8 +78,15 @@ bool Game::Initialise()
 	m_scenes.push_back(pSplash);
 	m_scenes.push_back(pBallGame);
 	m_scenes.push_back(pScene);
-	m_iCurrentScene = 0;
+	// Load static text textures into the Texture Manager...
+	m_pRenderer->CreateStaticText("Auckland University of Technology", 50);
+	// Generate sprites that use the static text textures...
+	m_pWelcomeText = m_pRenderer->CreateSprite("Auckland University of Technology");
 	
+	m_pWelcomeText->SetX(bbWidth - (m_pWelcomeText->GetWidth()/1.05));
+	m_pWelcomeText->SetY(bbHeight/1.5);
+	m_iCurrentScene = 0;
+
 	return true;
 }
 bool Game::DoGameLoop()
@@ -164,6 +171,10 @@ void Game::Draw(Renderer& renderer)
 {
 	++m_iFrameCount;
 	renderer.Clear();
+	if (m_iCurrentScene == 0) {
+		m_pWelcomeText->Draw(renderer);
+	}
+	
 	// TODO: Add game objects to draw here!
 	m_scenes[m_iCurrentScene]->Draw(renderer);
 	DebugDraw();
