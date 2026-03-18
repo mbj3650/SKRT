@@ -7,6 +7,7 @@
 #include "sprite.h"
 #include "SceneCheckerboards.h"
 #include "SceneBouncingBalls.h"
+#include  "SceneSpaceInvadersClone.h"
 #include "SceneBallGame.h"
 #include "SceneSplashAut.h"
 #include <time.h>
@@ -45,7 +46,7 @@ void Game::Quit()
 }
 bool Game::Initialise()
 {
-	int bbWidth = 1680;
+	int bbWidth = 1480;
 	int bbHeight = 1050;
 	m_pRenderer = new Renderer();
 	m_pInputSystem = new InputSystem();
@@ -68,7 +69,7 @@ bool Game::Initialise()
 	pSplash = new SceneSplashAUT();
 
 	Scene* pBallGame = 0;
-	pBallGame = new SceneBallGame();
+	pBallGame = new SceneSpaceInvadersClone();
 
 
 	pScene->Initialise(*m_pRenderer);

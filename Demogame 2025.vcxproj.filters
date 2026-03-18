@@ -19,6 +19,24 @@
     <Filter Include="Source Files\Imgui">
       <UniqueIdentifier>{afaef1d9-f4aa-4642-af68-636d2e9283c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Scenes">
+      <UniqueIdentifier>{3d200b49-1181-447d-b98a-417385f7b726}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scenes">
+      <UniqueIdentifier>{78bdc94a-46db-4b77-8364-b20f04f41702}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SpaceInvaders">
+      <UniqueIdentifier>{c3f14ea4-dafe-452f-b082-652aac1ce6c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpaceInvaders">
+      <UniqueIdentifier>{0aada53d-58d8-41b9-aa27-294c7e0cdac4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scenes\BallGame">
+      <UniqueIdentifier>{4fab00f7-fda8-4933-b178-b90d765fe927}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scenes\Ballgame">
+      <UniqueIdentifier>{d7dd9475-d83f-4660-913f-b8413632448d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game.cpp">
@@ -54,22 +72,7 @@
     <ClCompile Include="scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SceneCheckerboards.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneCheckerboards.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneBouncingBalls.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="vector2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ball.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneSplashAut.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="lib\imgui\imgui.cpp">
@@ -99,14 +102,41 @@
     <ClCompile Include="XboxController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SceneBallGame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityBall.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AnimatedSprite.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneBouncingBalls.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneCheckerboards.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneSplashAut.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneCheckerboards.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneSpaceInvadersClone.cpp">
+      <Filter>Source Files\SpaceInvaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Lasercannon.cpp">
+      <Filter>Source Files\SpaceInvaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Laserbullet.cpp">
+      <Filter>Source Files\SpaceInvaders</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneBallGame.cpp">
+      <Filter>Source Files\Scenes\BallGame</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityBall.cpp">
+      <Filter>Source Files\Scenes\BallGame</Filter>
+    </ClCompile>
+    <ClCompile Include="ball.cpp">
+      <Filter>Source Files\Scenes\BallGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Alieninvader.cpp">
+      <Filter>Source Files\SpaceInvaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -140,19 +170,10 @@
     <ClInclude Include="scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SceneBouncingBalls.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="inlinehelpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vector2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ball.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneSplashAut.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="lib\imgui\imconfig.h">
@@ -188,17 +209,38 @@
     <ClInclude Include="XboxController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SceneBallGame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityBall.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="lib\SDL2_ttf-2.22.0\include\SDL_ttf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AnimatedSprite.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneBouncingBalls.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSplashAut.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSpaceInvadersClone.h">
+      <Filter>Header Files\SpaceInvaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Lasercannon.h">
+      <Filter>Header Files\SpaceInvaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Laserbullet.h">
+      <Filter>Header Files\SpaceInvaders</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneBallGame.h">
+      <Filter>Header Files\Scenes\Ballgame</Filter>
+    </ClInclude>
+    <ClInclude Include="ball.h">
+      <Filter>Header Files\Scenes\Ballgame</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityBall.h">
+      <Filter>Header Files\Scenes\Ballgame</Filter>
+    </ClInclude>
+    <ClInclude Include="Alieninvader.h">
+      <Filter>Header Files\SpaceInvaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

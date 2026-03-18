@@ -142,9 +142,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Alieninvader.cpp" />
     <ClCompile Include="AnimatedSprite.cpp" />
     <ClCompile Include="ball.cpp" />
     <ClCompile Include="EntityBall.cpp" />
+    <ClCompile Include="Laserbullet.cpp" />
+    <ClCompile Include="Lasercannon.cpp" />
     <ClCompile Include="SceneBallGame.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="inputsystem.cpp" />
@@ -163,6 +166,7 @@
     <ClCompile Include="SceneBouncingBalls.cpp" />
     <ClCompile Include="SceneCheckerboards.cpp" />
     <ClCompile Include="SceneCheckerboards.h" />
+    <ClCompile Include="SceneSpaceInvadersClone.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="SceneSplashAut.cpp" />
     <ClCompile Include="sprite.cpp" />
@@ -173,9 +177,12 @@
     <ClCompile Include="XboxController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Alieninvader.h" />
     <ClInclude Include="AnimatedSprite.h" />
     <ClInclude Include="ball.h" />
     <ClInclude Include="EntityBall.h" />
+    <ClInclude Include="Laserbullet.h" />
+    <ClInclude Include="Lasercannon.h" />
     <ClInclude Include="lib\SDL2_ttf-2.22.0\include\SDL_ttf.h" />
     <ClInclude Include="SceneBallGame.h" />
     <ClInclude Include="game.h" />
@@ -195,6 +202,7 @@
     <ClInclude Include="renderer.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="SceneBouncingBalls.h" />
+    <ClInclude Include="SceneSpaceInvadersClone.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="SceneSplashAut.h" />
     <ClInclude Include="sprite.h" />
