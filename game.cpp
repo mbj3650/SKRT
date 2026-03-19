@@ -8,6 +8,7 @@
 #include "SceneCheckerboards.h"
 #include "SceneBouncingBalls.h"
 #include  "SceneSpaceInvadersClone.h"
+#include  "SceneAsteroidsClone.h"
 #include "SceneBallGame.h"
 #include "SceneSplashAut.h"
 #include <time.h>
@@ -68,16 +69,16 @@ bool Game::Initialise()
 	Scene* pSplash = 0;
 	pSplash = new SceneSplashAUT();
 
-	Scene* pBallGame = 0;
-	pBallGame = new SceneSpaceInvadersClone();
+	Scene* pGame = 0;
+	pGame = new Sceneasteroidsclone();
 
 
 	pScene->Initialise(*m_pRenderer);
 	pSplash->Initialise(*m_pRenderer);
-	pBallGame->Initialise(*m_pRenderer);
+	pGame->Initialise(*m_pRenderer);
 
 	m_scenes.push_back(pSplash);
-	m_scenes.push_back(pBallGame);
+	m_scenes.push_back(pGame);
 	m_scenes.push_back(pScene);
 	// Load static text textures into the Texture Manager...
 	m_pRenderer->CreateStaticText("Auckland University of Technology", 50);
