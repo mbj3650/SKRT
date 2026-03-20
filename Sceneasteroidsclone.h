@@ -37,6 +37,7 @@ protected:
 	int cooldown;
 	Bullet* m_pBullets[10];
 	int TotalAsteroids;
+	int Score;
 private:
 
 };

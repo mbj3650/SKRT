@@ -13,12 +13,14 @@
 #include <cassert>
 #include "lib/imgui/imgui.h"
 #include "inlinehelpers.h"
+#include <string>
 
 Sceneasteroidsclone::Sceneasteroidsclone()
 	: m_pAsteroids{ 0 }
 	, m_iShowCount(0)
 	, m_pBullets { 0 }
 	, cooldown(0)//time between shooting
+	, Score(0)
 {
 
 };
@@ -117,8 +119,6 @@ Sceneasteroidsclone::Process(float deltatime,InputSystem& inputsystem)
 	
 		m_pShip->Process(deltatime, inputsystem);
 
-
-
 		for (int i = 0; i < 10; i++) {
 			if (m_pBullets[i] != NULL) {
 				if (m_pBullets[i]->isAlive()) {
@@ -133,14 +133,20 @@ Sceneasteroidsclone::Process(float deltatime,InputSystem& inputsystem)
 								) - m_pAsteroids[k]->GetRadius() - m_pBullets[i]->GetRadius();
 							if (distance <= 0) {
 								if (m_pAsteroids[k]->getSize() == 1) {
+									Score += 50;
 									m_pAsteroids[k] = 0;
 									m_pBullets[i] = 0;
 									TotalAsteroids--;
 									if (TotalAsteroids < 20) {
 										CreateAsteroid(999, NULL, NULL, 0);
+										CreateAsteroid(999, NULL, NULL, 0);
+										CreateAsteroid(999, NULL, NULL, 0);
+										CreateAsteroid(999, NULL, NULL, 0);
+										CreateAsteroid(999, NULL, NULL, 0);
 									}
 								}
 								else {
+									Score += 10;
 									CreateAsteroid(m_pAsteroids[k]->getAsteroidAngle() + 90, m_pAsteroids[k]->Position().x, m_pAsteroids[k]->Position().y, m_pAsteroids[k]->getSize() - 1);
 									CreateAsteroid(m_pAsteroids[k]->getAsteroidAngle() - 90, m_pAsteroids[k]->Position().x, m_pAsteroids[k]->Position().y, m_pAsteroids[k]->getSize() - 1);
 									m_pAsteroids[k] = 0;
@@ -181,6 +187,7 @@ void Sceneasteroidsclone::DebugDraw
 ()
 {
 	ImGui::Text("Scene: Asteroids");
+	ImGui::Text("Score: %d", Score);
 	ImGui::Text("Total Asteroids %d", TotalAsteroids);
 	ImGui::Text("Angle %f", m_pShip->GetShipAngle());
 	static int editBallNumber = 0;

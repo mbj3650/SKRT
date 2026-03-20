@@ -69,16 +69,26 @@ bool Game::Initialise()
 	Scene* pSplash = 0;
 	pSplash = new SceneSplashAUT();
 
-	Scene* pGame = 0;
-	pGame = new Sceneasteroidsclone();
+	Scene* pBallGame = 0;
+	pBallGame = new SceneBallGame();
 
+	Scene* pAsteroids = 0;
+	pAsteroids = new Sceneasteroidsclone();
+
+
+	Scene* pInvaders = 0;
+	pInvaders = new SceneSpaceInvadersClone();
 
 	pScene->Initialise(*m_pRenderer);
 	pSplash->Initialise(*m_pRenderer);
-	pGame->Initialise(*m_pRenderer);
+	pBallGame->Initialise(*m_pRenderer);
+	pAsteroids->Initialise(*m_pRenderer);
+	pInvaders->Initialise(*m_pRenderer);
 
 	m_scenes.push_back(pSplash);
-	m_scenes.push_back(pGame);
+	m_scenes.push_back(pInvaders);
+	m_scenes.push_back(pAsteroids);
+	m_scenes.push_back(pBallGame);
 	m_scenes.push_back(pScene);
 	// Load static text textures into the Texture Manager...
 	m_pRenderer->CreateStaticText("Auckland University of Technology", 50);

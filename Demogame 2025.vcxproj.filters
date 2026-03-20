@@ -37,50 +37,20 @@
     <Filter Include="Header Files\Scenes\SpaceInvaders">
       <UniqueIdentifier>{c3f14ea4-dafe-452f-b082-652aac1ce6c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\AsteroidClone">
-      <UniqueIdentifier>{2dc300d8-19ef-454a-9cbe-b8b893d05d52}</UniqueIdentifier>
+    <Filter Include="Header Files\Required">
+      <UniqueIdentifier>{0c6c7cca-eb5a-44ed-a7e9-c01514df9b60}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\AsteroidClone">
+    <Filter Include="Source Files\Required">
+      <UniqueIdentifier>{5993e28f-08ce-4fc7-888d-cb4db410dcf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scenes\AsteroidClone">
       <UniqueIdentifier>{22a1ec8c-4dd2-4cb7-9ee5-1d14b8d1af31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scenes\AsteroidClone">
+      <UniqueIdentifier>{2dc300d8-19ef-454a-9cbe-b8b893d05d52}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="logmanager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="matrix4.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexArray.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="sprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vector2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="lib\imgui\imgui.cpp">
       <Filter>Source Files\Imgui</Filter>
     </ClCompile>
@@ -101,15 +71,6 @@
     </ClCompile>
     <ClCompile Include="lib\imgui\imgui_widgets.cpp">
       <Filter>Source Files\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="inputsystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="XboxController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimatedSprite.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SceneBouncingBalls.cpp">
       <Filter>Source Files\Scenes</Filter>
@@ -145,55 +106,70 @@
       <Filter>Source Files\Scenes\SpaceInvaders</Filter>
     </ClCompile>
     <ClCompile Include="Playership.cpp">
-      <Filter>Source Files\AsteroidClone</Filter>
+      <Filter>Source Files\Scenes\AsteroidClone</Filter>
     </ClCompile>
     <ClCompile Include="Sceneasteroidsclone.cpp">
-      <Filter>Source Files\AsteroidClone</Filter>
+      <Filter>Source Files\Scenes\AsteroidClone</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
-      <Filter>Source Files\AsteroidClone</Filter>
+      <Filter>Source Files\Scenes\AsteroidClone</Filter>
     </ClCompile>
     <ClCompile Include="Asteroid.cpp">
-      <Filter>Source Files\AsteroidClone</Filter>
+      <Filter>Source Files\Scenes\AsteroidClone</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatedSprite.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="inputsystem.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="logmanager.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="matrix4.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="sprite.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="vector2.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexArray.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="XboxController.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="particleemitter.cpp">
+      <Filter>Source Files\Required</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="logmanager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="matrix4.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexArray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="sprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inlinehelpers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vector2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="lib\imgui\imconfig.h">
       <Filter>Header Files\Imgui</Filter>
     </ClInclude>
@@ -220,18 +196,6 @@
     </ClInclude>
     <ClInclude Include="lib\imgui\imstb_truetype.h">
       <Filter>Header Files\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="inputsystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="XboxController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\SDL2_ttf-2.22.0\include\SDL_ttf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimatedSprite.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SceneBouncingBalls.h">
       <Filter>Header Files\Scenes</Filter>
@@ -261,16 +225,70 @@
       <Filter>Header Files\Scenes\SpaceInvaders</Filter>
     </ClInclude>
     <ClInclude Include="Asteroid.h">
-      <Filter>Header Files\AsteroidClone</Filter>
+      <Filter>Header Files\Scenes\AsteroidClone</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
-      <Filter>Header Files\AsteroidClone</Filter>
+      <Filter>Header Files\Scenes\AsteroidClone</Filter>
     </ClInclude>
     <ClInclude Include="Playership.h">
-      <Filter>Header Files\AsteroidClone</Filter>
+      <Filter>Header Files\Scenes\AsteroidClone</Filter>
     </ClInclude>
     <ClInclude Include="Sceneasteroidsclone.h">
-      <Filter>Header Files\AsteroidClone</Filter>
+      <Filter>Header Files\Scenes\AsteroidClone</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatedSprite.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="inlinehelpers.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="inputsystem.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="logmanager.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix4.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\SDL2_ttf-2.22.0\include\SDL_ttf.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="vector2.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexArray.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="XboxController.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="particleemitter.h">
+      <Filter>Header Files\Required</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

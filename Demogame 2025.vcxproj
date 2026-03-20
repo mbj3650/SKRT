@@ -150,6 +150,8 @@
     <ClCompile Include="EntityBall.cpp" />
     <ClCompile Include="Laserbullet.cpp" />
     <ClCompile Include="Lasercannon.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="particleemitter.cpp" />
     <ClCompile Include="Playership.cpp" />
     <ClCompile Include="Sceneasteroidsclone.cpp" />
     <ClCompile Include="SceneBallGame.cpp" />
@@ -190,6 +192,8 @@
     <ClInclude Include="Laserbullet.h" />
     <ClInclude Include="Lasercannon.h" />
     <ClInclude Include="lib\SDL2_ttf-2.22.0\include\SDL_ttf.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="particleemitter.h" />
     <ClInclude Include="Playership.h" />
     <ClInclude Include="Sceneasteroidsclone.h" />
     <ClInclude Include="SceneBallGame.h" />
