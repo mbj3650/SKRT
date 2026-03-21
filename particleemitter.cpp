@@ -31,6 +31,7 @@ ParticleEmitter::~ParticleEmitter() {
 }
 bool ParticleEmitter::Initialise(Renderer& renderer, char texture[]) {
 	m_pSharedSprite = renderer.CreateSprite(texture);
+	return true;
 }
 void ParticleEmitter::Process(float deltaTime) {
 	m_fTimeElapsed += 1 * deltaTime;

@@ -19,7 +19,6 @@ SceneSplashAUT::~SceneSplashAUT()
 }
 bool SceneSplashAUT::Initialise(Renderer& renderer)
 {
-	
 	m_pCentre = renderer.CreateSprite("..\\assets\\splash.png");
 	const int BOARD_HALF_WIDTH = m_pCentre->GetWidth() / 2;
 	const int BOARD_HALF_HEIGHT = m_pCentre->GetHeight() / 2;

@@ -49,6 +49,12 @@
     <Filter Include="Header Files\Scenes\AsteroidClone">
       <UniqueIdentifier>{2dc300d8-19ef-454a-9cbe-b8b893d05d52}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\FMOD">
+      <UniqueIdentifier>{a2e7cda2-150b-4b99-a20a-5de0e747ee18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FMOD">
+      <UniqueIdentifier>{2bf7cd49-a1d2-406a-82c6-3dac54b215bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lib\imgui\imgui.cpp">
@@ -167,6 +173,12 @@
     </ClCompile>
     <ClCompile Include="particleemitter.cpp">
       <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\FMOD\include\common.cpp">
+      <Filter>Source Files\FMOD</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\FMOD\include\common_platform.cpp">
+      <Filter>Source Files\FMOD</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -289,6 +301,33 @@
     </ClInclude>
     <ClInclude Include="particleemitter.h">
       <Filter>Header Files\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\FMOD\include\common.h">
+      <Filter>Header Files\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\FMOD\include\common_platform.h">
+      <Filter>Header Files\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\FMOD\include\fmod.h">
+      <Filter>Header Files\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\FMOD\include\fmod_codec.h">
+      <Filter>Header Files\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\FMOD\include\fmod_common.h">
+      <Filter>Header Files\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\FMOD\include\fmod_dsp.h">
+      <Filter>Header Files\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\FMOD\include\fmod_dsp_effects.h">
+      <Filter>Header Files\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\FMOD\include\fmod_errors.h">
+      <Filter>Header Files\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\FMOD\include\fmod_output.h">
+      <Filter>Header Files\FMOD</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

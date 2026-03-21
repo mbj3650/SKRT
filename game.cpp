@@ -18,6 +18,10 @@
 #include "lib/imgui/imgui_impl_sdl2.h"
 #include "inputsystem.h"
 #include "XboxController.h"
+#include "fmod.h"
+#include "fmod.hpp"
+#include "fmod_common.h"
+#include <fmod_errors.h>
 // Static Members:
 Game* Game::sm_pInstance = 0;
 Game& Game::GetInstance()
@@ -30,6 +34,7 @@ Game& Game::GetInstance()
 }
 void Game::DestroyInstance()
 {
+	
 	delete sm_pInstance;
 	sm_pInstance = 0;
 }
@@ -38,6 +43,7 @@ Game::Game() : m_pRenderer(0), m_bLooping(true)
 }
 Game::~Game()
 {
+	system->release();
 	delete m_pRenderer;
 	m_pRenderer = 0;
 }
@@ -45,8 +51,29 @@ void Game::Quit()
 {
 	m_bLooping = false;
 }
+
 bool Game::Initialise()
 {
+
+	
+	result = FMOD::System_Create(&system);      // Create the main system object.
+	if (result != FMOD_OK)
+	{
+		printf("FMOD error! (%d) %s\n", result, FMOD_ErrorString(result));
+		exit(-1);
+	}
+
+	result = system->init(512, FMOD_INIT_NORMAL, 0);    // Initialize FMOD.
+	if (result != FMOD_OK)
+	{
+		printf("FMOD error! (%d) %s\n", result, FMOD_ErrorString(result));
+		exit(-1);
+	}
+	FMOD::Sound* newSound = nullptr;
+	system->createSound("..\\lib\\FMOD\\sound_samples\\swish.wav", FMOD_DEFAULT, NULL, &newSound);
+	m_pSounds.push_back(newSound);
+	system->playSound(m_pSounds.front(),NULL,false,NULL);
+
 	int bbWidth = 1480;
 	int bbHeight = 1050;
 	m_pRenderer = new Renderer();

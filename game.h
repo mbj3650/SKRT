@@ -3,8 +3,13 @@
 #include <vector>
 #include "ball.h"
 #include "inputsystem.h"
+#include "fmod.h"
+#include "fmod_common.h"
+#include "fmod.hpp"
 #ifndef GAME_H
 #define GAME_H
+
+
 // Forward declarations:
 class Sprite;
 class Renderer;
@@ -20,6 +25,7 @@ public:
 	void DebugDraw();
 	void ToggleDebugWindow();
 	void Quit();
+	void createSound(char path[]);
 protected:
 	void Process(float deltaTime);
 	void Draw(Renderer& renderer);
@@ -45,8 +51,10 @@ protected:
 	float m_fElapsedSeconds;
 	int m_iFrameCount;
 	int m_iFPS;
-	
-	Ball* testball;
+	FMOD_RESULT result;
+	std::vector < FMOD::Sound*> m_pSounds;
+	FMOD::System* system = NULL;
+
 #ifdef USE_LAG
 	float m_fLag;
 	int m_iUpdateCount;
