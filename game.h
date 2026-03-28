@@ -40,6 +40,7 @@ public:
 	Sprite* m_pWelcomeText;
 	Sprite* SpriteArray[100];
 protected:
+	bool m_bPauseSimulation;
 	bool m_bShowDebugWindow;
 	std::vector<Scene*> m_scenes;
 	int m_iCurrentScene;

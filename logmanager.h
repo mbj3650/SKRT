@@ -1,4 +1,6 @@
 // COMP710 GP Framework 2025
+#include <vector>
+#include <string>
 #ifndef LOGMANAGER_H
 #define LOGMANAGER_H
 class LogManager
@@ -8,7 +10,10 @@ public:
 	static LogManager& GetInstance();
 	static void DestroyInstance();
 	void Log(const char* pcMessage);
+	void DebugDraw();
 protected:
+	std::vector<std::string> m_logHistory;
+	bool m_bShowLogMessages;
 private:
 	LogManager();
 	~LogManager();

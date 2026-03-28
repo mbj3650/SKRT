@@ -7,6 +7,7 @@
 // Library includes:
 #include <cassert>
 #include <SDL.h>
+#include "lib/imgui/imgui.h"
 TextureManager::TextureManager()
 {
 }
@@ -52,4 +53,17 @@ void
 TextureManager::AddTexture(const char* key, Texture* pTexture)
 {
 	m_pLoadedTextures[key] = pTexture;
+}
+void
+TextureManager::DebugDraw()
+{
+	ImGui::Text("TextureManager");
+	ImGui::Text("Stores %d textures", m_pLoadedTextures.size());
+	std::map<std::string, Texture*>::iterator iter = m_pLoadedTextures.begin();
+	while (iter != m_pLoadedTextures.end())
+	{
+		Texture* pTexture = iter->second;
+		pTexture->DebugDraw();
+		++iter;
+	}
 }

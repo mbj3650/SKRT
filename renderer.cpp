@@ -274,3 +274,9 @@ Renderer::DrawAnimatedSprite(AnimatedSprite& sprite, int frame)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)((frame * 6) * sizeof(GLuint)));
 }
+
+void
+Renderer::DebugDraw()
+{
+	m_pTextureManager->DebugDraw();
+}

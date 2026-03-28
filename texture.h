@@ -13,7 +13,7 @@ public:
 	int GetWidth() const;
 	int GetHeight() const;
 	void LoadTextTexture(const char* text, const char* fontname, int pointsize);
-	
+	void DebugDraw();
 protected:
 	void LoadSurfaceIntoTexture(SDL_Surface* pSurface);
 private:

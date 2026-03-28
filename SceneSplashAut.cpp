@@ -19,7 +19,8 @@ SceneSplashAUT::~SceneSplashAUT()
 }
 bool SceneSplashAUT::Initialise(Renderer& renderer)
 {
-	m_pCentre = renderer.CreateSprite("..\\assets\\splash.png");
+	m_pCentre = renderer.CreateSprite("..\\assets\\splash2.png");
+	m_pCentre->SetScale(0.5f);
 	const int BOARD_HALF_WIDTH = m_pCentre->GetWidth() / 2;
 	const int BOARD_HALF_HEIGHT = m_pCentre->GetHeight() / 2;
 	const int SCREEN_WIDTH = renderer.GetWidth();
@@ -27,6 +28,7 @@ bool SceneSplashAUT::Initialise(Renderer& renderer)
 	m_pCentre->SetX(SCREEN_WIDTH / 2);
 	m_pCentre->SetY(SCREEN_HEIGHT / 2);
 	m_pCentre->SetAlpha(0.0f);
+
 	return true;
 }
 void
@@ -43,6 +45,7 @@ void
 SceneSplashAUT::Draw(Renderer& renderer)
 {
 	renderer.SetClearColour(0, 0, 0);
+
 	m_pCentre->Draw(renderer);
 }
 void SceneSplashAUT::DebugDraw

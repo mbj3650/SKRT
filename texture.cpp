@@ -10,6 +10,7 @@
 #include "glew.h"
 #include "SDL_ttf.h"
 #include <iostream>
+#include "lib/imgui/imgui.h"
 Texture::Texture()
 	: m_uiTextureId(0)
 	, m_iHeight(0)
@@ -120,4 +121,15 @@ void Texture::LoadSurfaceIntoTexture(SDL_Surface* pSurface)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
+}
+void
+Texture::DebugDraw()
+{
+	ImGui::PushID(this);
+	ImGui::Text("%d by %d", m_iWidth, m_iHeight);
+	ImVec2 size;
+	size.x = static_cast<float>(m_iWidth);
+	size.y = static_cast<float>(m_iHeight);
+	ImGui::Image((void*)(intptr_t)m_uiTextureId, size);
+	ImGui::PopID();
 }

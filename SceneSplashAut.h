@@ -25,6 +25,7 @@ private:
 public:
 protected:
 	Sprite* m_pCentre;
+	Sprite* m_pWelcomeText;
 	float Fade;
 	int AlphaDir;
 

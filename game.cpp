@@ -117,13 +117,14 @@ bool Game::Initialise()
 	m_scenes.push_back(pAsteroids);
 	m_scenes.push_back(pBallGame);
 	m_scenes.push_back(pScene);
-	// Load static text textures into the Texture Manager...
-	m_pRenderer->CreateStaticText("Auckland University of Technology", 50);
-	// Generate sprites that use the static text textures...
-	m_pWelcomeText = m_pRenderer->CreateSprite("Auckland University of Technology");
-	
-	m_pWelcomeText->SetX(bbWidth - (m_pWelcomeText->GetWidth()/1.05));
-	m_pWelcomeText->SetY(bbHeight/1.5);
+	//// Load static text textures into the Texture Manager...
+	//m_pRenderer->CreateStaticText("Auckland University of Technology", 50);
+
+	//// Generate sprites that use the static text textures...
+	//m_pWelcomeText = m_pRenderer->CreateSprite("Auckland University of Technology");
+
+	//m_pWelcomeText->SetX(bbWidth - (m_pWelcomeText->GetWidth() / 1.05));
+	//m_pWelcomeText->SetY(bbHeight / 1.5);
 	m_iCurrentScene = 0;
 
 	return true;
@@ -163,37 +164,53 @@ bool Game::DoGameLoop()
 }
 void Game::Process(float deltaTime)
 {
-	m_pInputSystem->ProcessInput();
-	int result = m_pInputSystem->GetMouseButtonState(SDL_BUTTON_LEFT);
-	if (result == BS_PRESSED)
+	if (m_bPauseSimulation)
 	{
-		LogManager::GetInstance().Log("Left mouse button pressed.");
+		deltaTime = 0.0f;
 	}
-	else if (result == BS_RELEASED)
-	{
-		LogManager::GetInstance().Log("Left mouse button released.");
+	else {
+		m_pInputSystem->ProcessInput();
+		int result = m_pInputSystem->GetMouseButtonState(SDL_BUTTON_LEFT);
+		if (result == BS_PRESSED)
+		{
+			LogManager::GetInstance().Log("Left mouse button pressed.");
+		}
+		else if (result == BS_RELEASED)
+		{
+			LogManager::GetInstance().Log("Left mouse button released.");
+		}
+		//ButtonState xboxA = m_pInputSystem->GetController(0)->GetButtonState(SDL_CONTROLLER_BUTTON_A);
+		//ButtonState xboxX = m_pInputSystem->GetController(0)->GetButtonState(SDL_CONTROLLER_BUTTON_X);
+		//ButtonState xboxLeft = m_pInputSystem->GetController(0)->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+		//ButtonState xboxRight = m_pInputSystem->GetController(0)->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+		//if (xboxA == BS_PRESSED)
+		//{
+		//	LogManager::GetInstance().Log("Xbox A Pressed");
+		//}
+		//if (xboxLeft == BS_PRESSED)
+		//{
+		//	LogManager::GetInstance().Log("Xbox Left Pressed");
+		//	ProcessFrameCounting(deltaTime);
+		//	// TODO: Add game objects to process here!
+		//	
+		//}
+		m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
 	}
-	//ButtonState xboxA = m_pInputSystem->GetController(0)->GetButtonState(SDL_CONTROLLER_BUTTON_A);
-	//ButtonState xboxX = m_pInputSystem->GetController(0)->GetButtonState(SDL_CONTROLLER_BUTTON_X);
-	//ButtonState xboxLeft = m_pInputSystem->GetController(0)->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_LEFT);
-	//ButtonState xboxRight = m_pInputSystem->GetController(0)->GetButtonState(SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
-	//if (xboxA == BS_PRESSED)
-	//{
-	//	LogManager::GetInstance().Log("Xbox A Pressed");
-	//}
-	//if (xboxLeft == BS_PRESSED)
-	//{
-	//	LogManager::GetInstance().Log("Xbox Left Pressed");
-	//	ProcessFrameCounting(deltaTime);
-	//	// TODO: Add game objects to process here!
-	//	
-	//}
-	m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
+
 }
 void Game::DebugDraw()
 {
 	if (m_bShowDebugWindow)
 	{
+		ImGui::Separator();
+		m_pRenderer->DebugDraw();
+
+		ImGui::Separator();
+		LogManager::GetInstance().DebugDraw();
+		if (ImGui::Button("Pause simulation"))
+		{
+			m_bPauseSimulation = !m_bPauseSimulation;
+		}
 		bool open = true;
 		ImGui::Begin("Debug Window", &open, ImGuiWindowFlags_MenuBar);
 		ImGui::Text("COMP710 GP Framework (%s)", "2024, S2");
@@ -210,9 +227,9 @@ void Game::Draw(Renderer& renderer)
 {
 	++m_iFrameCount;
 	renderer.Clear();
-	if (m_iCurrentScene == 0) {
+	/*if (m_iCurrentScene == 0) {
 		m_pWelcomeText->Draw(renderer);
-	}
+	}*/
 	
 	// TODO: Add game objects to draw here!
 	m_scenes[m_iCurrentScene]->Draw(renderer);
@@ -226,7 +243,7 @@ Game::ProcessFrameCounting(float deltaTime)
 	// Count total simulation time elapsed:
 	m_fElapsedSeconds += deltaTime;
 	// Frame Counter:
-	if (m_fElapsedSeconds > 1.0f)
+	if (m_fElapsedSeconds > 100.0f)
 	{
 		m_fElapsedSeconds -= 1.0f;
 		m_iFPS = m_iFrameCount;
