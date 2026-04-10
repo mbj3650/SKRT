@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/glfw-subbuild/CMakeFiles/glfw-populate"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/glfw-subbuild/CMakeFiles/97510722bb8d8e33fea7b596082e700b/glfw-populate.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/glfw-subbuild/CMakeFiles/fe63546308fef76226d33ace0f7cc0d9/glfw-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/glfw-subbuild/CMakeFiles/1696de387d9a81a393a129691981763e/glfw-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/glfw-subbuild/CMakeFiles/1696de387d9a81a393a129691981763e/glfw-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/glfw-subbuild/CMakeFiles/1696de387d9a81a393a129691981763e/glfw-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/glfw-subbuild/CMakeFiles/1696de387d9a81a393a129691981763e/glfw-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/glfw-subbuild/CMakeFiles/1696de387d9a81a393a129691981763e/glfw-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/glfw-subbuild/CMakeFiles/1696de387d9a81a393a129691981763e/glfw-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/glfw-subbuild/CMakeFiles/1696de387d9a81a393a129691981763e/glfw-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/glfw-subbuild/CMakeFiles/1696de387d9a81a393a129691981763e/glfw-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"glfw-populate"
+		],
+		"name" : "glfw-populate"
+	}
+}

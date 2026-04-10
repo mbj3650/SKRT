@@ -1,0 +1,3 @@
+C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/enkits-subbuild/CMakeFiles/enkits-populate.dir
+C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/enkits-subbuild/CMakeFiles/ALL_BUILD.dir
+C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/enkits-subbuild/CMakeFiles/ZERO_CHECK.dir

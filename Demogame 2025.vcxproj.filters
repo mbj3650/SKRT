@@ -31,29 +31,23 @@
     <Filter Include="Header Files\Scenes\Ballgame">
       <UniqueIdentifier>{d7dd9475-d83f-4660-913f-b8413632448d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Scenes\SpaceInvaders">
-      <UniqueIdentifier>{0aada53d-58d8-41b9-aa27-294c7e0cdac4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scenes\SpaceInvaders">
-      <UniqueIdentifier>{c3f14ea4-dafe-452f-b082-652aac1ce6c9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Required">
       <UniqueIdentifier>{0c6c7cca-eb5a-44ed-a7e9-c01514df9b60}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Required">
       <UniqueIdentifier>{5993e28f-08ce-4fc7-888d-cb4db410dcf9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Scenes\AsteroidClone">
-      <UniqueIdentifier>{22a1ec8c-4dd2-4cb7-9ee5-1d14b8d1af31}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scenes\AsteroidClone">
-      <UniqueIdentifier>{2dc300d8-19ef-454a-9cbe-b8b893d05d52}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\FMOD">
       <UniqueIdentifier>{a2e7cda2-150b-4b99-a20a-5de0e747ee18}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\FMOD">
       <UniqueIdentifier>{2bf7cd49-a1d2-406a-82c6-3dac54b215bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scenes\MainGame">
+      <UniqueIdentifier>{2dc300d8-19ef-454a-9cbe-b8b893d05d52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scenes\MainGame">
+      <UniqueIdentifier>{22a1ec8c-4dd2-4cb7-9ee5-1d14b8d1af31}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,15 +84,6 @@
     <ClCompile Include="SceneCheckerboards.h">
       <Filter>Header Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="SceneSpaceInvadersClone.cpp">
-      <Filter>Source Files\Scenes\SpaceInvaders</Filter>
-    </ClCompile>
-    <ClCompile Include="Lasercannon.cpp">
-      <Filter>Source Files\Scenes\SpaceInvaders</Filter>
-    </ClCompile>
-    <ClCompile Include="Laserbullet.cpp">
-      <Filter>Source Files\Scenes\SpaceInvaders</Filter>
-    </ClCompile>
     <ClCompile Include="SceneBallGame.cpp">
       <Filter>Source Files\Scenes\BallGame</Filter>
     </ClCompile>
@@ -108,20 +93,14 @@
     <ClCompile Include="ball.cpp">
       <Filter>Source Files\Scenes\BallGame</Filter>
     </ClCompile>
-    <ClCompile Include="Alieninvader.cpp">
-      <Filter>Source Files\Scenes\SpaceInvaders</Filter>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files\Scenes\MainGame</Filter>
     </ClCompile>
-    <ClCompile Include="Playership.cpp">
-      <Filter>Source Files\Scenes\AsteroidClone</Filter>
+    <ClCompile Include="SceneMainGame.cpp">
+      <Filter>Source Files\Scenes\MainGame</Filter>
     </ClCompile>
-    <ClCompile Include="Sceneasteroidsclone.cpp">
-      <Filter>Source Files\Scenes\AsteroidClone</Filter>
-    </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>Source Files\Scenes\AsteroidClone</Filter>
-    </ClCompile>
-    <ClCompile Include="Asteroid.cpp">
-      <Filter>Source Files\Scenes\AsteroidClone</Filter>
+    <ClCompile Include="EnemyBase.cpp">
+      <Filter>Source Files\Scenes\MainGame</Filter>
     </ClCompile>
     <ClCompile Include="AnimatedSprite.cpp">
       <Filter>Source Files\Required</Filter>
@@ -180,6 +159,9 @@
     <ClCompile Include="lib\FMOD\include\common_platform.cpp">
       <Filter>Source Files\FMOD</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerObject.cpp">
+      <Filter>Source Files\Scenes\MainGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\imgui\imconfig.h">
@@ -215,15 +197,6 @@
     <ClInclude Include="SceneSplashAut.h">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="SceneSpaceInvadersClone.h">
-      <Filter>Header Files\Scenes\SpaceInvaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Lasercannon.h">
-      <Filter>Header Files\Scenes\SpaceInvaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Laserbullet.h">
-      <Filter>Header Files\Scenes\SpaceInvaders</Filter>
-    </ClInclude>
     <ClInclude Include="SceneBallGame.h">
       <Filter>Header Files\Scenes\Ballgame</Filter>
     </ClInclude>
@@ -233,20 +206,14 @@
     <ClInclude Include="EntityBall.h">
       <Filter>Header Files\Scenes\Ballgame</Filter>
     </ClInclude>
-    <ClInclude Include="Alieninvader.h">
-      <Filter>Header Files\Scenes\SpaceInvaders</Filter>
+    <ClInclude Include="EnemyBase.h">
+      <Filter>Header Files\Scenes\MainGame</Filter>
     </ClInclude>
-    <ClInclude Include="Asteroid.h">
-      <Filter>Header Files\Scenes\AsteroidClone</Filter>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files\Scenes\MainGame</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>Header Files\Scenes\AsteroidClone</Filter>
-    </ClInclude>
-    <ClInclude Include="Playership.h">
-      <Filter>Header Files\Scenes\AsteroidClone</Filter>
-    </ClInclude>
-    <ClInclude Include="Sceneasteroidsclone.h">
-      <Filter>Header Files\Scenes\AsteroidClone</Filter>
+    <ClInclude Include="SceneMainGame.h">
+      <Filter>Header Files\Scenes\MainGame</Filter>
     </ClInclude>
     <ClInclude Include="AnimatedSprite.h">
       <Filter>Header Files\Required</Filter>
@@ -328,6 +295,9 @@
     </ClInclude>
     <ClInclude Include="lib\FMOD\include\fmod_output.h">
       <Filter>Header Files\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerObject.h">
+      <Filter>Header Files\Scenes\MainGame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

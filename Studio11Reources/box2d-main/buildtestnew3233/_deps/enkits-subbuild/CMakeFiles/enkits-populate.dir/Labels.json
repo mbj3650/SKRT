@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/enkits-subbuild/CMakeFiles/enkits-populate"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/enkits-subbuild/CMakeFiles/1ed7a6fb8e1a4f123bd274d5c3e1e038/enkits-populate.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/enkits-subbuild/CMakeFiles/dd994383e80118fa852718cbaccb2d31/enkits-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/enkits-subbuild/CMakeFiles/7f4c5cb15d7c5f60ef241d6ca6e8049d/enkits-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/enkits-subbuild/CMakeFiles/7f4c5cb15d7c5f60ef241d6ca6e8049d/enkits-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/enkits-subbuild/CMakeFiles/7f4c5cb15d7c5f60ef241d6ca6e8049d/enkits-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/enkits-subbuild/CMakeFiles/7f4c5cb15d7c5f60ef241d6ca6e8049d/enkits-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/enkits-subbuild/CMakeFiles/7f4c5cb15d7c5f60ef241d6ca6e8049d/enkits-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/enkits-subbuild/CMakeFiles/7f4c5cb15d7c5f60ef241d6ca6e8049d/enkits-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/enkits-subbuild/CMakeFiles/7f4c5cb15d7c5f60ef241d6ca6e8049d/enkits-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/747jf/Downloads/Studio11Reources/box2d-main/buildtestnew3233/_deps/enkits-subbuild/CMakeFiles/7f4c5cb15d7c5f60ef241d6ca6e8049d/enkits-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"enkits-populate"
+		],
+		"name" : "enkits-populate"
+	}
+}

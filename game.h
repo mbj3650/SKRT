@@ -4,6 +4,7 @@
 #include "ball.h"
 #include "inputsystem.h"
 #include "fmod.h"
+
 #include "fmod_common.h"
 #include "fmod.hpp"
 #ifndef GAME_H
@@ -37,8 +38,6 @@ private:
 	Game& operator=(const Game& game);
 	// Member data:
 public:
-	Sprite* m_pWelcomeText;
-	Sprite* SpriteArray[100];
 protected:
 	bool m_bPauseSimulation;
 	bool m_bShowDebugWindow;

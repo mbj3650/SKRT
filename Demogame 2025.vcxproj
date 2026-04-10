@@ -24,7 +24,7 @@
     <ProjectGuid>{be6e4af8-aae0-40a8-a818-73e438e7e13b}</ProjectGuid>
     <RootNamespace>Demogame2025</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Demogame 2025</ProjectName>
+    <ProjectName>SKRT</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -72,12 +72,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <TargetName>$Roamer_debug</TargetName>
+    <TargetName>$SKRT_debug</TargetName>
     <OutDir>$(SolutionDir)game\</OutDir>
     <IntDir>$(SolutionDir)temp\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <TargetName>$Roamer.exe</TargetName>
+    <TargetName>$SKRT.exe</TargetName>
     <OutDir>$(SolutionDir)game\</OutDir>
     <IntDir>$(SolutionDir)temp\$(Configuration)\</IntDir>
     <AllProjectIncludesArePublic>false</AllProjectIncludesArePublic>
@@ -89,14 +89,20 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)lib\FMOD\include;$(SolutionDir)lib\SDL2_image-2.6.1\include;$(SolutionDir)lib\glew-2.1.0\include;$(SolutionDir)lib\SDL2-2.0.22\include;$(SolutionDir)lib\SDL2_ttf-2.20.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\box2d\include;$(SolutionDir)lib\FMOD\include;$(SolutionDir)lib\SDL2_image-2.6.1\include;$(SolutionDir)lib\glew-2.1.0\include;$(SolutionDir)lib\SDL2-2.0.22\include;$(SolutionDir)lib\SDL2_ttf-2.20.0\include;$(SolutionDir)lib\box2d\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\SDL2-2.0.22\lib\x86;$(SolutionDir)lib\SDL2_image-2.6.1\lib\x86;$(SolutionDir)lib\glew-2.1.0\lib\x86;$(SolutionDir)lib\SDL2_ttf-2.22.0\lib\x86\;$(SolutionDir)lib\FMOD\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2main.lib;SDL2_image.lib;glew32.lib;opengl32.lib;SDL2.lib;SDL2_ttf.lib;fmod_vc.lib;fmodl_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\SDL2-2.0.22\lib\x86;$(SolutionDir)lib\SDL2_image-2.6.1\lib\x86;$(SolutionDir)lib\glew-2.1.0\lib\x86;$(SolutionDir)lib\SDL2_ttf-2.22.0\lib\x86\;$(SolutionDir)lib\FMOD\lib\x86;$(SolutionDir)lib\box2d\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2main.lib;SDL2_image.lib;glew32.lib;opengl32.lib;SDL2.lib;SDL2_ttf.lib;fmod_vc.lib;fmodl_vc.lib;box2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LinkStatus>
+      </LinkStatus>
+      <ShowProgress>LinkVerboseLib</ShowProgress>
     </Link>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -106,13 +112,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)lib\SDL2_image-2.6.1\include;$(SolutionDir)lib\glew-2.1.0\include;$(SolutionDir)lib\SDL2-2.0.22\include;$(SolutionDir)lib\SDL2_ttf-2.22.0\include;$(SolutionDir)lib\SDL2_ttf-2.20.0\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\FMOD\include;$(SolutionDir)lib\SDL2_image-2.6.1\include;$(SolutionDir)lib\glew-2.1.0\include;$(SolutionDir)lib\SDL2-2.0.22\include;$(SolutionDir)lib\SDL2_ttf-2.20.0\include;$(SolutionDir)lib\box2d\include\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\SDL2_ttf-2.22.0\lib\x86\;$(SolutionDir)lib\SDL2-2.0.22\lib\x86\;$(SolutionDir)lib\SDL2_image-2.6.1\lib\x86\;$(SolutionDir)lib\glew-2.1.0\lib\x86\;$(SolutionDir)lib\SDL2_ttf-2.20.0\lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2main.lib;SDL2_image.lib;glew32.lib;opengl32.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\SDL2-2.0.22\lib\x86;$(SolutionDir)lib\SDL2_image-2.6.1\lib\x86;$(SolutionDir)lib\glew-2.1.0\lib\x86;$(SolutionDir)lib\SDL2_ttf-2.22.0\lib\x86\;$(SolutionDir)lib\FMOD\lib\x86;$(SolutionDir)lib\box2d\lib\release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2main.lib;SDL2_image.lib;glew32.lib;opengl32.lib;SDL2.lib;SDL2_ttf.lib;fmod_vc.lib;fmodl_vc.lib;box2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -125,6 +131,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\SDL2-2.0.22\lib\x86;$(SolutionDir)lib\SDL2_image-2.6.1\lib\x86;$(SolutionDir)lib\glew-2.1.0\lib\x86;$(SolutionDir)lib\SDL2_ttf-2.22.0\lib\x86\;$(SolutionDir)lib\FMOD\lib\x86;$(SolutionDir)lib\box2d\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2main.lib;SDL2_image.lib;glew32.lib;opengl32.lib;SDL2.lib;SDL2_ttf.lib;fmod_vc.lib;fmodl_vc.lib;box2d.lib;box2d;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -142,20 +150,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Alieninvader.cpp" />
     <ClCompile Include="AnimatedSprite.cpp" />
-    <ClCompile Include="Asteroid.cpp" />
+    <ClCompile Include="EnemyBase.cpp" />
     <ClCompile Include="ball.cpp" />
-    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="EntityBall.cpp" />
-    <ClCompile Include="Laserbullet.cpp" />
-    <ClCompile Include="Lasercannon.cpp" />
     <ClCompile Include="lib\FMOD\include\common.cpp" />
     <ClCompile Include="lib\FMOD\include\common_platform.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="particleemitter.cpp" />
-    <ClCompile Include="Playership.cpp" />
-    <ClCompile Include="Sceneasteroidsclone.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerObject.cpp" />
+    <ClCompile Include="SceneMainGame.cpp" />
     <ClCompile Include="SceneBallGame.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="inputsystem.cpp" />
@@ -174,7 +179,6 @@
     <ClCompile Include="SceneBouncingBalls.cpp" />
     <ClCompile Include="SceneCheckerboards.cpp" />
     <ClCompile Include="SceneCheckerboards.h" />
-    <ClCompile Include="SceneSpaceInvadersClone.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="SceneSplashAut.cpp" />
     <ClCompile Include="sprite.cpp" />
@@ -185,14 +189,10 @@
     <ClCompile Include="XboxController.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Alieninvader.h" />
     <ClInclude Include="AnimatedSprite.h" />
-    <ClInclude Include="Asteroid.h" />
+    <ClInclude Include="EnemyBase.h" />
     <ClInclude Include="ball.h" />
-    <ClInclude Include="Bullet.h" />
     <ClInclude Include="EntityBall.h" />
-    <ClInclude Include="Laserbullet.h" />
-    <ClInclude Include="Lasercannon.h" />
     <ClInclude Include="lib\FMOD\include\common.h" />
     <ClInclude Include="lib\FMOD\include\common_platform.h" />
     <ClInclude Include="lib\FMOD\include\fmod.h" />
@@ -205,8 +205,9 @@
     <ClInclude Include="lib\SDL2_ttf-2.22.0\include\SDL_ttf.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="particleemitter.h" />
-    <ClInclude Include="Playership.h" />
-    <ClInclude Include="Sceneasteroidsclone.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerObject.h" />
+    <ClInclude Include="SceneMainGame.h" />
     <ClInclude Include="SceneBallGame.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="inlinehelpers.h" />
@@ -225,7 +226,6 @@
     <ClInclude Include="renderer.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="SceneBouncingBalls.h" />
-    <ClInclude Include="SceneSpaceInvadersClone.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="SceneSplashAut.h" />
     <ClInclude Include="sprite.h" />

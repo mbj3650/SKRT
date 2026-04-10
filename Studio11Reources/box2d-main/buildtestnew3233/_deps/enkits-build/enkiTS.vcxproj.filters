@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\enkits-src\src\TaskScheduler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\enkits-src\src\TaskScheduler_c.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\enkits-src\src\LockLessMultiReadPipe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\enkits-src\src\TaskScheduler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\enkits-src\src\TaskScheduler_c.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\enkits-src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{9DF95AD6-7BC4-3F30-BDC7-5FC31DF9148F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7ABD0B2B-5AC7-3BE4-998F-C18456E9FB17}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

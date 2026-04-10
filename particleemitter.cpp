@@ -5,9 +5,11 @@
 #include "renderer.h"
 #include "sprite.h"
 #include "Particle.h"
+#include "vector2.h"
 // Library includes:
 #include <cassert>
 #include "lib/imgui/imgui.h"
+#include "box2d.h"
 //Sprite* m_pSharedSprite;
 //std::vector<Particle*> m_particles;
 //float m_fTimeElapsed;
@@ -29,8 +31,25 @@ ParticleEmitter::~ParticleEmitter() {
 	m_particles.clear();
 	delete(m_pSharedSprite);
 }
-bool ParticleEmitter::Initialise(Renderer& renderer, char texture[]) {
+bool ParticleEmitter::Initialise(Renderer& renderer, 
+	const char* texture, 
+	float m_fEmitRate,
+	float m_fMaxLifespan, 
+	float m_fAccelerationScalar, 
+	float m_fColour[3],
+	float m_fMinAngle,
+	float m_fMaxAngle,
+	float m_iSpawnBatchSize) {
 	m_pSharedSprite = renderer.CreateSprite(texture);
+	this->m_fEmitRate = m_fEmitRate;
+	this->m_fMaxLifespan = m_fMaxLifespan;
+	this->m_fAccelerationScalar = m_fAccelerationScalar;
+	this->m_fColour[0] = m_fColour[0];
+	this->m_fColour[1] = m_fColour[1];
+	this->m_fColour[2] = m_fColour[2];
+	this->m_fMinAngle = m_fMinAngle;
+	this->m_fMaxAngle = m_fMaxAngle;
+	this->m_iSpawnBatchSize = m_iSpawnBatchSize;
 	return true;
 }
 void ParticleEmitter::Process(float deltaTime) {
@@ -71,6 +90,22 @@ void ParticleEmitter::Spawn() {
 	}
 	m_particles.push_back(pParticle);
 }
-void ParticleEmitter::DebugDraw() {
 
+void ParticleEmitter::SetParticlePosition(Vector2 position) {
+	m_fX = position.x;
+	m_fY = position.y;
+}
+
+void ParticleEmitter::SetParticlePosition(b2Vec2 position) {
+	m_fX = position.x;
+	m_fY = position.y;
+}
+
+
+
+void ParticleEmitter::DebugDraw() {
+	ImGui::Text("PARTICLE INFORMATION:");
+	ImGui::Text("Particles %f", m_particles.size());
+	ImGui::Text("Time %f",m_fTimeElapsed);
+	ImGui::Text("Emit Rate %f", m_fEmitRate);
 }

@@ -7,8 +7,7 @@
 // Library includes:
 #include <cassert>
 SceneSplashAUT::SceneSplashAUT()
-	: m_pCentre(0)
-	, AlphaDir(1)
+	: AlphaDir(1)
 	, Fade(0.00025)
 {
 }
@@ -16,6 +15,7 @@ SceneSplashAUT::~SceneSplashAUT()
 {
 	delete m_pCentre;
 	m_pCentre = 0;
+	delete this;
 }
 bool SceneSplashAUT::Initialise(Renderer& renderer)
 {
@@ -44,7 +44,7 @@ SceneSplashAUT::Process(float deltaTime, InputSystem& inputSystem)
 void
 SceneSplashAUT::Draw(Renderer& renderer)
 {
-	renderer.SetClearColour(0, 0, 0);
+
 
 	m_pCentre->Draw(renderer);
 }

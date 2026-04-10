@@ -17,6 +17,7 @@ Shader::Shader()
 }
 Shader::~Shader()
 {
+
 	Unload();
 }
 bool Shader::Load(const char* vertexFile, const char* pixelFile)

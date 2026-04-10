@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\glfw-subbuild\CMakeFiles\1696de387d9a81a393a129691981763e\glfw-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\glfw-subbuild\CMakeFiles\1696de387d9a81a393a129691981763e\glfw-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\glfw-subbuild\CMakeFiles\1696de387d9a81a393a129691981763e\glfw-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\glfw-subbuild\CMakeFiles\1696de387d9a81a393a129691981763e\glfw-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\glfw-subbuild\CMakeFiles\1696de387d9a81a393a129691981763e\glfw-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\glfw-subbuild\CMakeFiles\1696de387d9a81a393a129691981763e\glfw-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\glfw-subbuild\CMakeFiles\1696de387d9a81a393a129691981763e\glfw-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\glfw-subbuild\CMakeFiles\1696de387d9a81a393a129691981763e\glfw-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\glfw-subbuild\CMakeFiles\fe63546308fef76226d33ace0f7cc0d9\glfw-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\glfw-subbuild\CMakeFiles\97510722bb8d8e33fea7b596082e700b\glfw-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\glfw-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\747jf\Downloads\Studio11Reources\box2d-main\buildtestnew3233\_deps\glfw-subbuild\CMakeFiles\glfw-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{21C89938-F60C-3821-AAAC-0A1897C5D201}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

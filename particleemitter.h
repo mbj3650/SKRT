@@ -8,6 +8,8 @@ class Renderer;
 class Sprite;
 class Texture;
 class Particle;
+class Vector2;
+class b2Vec2;
 // Class declaration:
 class ParticleEmitter
 {
@@ -15,10 +17,21 @@ class ParticleEmitter
 public:
 	ParticleEmitter();
 	~ParticleEmitter();
-	bool Initialise(Renderer& renderer, char texture[]);
+	bool Initialise(Renderer& renderer,
+		const char* texture,
+		float m_fEmitRate,
+		float m_fMaxLifespan,
+		float m_fAccelerationScalar,
+		float m_fColour[3],
+		float m_fMinAngle,
+		float m_fMaxAngle,
+		float m_iSpawnBatchSize);
 	void Process(float deltaTime);
 	void Draw(Renderer& renderer);
 	void Spawn();
+
+	void SetParticlePosition(b2Vec2 position);
+	void SetParticlePosition(Vector2 position);
 	void DebugDraw();
 protected:
 private:

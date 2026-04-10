@@ -22,6 +22,8 @@ Sprite::Sprite()
 }
 Sprite::~Sprite()
 {
+	delete m_pTexture;
+	m_pTexture = 0;
 }
 bool
 Sprite::Initialise(Texture& texture)

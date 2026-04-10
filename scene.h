@@ -16,7 +16,6 @@ public:
 	virtual void Draw(Renderer& renderer) = 0;
 	virtual void Process(float deltaTime, InputSystem& inputSystem) = 0;
 protected:
-	Renderer* rendererstore;
 private:
 	Scene(const Scene& scene);
 	Scene& operator=(const Scene& scene);

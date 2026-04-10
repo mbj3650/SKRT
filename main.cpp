@@ -20,5 +20,6 @@ int main(int argc, char* argv[])
 	}
 	Game::DestroyInstance();
 	LogManager::DestroyInstance();
+
 	return 0;
 }

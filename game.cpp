@@ -7,8 +7,7 @@
 #include "sprite.h"
 #include "SceneCheckerboards.h"
 #include "SceneBouncingBalls.h"
-#include  "SceneSpaceInvadersClone.h"
-#include  "SceneAsteroidsClone.h"
+#include "SceneMainGame.h"
 #include "SceneBallGame.h"
 #include "SceneSplashAut.h"
 #include <time.h>
@@ -22,6 +21,7 @@
 #include "fmod.hpp"
 #include "fmod_common.h"
 #include <fmod_errors.h>
+#include "box2d.h"
 // Static Members:
 Game* Game::sm_pInstance = 0;
 Game& Game::GetInstance()
@@ -34,7 +34,6 @@ Game& Game::GetInstance()
 }
 void Game::DestroyInstance()
 {
-	
 	delete sm_pInstance;
 	sm_pInstance = 0;
 }
@@ -43,6 +42,10 @@ Game::Game() : m_pRenderer(0), m_bLooping(true)
 }
 Game::~Game()
 {
+	m_pSounds.clear();
+	delete m_pInputSystem;
+	m_pInputSystem = 0;
+	m_scenes.clear();
 	system->release();
 	delete m_pRenderer;
 	m_pRenderer = 0;
@@ -73,9 +76,8 @@ bool Game::Initialise()
 	system->createSound("..\\lib\\FMOD\\sound_samples\\swish.wav", FMOD_DEFAULT, NULL, &newSound);
 	m_pSounds.push_back(newSound);
 	system->playSound(m_pSounds.front(),NULL,false,NULL);
-
-	int bbWidth = 1480;
-	int bbHeight = 1050;
+	int bbWidth = 1500;
+	int bbHeight = 920;
 	m_pRenderer = new Renderer();
 	m_pInputSystem = new InputSystem();
 	if (!m_pRenderer->Initialise(true, bbWidth, bbHeight))
@@ -87,36 +89,22 @@ bool Game::Initialise()
 	bbWidth = m_pRenderer->GetWidth();
 	bbHeight = m_pRenderer->GetHeight();
 	m_iLastTime = SDL_GetPerformanceCounter();
-	m_pRenderer->SetClearColour(0, 255, 255);
-
-	Scene* pScene = 0;
-	pScene = new SceneBouncingBalls();
-	
+	m_pRenderer->SetClearColour(0, 0, 0);
 
 	Scene* pSplash = 0;
 	pSplash = new SceneSplashAUT();
-
-	Scene* pBallGame = 0;
-	pBallGame = new SceneBallGame();
-
-	Scene* pAsteroids = 0;
-	pAsteroids = new Sceneasteroidsclone();
-
-
-	Scene* pInvaders = 0;
-	pInvaders = new SceneSpaceInvadersClone();
-
-	pScene->Initialise(*m_pRenderer);
 	pSplash->Initialise(*m_pRenderer);
-	pBallGame->Initialise(*m_pRenderer);
-	pAsteroids->Initialise(*m_pRenderer);
-	pInvaders->Initialise(*m_pRenderer);
-
 	m_scenes.push_back(pSplash);
-	m_scenes.push_back(pInvaders);
-	m_scenes.push_back(pAsteroids);
-	m_scenes.push_back(pBallGame);
-	m_scenes.push_back(pScene);
+
+
+	Scene* pMainGame = 0;
+	pMainGame = new SceneMainGame();
+	pMainGame->Initialise(*m_pRenderer);
+	m_scenes.push_back(pMainGame);
+
+
+
+
 	//// Load static text textures into the Texture Manager...
 	//m_pRenderer->CreateStaticText("Auckland University of Technology", 50);
 
