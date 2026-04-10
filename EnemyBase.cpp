@@ -15,22 +15,21 @@
 float EnemyBase::sm_fBoundaryWidth = 0.0f;
 float EnemyBase::sm_fBoundaryHeight = 0.0f;
 EnemyBase::EnemyBase()
-	:speed(100.0f),
-	isColliding(false)
+	:speed(100.0f)
 {
 
 };
 EnemyBase::~EnemyBase()
 {
-	m_pSprite->~Sprite();
-	delete m_pSprite;
-	m_pSprite = 0;
-	delete this;
+	//delete m_pSprite;
+	//m_pSprite = 0;
 };
 
 bool
 EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID)
 {
+	type = 100;
+	experiencetodrop = GetRandom(1, 5);
 	m_pPlayer = playerAddress;
 	m_pSprite = renderer.CreateSprite("..\\assets\\ball.png");
 	const float MAX_SPEED = 250.0f;
@@ -43,7 +42,7 @@ EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	sm_fBoundaryWidth = static_cast<float>(SCREEN_WIDTH);
 	sm_fBoundaryHeight = static_cast<float>(SCREEN_HEIGHT);
 	m_pSprite->SetScale(0.1f);
-
+	
 	//CREATE BODY FOR THE WORLD TO USE AS SHAPE REFERENCE
 	b2BodyDef WorldObj = b2DefaultBodyDef();
 
@@ -76,9 +75,8 @@ EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	b2Polygon box = b2MakeBox(15.0f, 15.0f);
 
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
-	shapeDef.density = 3.0f;
+	shapeDef.density = 1.0f;
 	shapeDef.friction = 0.1f;
-
 	b2ShapeId shapeId = b2CreatePolygonShape(ID, &shapeDef, &box);
 
 	m_position.x = b2Body_GetPosition(ID).x;
@@ -91,16 +89,18 @@ EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	b2Body_SetLinearVelocity(ID, speedVec);
 	ComputeBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
 	return true;
-};
-
-
-//Enemy class functions
-void EnemyBase::startContact() { 
-	isColliding = true; 
 }
-void EnemyBase::endContact() {
-	isColliding = false; 
+bool EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position)
+{
+	return false;
 }
+;
+
+bool EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position, float experiencetodrop)
+{
+	return false;
+}
+;
 
 
 float EnemyBase::getEnemyBaseAngle() {
@@ -140,9 +140,7 @@ EnemyBase::Process(float deltaTime)
 	}
 		velocity.x = (speed * (cos(angle))) + (offsetvelocity.x * (TimerPostCollide / 2));
 		velocity.y = (speed * (sin(angle))) + (offsetvelocity.y * (TimerPostCollide / 2));
-	if (isColliding) {
-		isColliding = false;
-	}
+
 
 	b2Vec2 velocityVec = { velocity.x, velocity.y };
 	b2Body_SetLinearVelocity(ID, velocityVec);
@@ -153,7 +151,6 @@ EnemyBase::Process(float deltaTime)
 };
 
 void EnemyBase::ProcessCollision(b2BodyId collidingwith) {
-	isColliding = true;
 	float angle = atan2(b2Body_GetLocalCenterOfMass(collidingwith).y - m_position.y, b2Body_GetLocalCenterOfMass(collidingwith).x - m_position.x);
 	b2Vec2 OffsetForce = {0,0};
 	OffsetForce.x -= (b2Body_GetLinearVelocity(collidingwith).x * (cos(angle)));
@@ -162,7 +159,6 @@ void EnemyBase::ProcessCollision(b2BodyId collidingwith) {
 }
 
 void EnemyBase::ProcessDamageCollision(b2BodyId collidingwith) {
-	isColliding = true;
 	try {//attempt player damage
 		PlayerObject* address = reinterpret_cast<PlayerObject*>(b2Body_GetUserData(collidingwith));
 		if (address->CanDamage()) {
@@ -210,9 +206,13 @@ EnemyBase::ComputeBounds(int width, int height)
 
 void
 EnemyBase::Kill() {
-	//this->m_bAlive = false;
-	delete(this);
+
 }
+
+bool EnemyBase::isAlive() {
+	return m_bAlive;
+}
+
 
 
 void EnemyBase::DebugDraw

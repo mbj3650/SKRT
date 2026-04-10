@@ -154,6 +154,7 @@
     <ClCompile Include="EnemyBase.cpp" />
     <ClCompile Include="ball.cpp" />
     <ClCompile Include="EntityBall.cpp" />
+    <ClCompile Include="Experience.cpp" />
     <ClCompile Include="lib\FMOD\include\common.cpp" />
     <ClCompile Include="lib\FMOD\include\common_platform.cpp" />
     <ClCompile Include="Particle.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="EnemyBase.h" />
     <ClInclude Include="ball.h" />
     <ClInclude Include="EntityBall.h" />
+    <ClInclude Include="Experience.h" />
     <ClInclude Include="lib\FMOD\include\common.h" />
     <ClInclude Include="lib\FMOD\include\common_platform.h" />
     <ClInclude Include="lib\FMOD\include\fmod.h" />

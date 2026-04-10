@@ -18,22 +18,23 @@ public:
 	EnemyBase();
 	~EnemyBase();
 
-	bool Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID);
-
+	virtual bool Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID);
+	virtual bool Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position);
+	virtual bool Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position, float experiencetodrop);
 	void startContact();
 	void endContact();
 
 
 	float getEnemyBaseAngle();
-	void Process(float deltaTime);
-	void ProcessDamageCollision(b2BodyId collidingwith);
-	void ProcessCollision(b2BodyId collidingwith);
-	void Draw(Renderer& renderer);
-	void Kill();
-	bool isAlive();
+	virtual void Process(float deltaTime);
+	virtual void ProcessDamageCollision(b2BodyId collidingwith);
+	virtual void ProcessCollision(b2BodyId collidingwith);
+	virtual void Draw(Renderer& renderer);
+	virtual void Kill();
+	virtual bool isAlive();
 	float GetRadius();
 	Vector2& Position();
-	int getSize();
+	virtual int getSize();
 	void RandomiseSize();
 	virtual void DebugDraw();
 	void ComputeBounds(int width, int height);
@@ -47,8 +48,11 @@ private:
 public:
 	bool isColliding;
 	b2BodyId ID;
+	int type;
+	float experiencetodrop;
 protected:
 	float health;
+
 	b2BodyId m_pPlayer;
 	Sprite* m_pSprite;
 	Vector2 m_position;

@@ -24,6 +24,7 @@ public:
 	virtual ~SceneMainGame();
 	virtual bool Initialise(Renderer& renderer);
 	void CreateEnemy();
+	void SpawnExp(b2Vec2 EnemyPosition, float experiencetodrop);
 	void CheckCollisions();
 	void EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2);
 	void Process(float deltaTime, InputSystem& inputSystem);
@@ -41,7 +42,7 @@ protected:
 	static SceneMainGame* sm_MainGameInstance;
 	FMOD::System* SoundSystem;
 	ParticleEmitter* m_pParticleEmitter;
-	EnemyBase* m_pEnemyArray[100];
+	EnemyBase* m_pEntityArray[100];
 	b2WorldDef* World;
 	b2WorldId WorldPointer;
 	Renderer* storage;

@@ -26,6 +26,7 @@ public:
 	void Process(float deltaTime, InputSystem& inputSystem);
 	void Draw(Renderer& renderer);
 	void Kill();
+	void AddExp(float experienceamount);
 	float getSpeed();
 	float GetRadius();
 	b2Vec2 Position();
@@ -46,6 +47,11 @@ public:
 	bool isColliding;
 	b2BodyId ID;
 protected:
+
+	float exptolevel;
+	float experience;
+	float level;
+
 	float ratio;
 	float speedboost;
 	int maxdistance;

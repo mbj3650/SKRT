@@ -14,10 +14,13 @@
 float PlayerObject::sm_fBoundaryWidth = 0.0f;
 float PlayerObject::sm_fBoundaryHeight = 0.0f;
 PlayerObject::PlayerObject():
-Speedmin(100),
-Damage(20),
-speedboost(2),
-reboundloss(0.75)
+Speedmin(250),
+Damage(200),
+speedboost(1.5),
+reboundloss(0.75),
+exptolevel(100),
+experience(0),
+level(0)
 {
 
 };
@@ -29,14 +32,14 @@ PlayerObject::~PlayerObject()
 bool
 PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 {
+
 	//CREATE SPRITE TO FOLLOW SHAPE
-	m_pSprite = renderer.CreateSprite("..\\assets\\triangle.png");
+	m_pSprite = renderer.CreateSprite("..\\assets\\cursor.png");
 	m_bAlive = true;
 	maxdistance = 200;
 	ratio = maxdistance / 100;
-	m_pSprite->SetRedTint(0.0f);
 	m_pSprite->SetScale(0.075);
-	m_pSprite->SetBlueTint(0.0f);
+
 	//m_pSprite->SetAngle(180.0f);
 
 	//ComputeBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -61,13 +64,14 @@ PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 	WorldObj.position.y = SCREEN_HEIGHT / 2;;
 	ID = b2CreateBody(WorldId, &WorldObj);
 	b2Body_SetType(ID, b2_dynamicBody);
-	b2Polygon box = b2MakeBox(12.0f, 12.0f);
-
+	b2Polygon Playerbox = b2MakeRoundedBox(1.0f, 1.0f,1.0f);
+	b2Body_SetLinearDamping(ID, 0);
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
-	shapeDef.density = 100.0f;
+	shapeDef.density = 1000.0f;
 	shapeDef.friction = 1.0f;
+
 	b2Body_SetUserData(ID, this);
-	b2ShapeId shapeId = b2CreatePolygonShape(ID, &shapeDef, &box);
+	b2ShapeId shapeId = b2CreatePolygonShape(ID, &shapeDef, &Playerbox);
 	b2Shape_EnableContactEvents(shapeId, true);
 	m_position.x = b2Body_GetPosition(ID).x;
 	m_position.y = b2Body_GetPosition(ID).y;
@@ -85,7 +89,7 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 	if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE)) {//if holding space, brake quickly
 
 		if (Player_speed.x > 0.5f || Player_speed.x < -0.5f) {
-			Player_speed.x *= (0.997);
+			Player_speed.x *= (0.996);
 		}
 		else {
 			Player_speed.x = 0;
@@ -93,7 +97,7 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 
 
 		if (Player_speed.y > 0.5f || Player_speed.y < -0.5f) {
-			Player_speed.y *= (0.997);
+			Player_speed.y *= (0.996);
 		}
 		else {
 			Player_speed.y = 0;
@@ -154,10 +158,12 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 		Player_speed.y *= -1.0f;
 	}
 	b2Vec2 velocity = { Player_speed.x, Player_speed.y };
-	b2Body_SetLinearVelocity(ID, velocity);
+	b2Body_SetLinearVelocity(ID, velocity);//set velocity for obejct to move with
+	
+	//set sprite positions
 	m_pSprite->SetX(static_cast<int>(b2Body_GetPosition(ID).x));
 	m_pSprite->SetY(static_cast<int>(b2Body_GetPosition(ID).y));
-	m_pSprite->SetAngle(angle + 90);
+	m_pSprite->SetAngle(angle - 115);
 
 	m_pBoostPointer->SetX((static_cast<int>(b2Body_GetPosition(ID).x)) + ((distancebetween / ratio) / 3 * (cos((M_PI / 180) * -angle))));
 	m_pBoostPointer->SetY((static_cast<int>(b2Body_GetPosition(ID).y)) + ((distancebetween / ratio) / 3 * (sin((M_PI / 180) * -angle))));
@@ -173,7 +179,6 @@ PlayerObject::Draw(Renderer& renderer)
 	m_pBoostPointer->Draw(renderer);
 	m_pSprite->Draw(renderer);
 };
-
 
 float PlayerObject::getSpeed() {
 	return sqrt((pow((Player_speed.x), 2) + pow((Player_speed.y), 2)));
@@ -191,14 +196,17 @@ b2Vec2 PlayerObject::Position() {
 	return b2Body_GetPosition(ID);
 }
 
+void PlayerObject::AddExp(float experienceamount) {
+	experience += experienceamount;
+}
+
 float PlayerObject::GetShipAngle() {
 	return angle;
 }
 
 bool PlayerObject::CanDamage() {
-	if (sqrt((pow((Player_speed.x), 2) + pow((Player_speed.y), 2))) > Speedmin) {
-		return true;
-	}
+	float playerspeed = sqrt(pow((b2Body_GetLinearVelocity(ID).x), 2) + pow((b2Body_GetLinearVelocity(ID).y), 2));
+		return playerspeed > Speedmin;
 }
 
 float PlayerObject::getDamage() {
@@ -208,9 +216,10 @@ float PlayerObject::getDamage() {
 void PlayerObject::DebugDraw(){
 	ImGui::Text("SHIP INFORMATION:");
 	ImGui::Text("Angle %f", angle);
-	ImGui::Text("momentum:%f", sqrt((pow((Player_speed.x), 2) + pow((Player_speed.y), 2))));
+	ImGui::Text("momentum:%f", sqrt(pow((b2Body_GetLinearVelocity(ID).x), 2) + pow((b2Body_GetLinearVelocity(ID).y), 2)));
 	ImGui::Text("dist:%f", distancebetween);
 	ImGui::Text("Velocity x:%f y:%f", b2Body_GetLinearVelocity(ID).x, b2Body_GetLinearVelocity(ID).y);
 	ImGui::Text("Mous Position x:%f y:%f", mouse_position.x, mouse_position.y);
 	ImGui::Text("Position x:%f y:%f", Position().x, Position().y);
+	ImGui::Text("Exp: %f", experience);
 }

@@ -8,6 +8,7 @@
 #include "sprite.h"
 #include "Player.h"
 #include "PlayerObject.h"
+#include "Experience.h"
 #include "EnemyBase.h"
 // Library includes:
 #include <cassert>
@@ -20,7 +21,7 @@
 #include "particleemitter.h"
 SceneMainGame* SceneMainGame::sm_MainGameInstance = 0;
 SceneMainGame::SceneMainGame()
-	: m_pEnemyArray{ 0 }
+	: m_pEntityArray{ 0 }
 	, m_iShowCount(0)
 	, cooldown(0)//time between shooting
 	, Score(0)
@@ -31,8 +32,8 @@ SceneMainGame::~SceneMainGame()
 {
 	for (int k = 0; k < 100; ++k)
 	{
-		delete m_pEnemyArray[k];
-		m_pEnemyArray[k] = NULL;
+		delete m_pEntityArray[k];
+		m_pEntityArray[k] = NULL;
 	}
 	delete m_pPlayerChar;
 	m_pPlayerChar = 0;
@@ -53,6 +54,7 @@ SceneMainGame::Initialise(Renderer& renderer)
 	World = new b2WorldDef();
 	*World = b2DefaultWorldDef();
 	WorldPointer = b2CreateWorld(World);
+	
 	//b2BodyDef wall = b2DefaultBodyDef();//initialize wall
 	//b2Vec2 position;//set position of wall
 	//position.x = 0;
@@ -86,27 +88,47 @@ SceneMainGame::Initialise(Renderer& renderer)
 
 void SceneMainGame::CreateEnemy() {
 	for (int z = 0; z < 100; z++) {
-		if (m_pEnemyArray[z] == NULL) {
-			m_pEnemyArray[z] = new EnemyBase();
+		if (m_pEntityArray[z] == NULL) {
+			m_pEntityArray[z] = new EnemyBase();
 			TotalEnemies++;
-			m_pEnemyArray[z]->Initialise(*storage, m_pPlayerChar->ID, WorldPointer);
+			m_pEntityArray[z]->Initialise(*storage, m_pPlayerChar->ID, WorldPointer);
 			break;
 			}
 		}
 	}
 
+void SceneMainGame::SpawnExp(b2Vec2 EnemyPosition, float experiencetodrop) {
+	for (int z = 0; z < 100; z++) {
+		if (m_pEntityArray[z] == NULL) {
+			m_pEntityArray[z] = new Experience();
+			m_pEntityArray[z]->Initialise(*storage, m_pPlayerChar->ID, WorldPointer, EnemyPosition, experiencetodrop);
+			break;
+		}
+	}
+}
+
 void
 SceneMainGame::EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2) {
+
 	b2BodyId bodyA = b2Shape_GetBody(Shape1);
 	b2BodyId bodyB = b2Shape_GetBody(Shape2);
 
 		try {
 			EnemyBase* address = reinterpret_cast<EnemyBase*>(b2Body_GetUserData(bodyB));
-			if (B2_ID_EQUALS(m_pPlayerChar->ID, bodyA)) {
+			//if body a is player
+			if ((B2_ID_EQUALS(m_pPlayerChar->ID, bodyA))|| (B2_ID_EQUALS(m_pPlayerChar->ID, bodyB))) {
 				address->ProcessDamageCollision(bodyA);
+				if (!address->isAlive()) {
+					if (address->type != 50) {
+						b2Vec2 Position = b2Body_GetPosition(bodyB);
+						SpawnExp(Position, address->experiencetodrop);
+					}
+
+				}
 
 			}
 			else {
+				//else process entity to entity collission
 				address->ProcessCollision(bodyA);
 			}
 			
@@ -119,19 +141,8 @@ SceneMainGame::EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2) {
 void
 SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 {
-	int subStepCount = 4;
-	int gamespeed = 2;
-	for (int i = 0; i < 100; i++) {
-		if (m_pEnemyArray[i] != NULL) {
-			if (m_pEnemyArray[i]->isAlive()) {
-				delete m_pEnemyArray[i];
-			}
-			else {
-				m_pEnemyArray[i]->Process(deltatime);
-			}
-			
-		}
-	}
+	int subStepCount = 16;
+	int gamespeed = 2; 
 	m_pPlayerChar->Process(deltatime, inputsystem);//check fo rcollissions
 	int result = inputsystem.GetMouseButtonState(SDL_BUTTON_LEFT);
 	/*m_pParticleEmitter->SetParticlePosition(m_pPlayerChar->Position());
@@ -141,24 +152,38 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 
 	// In game loop after stepping physics
 	b2ContactEvents contactEvents = b2World_GetContactEvents(WorldPointer);
-	for (int i = 0; i < contactEvents.endCount; ++i)
+	for (int i = 0; i < contactEvents.beginCount; ++i)
 	{
-		b2ContactEndTouchEvent* endEvent = contactEvents.endEvents + i;
-		EntityColliding(endEvent->shapeIdA, endEvent->shapeIdB);
+		b2ContactBeginTouchEvent* beginEvent = contactEvents.beginEvents + i;
+		EntityColliding(beginEvent->shapeIdA, beginEvent->shapeIdB);
 	}
 
+	for (int i = 0; i < 100; i++) {
+		if (m_pEntityArray[i] != NULL) {
+			m_pEntityArray[i]->Process(deltatime);
+			if (!m_pEntityArray[i]->isAlive() && b2Body_IsValid(m_pEntityArray[i]->ID)) {
+				if (m_pEntityArray[i]->type == 50) {
+					m_pPlayerChar->AddExp(m_pEntityArray[i]->getSize());
+				}
+					b2DestroyBody(m_pEntityArray[i]->ID);
+					delete m_pEntityArray[i];
+					m_pEntityArray[i] = 0;
+
+			}
+		}
+	}
 
 	/*if (m_pPlayerChar->CanDamage()) {
 		for (int i = 0; i < 100; i++) {
-			if (m_pEnemyArray[i] != NULL) {
-				if (m_pEnemyArray[i]->isColliding == false) {
+			if (m_pEntityArray[i] != NULL) {
+				if (m_pEntityArray[i]->isColliding == false) {
 					double distance =
 						sqrt(
-							pow(((m_pEnemyArray[i]->Position().x) - (m_pPlayerChar->Position().x)), 2)
-							+ pow(((m_pEnemyArray[i]->Position().y) - (m_pPlayerChar->Position().y)), 2)
-						) - m_pPlayerChar->GetRadius() - m_pEnemyArray[i]->GetRadius();
+							pow(((m_pEntityArray[i]->Position().x) - (m_pPlayerChar->Position().x)), 2)
+							+ pow(((m_pEntityArray[i]->Position().y) - (m_pPlayerChar->Position().y)), 2)
+						) - m_pPlayerChar->GetRadius() - m_pEntityArray[i]->GetRadius();
 					if (distance <= 0) {
-						m_pEnemyArray[i]->ProcessCollision(m_pPlayerChar->ID, deltatime);
+						m_pEntityArray[i]->ProcessCollision(m_pPlayerChar->ID, deltatime);
 						break;
 					}
 				}
@@ -169,18 +194,18 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 
 
 	for (int i = 0; i < 100; i++) {
-		if (m_pEnemyArray[i] != NULL) {
-			if (m_pEnemyArray[i]->isColliding == false) {
+		if (m_pEntityArray[i] != NULL) {
+			if (m_pEntityArray[i]->isColliding == false) {
 				for (int ib = 0; ib < 100; ib++) {
-					if (m_pEnemyArray[ib] != NULL && ib != i) {
-						if (m_pEnemyArray[ib]->isColliding == false) {
+					if (m_pEntityArray[ib] != NULL && ib != i) {
+						if (m_pEntityArray[ib]->isColliding == false) {
 							double distance =
 								sqrt(
-									pow(((m_pEnemyArray[i]->Position().x) - (m_pEnemyArray[ib]->Position().x)), 2)
-									+ pow(((m_pEnemyArray[i]->Position().y) - (m_pEnemyArray[ib]->Position().y)), 2)
-								) - m_pEnemyArray[ib]->GetRadius() - m_pEnemyArray[i]->GetRadius();
+									pow(((m_pEntityArray[i]->Position().x) - (m_pEntityArray[ib]->Position().x)), 2)
+									+ pow(((m_pEntityArray[i]->Position().y) - (m_pEntityArray[ib]->Position().y)), 2)
+								) - m_pEntityArray[ib]->GetRadius() - m_pEntityArray[i]->GetRadius();
 							if (distance <= 0) {
-								m_pEnemyArray[i]->ProcessCollision(m_pEnemyArray[ib], deltatime);
+								m_pEntityArray[i]->ProcessCollision(m_pEntityArray[ib], deltatime);
 								break;
 							}
 						}
@@ -204,8 +229,11 @@ void
 SceneMainGame::Draw(Renderer& renderer)
 {
 	for (int i = 0; i < 100; i++) {
-		if (m_pEnemyArray[i] != NULL) {
-			m_pEnemyArray[i]->Draw(renderer);
+		if (m_pEntityArray[i] != NULL) {
+			if (m_pEntityArray[i]->isAlive()) {
+				m_pEntityArray[i]->Draw(renderer);
+			}
+			
 		}
 	}
 
