@@ -6,7 +6,6 @@
 #include "renderer.h"
 #include "scene.h"
 #include "sprite.h"
-#include "Player.h"
 #include "PlayerObject.h"
 #include "Experience.h"
 #include "EnemyBase.h"
@@ -54,7 +53,7 @@ SceneMainGame::Initialise(Renderer& renderer)
 	World = new b2WorldDef();
 	*World = b2DefaultWorldDef();
 	WorldPointer = b2CreateWorld(World);
-	
+	b2World_SetGravity(WorldPointer,{ 0,0 });
 	//b2BodyDef wall = b2DefaultBodyDef();//initialize wall
 	//b2Vec2 position;//set position of wall
 	//position.x = 0;
@@ -112,21 +111,45 @@ SceneMainGame::EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2) {
 
 	b2BodyId bodyA = b2Shape_GetBody(Shape1);
 	b2BodyId bodyB = b2Shape_GetBody(Shape2);
-
 		try {
 			EnemyBase* address = reinterpret_cast<EnemyBase*>(b2Body_GetUserData(bodyB));
+			int getType = address->type;
+			int isplayer = 0;
 			//if body a is player
-			if ((B2_ID_EQUALS(m_pPlayerChar->ID, bodyA))|| (B2_ID_EQUALS(m_pPlayerChar->ID, bodyB))) {
-				address->ProcessDamageCollision(bodyA);
-				if (!address->isAlive()) {
-					if (address->type != 50) {
+			if ((B2_ID_EQUALS(m_pPlayerChar->ID, bodyA))) {
+				isplayer = 1;
+			}
+			if ((B2_ID_EQUALS(m_pPlayerChar->ID, bodyB))) {
+				isplayer = 2;
+			}
+			if (isplayer != 0) {
+				switch (getType) {
+				case 50:
+					if (isplayer == 1) {
+						address->ProcessDamageCollision(bodyA);
+					}
+					else {
+						address->ProcessDamageCollision(bodyB);
+					}
+					
+					break;
+				case 100:
+					if (isplayer == 1) {
+						address->ProcessDamageCollision(bodyA);
+					}
+					else {
+						address->ProcessDamageCollision(bodyB);
+					}
+					if (!address->isAlive()) {
 						b2Vec2 Position = b2Body_GetPosition(bodyB);
 						SpawnExp(Position, address->experiencetodrop);
 					}
-
+					break;
 				}
-
 			}
+				
+				
+
 			else {
 				//else process entity to entity collission
 				address->ProcessCollision(bodyA);
@@ -138,6 +161,54 @@ SceneMainGame::EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2) {
 		}
 	
 }
+
+
+void
+SceneMainGame::EntityHitting(b2ShapeId Shape1, b2ShapeId Shape2) {
+
+	b2BodyId bodyA = b2Shape_GetBody(Shape1);
+	b2BodyId bodyB = b2Shape_GetBody(Shape2);
+	try {
+		EnemyBase* address = reinterpret_cast<EnemyBase*>(b2Body_GetUserData(bodyB));
+		int getType = address->type;
+		int isplayer = 0;
+		//if body a is player
+		if ((B2_ID_EQUALS(m_pPlayerChar->ID, bodyA))) {
+			isplayer = 1;
+		}
+		if ((B2_ID_EQUALS(m_pPlayerChar->ID, bodyB))) {
+			isplayer = 2;
+		}
+		if (isplayer != 0) {
+			switch (getType) {
+			case 50:
+				if (isplayer == 1) {
+					address->ProcessDamageCollision(bodyA);
+				}
+				else {
+					address->ProcessDamageCollision(bodyB);
+				}
+
+				break;
+			}
+		}
+
+
+
+		else {
+			//else process entity to entity collission
+			address->ProcessCollision(bodyA);
+		}
+
+	}
+	catch (FMOD_ERRORCALLBACK_INSTANCETYPE) {
+		std::cout << "Address wasnt enemy!";
+	}
+
+}
+
+
+
 void
 SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 {
@@ -158,14 +229,23 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 		EntityColliding(beginEvent->shapeIdA, beginEvent->shapeIdB);
 	}
 
+
+	// In game loop after stepping physics
+	for (int i = 0; i < contactEvents.hitCount; ++i)
+	{
+		b2ContactHitEvent* beginEvent = contactEvents.hitEvents + i;
+		EntityHitting(beginEvent->shapeIdA, beginEvent->shapeIdB);
+	}
+
+
 	for (int i = 0; i < 100; i++) {
 		if (m_pEntityArray[i] != NULL) {
 			m_pEntityArray[i]->Process(deltatime);
-			if (!m_pEntityArray[i]->isAlive() && b2Body_IsValid(m_pEntityArray[i]->ID)) {
-				if (m_pEntityArray[i]->type == 50) {
-					m_pPlayerChar->AddExp(m_pEntityArray[i]->getSize());
-				}
+			if (!m_pEntityArray[i]->isAlive()) {//and the body is valid
+				if (b2Body_IsValid(m_pEntityArray[i]->ID)) {
 					b2DestroyBody(m_pEntityArray[i]->ID);
+				}
+					
 					delete m_pEntityArray[i];
 					m_pEntityArray[i] = 0;
 

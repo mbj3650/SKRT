@@ -159,7 +159,6 @@
     <ClCompile Include="lib\FMOD\include\common_platform.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="particleemitter.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerObject.cpp" />
     <ClCompile Include="SceneMainGame.cpp" />
     <ClCompile Include="SceneBallGame.cpp" />
@@ -207,7 +206,6 @@
     <ClInclude Include="lib\SDL2_ttf-2.22.0\include\SDL_ttf.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="particleemitter.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerObject.h" />
     <ClInclude Include="SceneMainGame.h" />
     <ClInclude Include="SceneBallGame.h" />

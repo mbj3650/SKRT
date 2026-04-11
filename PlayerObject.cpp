@@ -64,11 +64,16 @@ PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 	WorldObj.position.y = SCREEN_HEIGHT / 2;;
 	ID = b2CreateBody(WorldId, &WorldObj);
 	b2Body_SetType(ID, b2_dynamicBody);
-	b2Polygon Playerbox = b2MakeRoundedBox(1.0f, 1.0f,1.0f);
+	b2Polygon Playerbox = b2MakeRoundedBox(10.0f, 10.0f,1.0f);
 	b2Body_SetLinearDamping(ID, 0);
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
 	shapeDef.density = 1000.0f;
 	shapeDef.friction = 1.0f;
+
+
+	shapeDef.filter.categoryBits = 0x0001;//i am
+	shapeDef.filter.maskBits = 0x0008 | 0x0002;//i collide with
+
 
 	b2Body_SetUserData(ID, this);
 	b2ShapeId shapeId = b2CreatePolygonShape(ID, &shapeDef, &Playerbox);
@@ -110,7 +115,7 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 			clickpos.y = mouse_position.y;
 
 		}
-		distancebetween = sqrt((pow((mouse_position.x - clickpos.x), 2) + pow((mouse_position.y - clickpos.y), 2))) * 0.2;
+		distancebetween = sqrt((pow((mouse_position.x - clickpos.x), 2) + pow((mouse_position.y - clickpos.y), 2))) * 0.2;//get distance to mouse and original click position
 		if (distancebetween > maxdistance) {
 			distancebetween = maxdistance;
 		}
@@ -118,8 +123,8 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 		storedvelocity = distancebetween*speedboost;
 
 
-		IsAiming = true;
-		angle = atan2(mouse_position.y - clickpos.y, mouse_position.x - clickpos.x);
+		IsAiming = true;//aiming true
+		angle = atan2(mouse_position.y - clickpos.y, mouse_position.x - clickpos.x);//set angle 
 
 		angle = (180.0 / M_PI) * -angle;
 		angle += 180;
@@ -131,7 +136,7 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 				storedvelocity += 100 * deltaTime;
 			}*/
 	}
-	if (result == BS_RELEASED) {
+	if (result == BS_RELEASED) {//if released dont draw booster
 		m_pBoostPointer->SetScale(0.0);
 		Player_speed.y += storedvelocity * (sin((M_PI / 180) * -angle));
 		Player_speed.x += storedvelocity * (cos((M_PI / 180) * -angle));
@@ -139,6 +144,8 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 		storedvelocity = 0;
 		distancebetween = 0;
 	}
+
+	//bounce off edges
 	if (b2Body_GetPosition(ID).x + (radius/2) > sm_fBoundaryWidth && Player_speed.x > 0)
 	{
 		Player_speed.x *= -1.0f;
@@ -157,6 +164,9 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 	{
 		Player_speed.y *= -1.0f;
 	}
+
+
+
 	b2Vec2 velocity = { Player_speed.x, Player_speed.y };
 	b2Body_SetLinearVelocity(ID, velocity);//set velocity for obejct to move with
 	
@@ -176,10 +186,14 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 void
 PlayerObject::Draw(Renderer& renderer)
 {
-	m_pBoostPointer->Draw(renderer);
+	if (IsAiming) {//dont draw this if player isnt aiming
+		m_pBoostPointer->Draw(renderer);
+	}
 	m_pSprite->Draw(renderer);
 };
 
+
+//GET AND SET FUNCTIONS HERE
 float PlayerObject::getSpeed() {
 	return sqrt((pow((Player_speed.x), 2) + pow((Player_speed.y), 2)));
 }
@@ -204,9 +218,10 @@ float PlayerObject::GetShipAngle() {
 	return angle;
 }
 
+//check if player is fast enough to damage
 bool PlayerObject::CanDamage() {
 	float playerspeed = sqrt(pow((b2Body_GetLinearVelocity(ID).x), 2) + pow((b2Body_GetLinearVelocity(ID).y), 2));
-		return playerspeed > Speedmin;
+		return playerspeed > Speedmin;//compare speed to speed minimum to damage
 }
 
 float PlayerObject::getDamage() {

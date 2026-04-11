@@ -77,6 +77,11 @@ EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
 	shapeDef.density = 1.0f;
 	shapeDef.friction = 0.1f;
+
+
+	shapeDef.filter.categoryBits = 0x0002;//i am
+	shapeDef.filter.maskBits = 0x0001 | 0x0002;//i collide with
+
 	b2ShapeId shapeId = b2CreatePolygonShape(ID, &shapeDef, &box);
 
 	m_position.x = b2Body_GetPosition(ID).x;

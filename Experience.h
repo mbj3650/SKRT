@@ -11,6 +11,7 @@ class PlayerObject;
 class b2BodyId;
 class b2WorldId;
 class InputSystem;
+class b2ShapeId;
 // Class declaration:
 class Experience : public EnemyBase
 {
@@ -43,7 +44,9 @@ public:
 	bool isColliding;
 	b2BodyId ID;
 protected:
-	
+
+	bool Cancollide;
+	b2ShapeId shapeId;
 	b2BodyId m_pPlayer;
 	Sprite* m_pSprite;
 	Vector2 m_position;

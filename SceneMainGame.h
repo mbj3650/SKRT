@@ -27,6 +27,7 @@ public:
 	void SpawnExp(b2Vec2 EnemyPosition, float experiencetodrop);
 	void CheckCollisions();
 	void EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2);
+	void EntityHitting(b2ShapeId Shape1, b2ShapeId Shape2);
 	void Process(float deltaTime, InputSystem& inputSystem);
 	virtual void Draw(Renderer& renderer);
 	virtual void DebugDraw();
