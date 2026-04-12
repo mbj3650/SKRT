@@ -24,6 +24,7 @@ SceneMainGame::SceneMainGame()
 	, m_iShowCount(0)
 	, cooldown(0)//time between shooting
 	, Score(0)
+	, timebeforeunpause(0)
 {
 
 };
@@ -31,9 +32,13 @@ SceneMainGame::~SceneMainGame()
 {
 	for (int k = 0; k < 100; ++k)
 	{
+		if (b2Body_IsValid(m_pEntityArray[k]->ID)) {
+			b2DestroyBody(m_pEntityArray[k]->ID);
+		}
 		delete m_pEntityArray[k];
 		m_pEntityArray[k] = NULL;
 	}
+	delete[] m_pEntityArray;
 	delete m_pPlayerChar;
 	m_pPlayerChar = 0;
 
@@ -42,7 +47,10 @@ SceneMainGame::~SceneMainGame()
 	SoundSystem = 0;
 	delete storage;
 	storage = 0;
+
 	b2DestroyWorld(WorldPointer);
+	delete World;
+	World = 0;
 };
 
 
@@ -50,29 +58,26 @@ SceneMainGame::~SceneMainGame()
 bool
 SceneMainGame::Initialise(Renderer& renderer)
 {
+
 	World = new b2WorldDef();
 	*World = b2DefaultWorldDef();
 	WorldPointer = b2CreateWorld(World);
 	b2World_SetGravity(WorldPointer,{ 0,0 });
-	//b2BodyDef wall = b2DefaultBodyDef();//initialize wall
-	//b2Vec2 position;//set position of wall
-	//position.x = 0;
-	//position.y = -10;
-	//wall.position = position;
-	//b2BodyId wallId = b2CreateBody(WorldPointer, &wall); //make info exist in the world
-	//b2Polygon wallBox = b2MakeBox(50.0f, 10.0f); //make a box
-
-	//b2ShapeDef wallShapeDef = b2DefaultShapeDef();//set shape of wall to default
-	//b2CreatePolygonShape(wallId, &wallShapeDef, &wallBox);//create it in the world
-
-
+	ScenesubStepCount = 16;
+	gamespeed = 2;
 	storage = &renderer;
-	m_pPlayerChar = new PlayerObject();
+	m_pPlayerChar = &m_pPlayerChar->GetInstance();
 	m_pPlayerChar->Initialise(renderer, WorldPointer);
-	/*m_pParticleEmitter = new ParticleEmitter();
-	std::string particle = "..\\assets\\asteroid.png";
-	float smoke[3] = { 1 };
-	m_pParticleEmitter->Initialise(renderer, particle.c_str(),1,2,1, smoke,0,360,3);*/
+
+
+
+	ParticleEmitter* smokeparticles = new ParticleEmitter();
+	std::string particle = "..\\assets\\drift.png";
+	float defaultcolor[3] = { 1,1,1 };
+	smokeparticles->Initialise(renderer, particle.c_str(),0.1,0.3,600, defaultcolor,0,360,3);
+
+	m_pParticleEmitter[0] = smokeparticles;
+
 	m_iShowCount = 0;
 	for (int i = 0; i < 20; i++) {
 		CreateEnemy();
@@ -85,141 +90,46 @@ SceneMainGame::Initialise(Renderer& renderer)
 	return true;
 };
 
-void SceneMainGame::CreateEnemy() {
-	for (int z = 0; z < 100; z++) {
-		if (m_pEntityArray[z] == NULL) {
-			m_pEntityArray[z] = new EnemyBase();
-			TotalEnemies++;
-			m_pEntityArray[z]->Initialise(*storage, m_pPlayerChar->ID, WorldPointer);
-			break;
-			}
-		}
-	}
-
-void SceneMainGame::SpawnExp(b2Vec2 EnemyPosition, float experiencetodrop) {
-	for (int z = 0; z < 100; z++) {
-		if (m_pEntityArray[z] == NULL) {
-			m_pEntityArray[z] = new Experience();
-			m_pEntityArray[z]->Initialise(*storage, m_pPlayerChar->ID, WorldPointer, EnemyPosition, experiencetodrop);
-			break;
-		}
-	}
-}
-
-void
-SceneMainGame::EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2) {
-
-	b2BodyId bodyA = b2Shape_GetBody(Shape1);
-	b2BodyId bodyB = b2Shape_GetBody(Shape2);
-		try {
-			EnemyBase* address = reinterpret_cast<EnemyBase*>(b2Body_GetUserData(bodyB));
-			int getType = address->type;
-			int isplayer = 0;
-			//if body a is player
-			if ((B2_ID_EQUALS(m_pPlayerChar->ID, bodyA))) {
-				isplayer = 1;
-			}
-			if ((B2_ID_EQUALS(m_pPlayerChar->ID, bodyB))) {
-				isplayer = 2;
-			}
-			if (isplayer != 0) {
-				switch (getType) {
-				case 50:
-					if (isplayer == 1) {
-						address->ProcessDamageCollision(bodyA);
-					}
-					else {
-						address->ProcessDamageCollision(bodyB);
-					}
-					
-					break;
-				case 100:
-					if (isplayer == 1) {
-						address->ProcessDamageCollision(bodyA);
-					}
-					else {
-						address->ProcessDamageCollision(bodyB);
-					}
-					if (!address->isAlive()) {
-						b2Vec2 Position = b2Body_GetPosition(bodyB);
-						SpawnExp(Position, address->experiencetodrop);
-					}
-					break;
-				}
-			}
-				
-				
-
-			else {
-				//else process entity to entity collission
-				address->ProcessCollision(bodyA);
-			}
-			
-		}
-		catch(FMOD_ERRORCALLBACK_INSTANCETYPE) {
-			std::cout << "Address wasnt enemy!";
-		}
-	
-}
-
-
-void
-SceneMainGame::EntityHitting(b2ShapeId Shape1, b2ShapeId Shape2) {
-
-	b2BodyId bodyA = b2Shape_GetBody(Shape1);
-	b2BodyId bodyB = b2Shape_GetBody(Shape2);
-	try {
-		EnemyBase* address = reinterpret_cast<EnemyBase*>(b2Body_GetUserData(bodyB));
-		int getType = address->type;
-		int isplayer = 0;
-		//if body a is player
-		if ((B2_ID_EQUALS(m_pPlayerChar->ID, bodyA))) {
-			isplayer = 1;
-		}
-		if ((B2_ID_EQUALS(m_pPlayerChar->ID, bodyB))) {
-			isplayer = 2;
-		}
-		if (isplayer != 0) {
-			switch (getType) {
-			case 50:
-				if (isplayer == 1) {
-					address->ProcessDamageCollision(bodyA);
-				}
-				else {
-					address->ProcessDamageCollision(bodyB);
-				}
-
-				break;
-			}
-		}
-
-
-
-		else {
-			//else process entity to entity collission
-			address->ProcessCollision(bodyA);
-		}
-
-	}
-	catch (FMOD_ERRORCALLBACK_INSTANCETYPE) {
-		std::cout << "Address wasnt enemy!";
-	}
-
-}
-
 
 
 void
 SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 {
-	int subStepCount = 16;
-	int gamespeed = 2; 
-	m_pPlayerChar->Process(deltatime, inputsystem);//check fo rcollissions
-	int result = inputsystem.GetMouseButtonState(SDL_BUTTON_LEFT);
-	/*m_pParticleEmitter->SetParticlePosition(m_pPlayerChar->Position());
-	m_pParticleEmitter->Process(deltatime);*/
-	b2World_Step(WorldPointer, deltatime*gamespeed, subStepCount);
+	if (timebeforeunpause >= 0) {
+		timebeforeunpause -= 2 * deltatime;
+	}
+	if (inputsystem.GetKeyState((SDL_SCANCODE_P)) == BS_HELD) {
+		if (timebeforeunpause <= 0) {
+			timebeforeunpause = 2;
+			if (paused == true) {
+				paused = false;
+			}
+			else {
+				paused = true;
+			}
+		}
 
+	}
+	if (paused == true) {
+		deltatime = 0;
+	}
+
+	m_pPlayerChar->Process(deltatime, inputsystem);//check for collissions
+	if (m_pPlayerChar->CanDamage()){
+		m_pParticleEmitter[0]->turnon();
+		m_pParticleEmitter[0]->SetParticlePosition(m_pPlayerChar->Position());
+	}
+	else{
+		m_pParticleEmitter[0]->turnoff();
+	}
+	for (int i = 0; i < 20; i++) {
+		if (m_pParticleEmitter[i] != NULL) {
+			m_pParticleEmitter[i]->Process(deltatime);
+		}
+	}
+	
+	b2World_Step(WorldPointer, deltatime*gamespeed, ScenesubStepCount);
+	
 
 	// In game loop after stepping physics
 	b2ContactEvents contactEvents = b2World_GetContactEvents(WorldPointer);
@@ -244,11 +154,10 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 			if (!m_pEntityArray[i]->isAlive()) {//and the body is valid
 				if (b2Body_IsValid(m_pEntityArray[i]->ID)) {
 					b2DestroyBody(m_pEntityArray[i]->ID);
+
 				}
-					
 					delete m_pEntityArray[i];
 					m_pEntityArray[i] = 0;
-
 			}
 		}
 	}
@@ -317,7 +226,11 @@ SceneMainGame::Draw(Renderer& renderer)
 		}
 	}
 
-	//m_pParticleEmitter->Draw(renderer);
+	for (int i = 0; i < 20; i++) {
+		if (m_pParticleEmitter[i] != NULL) {
+			m_pParticleEmitter[i]->Draw(renderer);
+		}
+	}
 	m_pPlayerChar->Draw(renderer);
 };
 
@@ -335,4 +248,126 @@ void SceneMainGame::DebugDraw
 
 void SceneMainGame::SetSystem(FMOD::System& system) {
 	*SoundSystem = system;
+}
+
+void SceneMainGame::CreateEnemy() {
+	for (int z = 0; z < 100; z++) {
+		if (m_pEntityArray[z] == NULL) {
+			m_pEntityArray[z] = new EnemyBase();
+			TotalEnemies++;
+			m_pEntityArray[z]->Initialise(*storage, m_pPlayerChar->ID, WorldPointer);
+			break;
+		}
+	}
+}
+
+void SceneMainGame::SpawnExp(b2Vec2 EnemyPosition, float experiencetodrop) {
+	for (int z = 0; z < 100; z++) {
+		if (m_pEntityArray[z] == NULL) {
+			m_pEntityArray[z] = new Experience();
+			m_pEntityArray[z]->Initialise(*storage, m_pPlayerChar->ID, WorldPointer, EnemyPosition, experiencetodrop);
+			break;
+		}
+	}
+}
+
+void
+SceneMainGame::EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2) {
+
+	b2BodyId bodyA = b2Shape_GetBody(Shape1);
+	b2BodyId bodyB = b2Shape_GetBody(Shape2);
+	try {
+		EnemyBase* address = reinterpret_cast<EnemyBase*>(b2Body_GetUserData(bodyB));
+		int getType = address->type;
+		int isplayer = 0;
+		//if body a is player
+		if ((B2_ID_EQUALS(m_pPlayerChar->ID, bodyA))) {
+			isplayer = 1;
+		}
+		if ((B2_ID_EQUALS(m_pPlayerChar->ID, bodyB))) {
+			isplayer = 2;
+		}
+		if (isplayer != 0) {
+			switch (getType) {
+			case 50:
+				if (isplayer == 1) {
+					address->ProcessDamageCollision(bodyA);
+				}
+				else {
+					address->ProcessDamageCollision(bodyB);
+				}
+
+				break;
+			case 100:
+				if (isplayer == 1) {
+					address->ProcessDamageCollision(bodyA);
+				}
+				else {
+					address->ProcessDamageCollision(bodyB);
+				}
+				if (!address->isAlive()) {
+					b2Vec2 Position = b2Body_GetPosition(bodyB);
+					SpawnExp(Position, address->experiencetodrop);
+				}
+				break;
+			}
+		}
+
+
+
+		else {
+			//else process entity to entity collission
+			address->ProcessCollision(bodyA);
+		}
+
+	}
+	catch (FMOD_ERRORCALLBACK_INSTANCETYPE) {
+		std::cout << "Address wasnt enemy!";
+	}
+
+}
+
+
+void
+SceneMainGame::EntityHitting(b2ShapeId Shape1, b2ShapeId Shape2) {
+
+	b2BodyId bodyA = b2Shape_GetBody(Shape1);
+	b2BodyId bodyB = b2Shape_GetBody(Shape2);
+	try {
+		EnemyBase* address = reinterpret_cast<EnemyBase*>(b2Body_GetUserData(bodyB));
+		int getType = address->type;
+		int isplayer = 0;
+		//if body a is player
+		if ((B2_ID_EQUALS(m_pPlayerChar->ID, bodyA))) {
+			isplayer = 1;
+		}
+		if ((B2_ID_EQUALS(m_pPlayerChar->ID, bodyB))) {
+			isplayer = 2;
+		}
+		if (isplayer != 0) {
+			switch (getType) {
+			case 50:
+				if (isplayer == 1) {
+					address->ProcessDamageCollision(bodyA);
+				}
+				else {
+					address->ProcessDamageCollision(bodyB);
+				}
+
+				break;
+			}
+		}
+
+
+
+		else {
+			//else process entity to entity collission
+			address->ProcessCollision(bodyA);
+		}
+
+	}
+	catch (FMOD_ERRORCALLBACK_INSTANCETYPE) {
+		std::cout << "Address wasnt enemy!";
+	}
+
 }

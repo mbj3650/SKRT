@@ -16,15 +16,13 @@ InputSystem::InputSystem()
 	: m_pCurrentKeyboardState(0)
 	, m_previousMouseButtons(0)
 	, m_currentMouseButtons(0)
-	, m_pXboxController(0)
+
 	, m_iNumAttachedControllers(0)
 	, m_bRelativeMouseMode(false)
 {
 }
 InputSystem::~InputSystem()
 {
-	delete[] m_pXboxController;
-	m_pXboxController = 0;
 }
 bool InputSystem::Initialise
 ()
@@ -198,14 +196,4 @@ InputSystem::SetRelativeMode(bool relative)
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
 	m_bRelativeMouseMode = relative;
-}
-int
-InputSystem::GetNumberOfControllersAttached() const
-{
-	return m_iNumAttachedControllers;
-}
-XboxController*
-InputSystem::GetController(int controllerIndex)
-{
-	return &m_pXboxController[controllerIndex];
 }

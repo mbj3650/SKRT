@@ -15,14 +15,14 @@
 float EnemyBase::sm_fBoundaryWidth = 0.0f;
 float EnemyBase::sm_fBoundaryHeight = 0.0f;
 EnemyBase::EnemyBase()
-	:speed(100.0f)
+	:speed(100.0f),
+	damage(5.0f)
 {
 
 };
 EnemyBase::~EnemyBase()
 {
-	//delete m_pSprite;
-	//m_pSprite = 0;
+	m_pSprite = 0;
 };
 
 bool
@@ -31,7 +31,7 @@ EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	type = 100;
 	experiencetodrop = GetRandom(1, 5);
 	m_pPlayer = playerAddress;
-	m_pSprite = renderer.CreateSprite("..\\assets\\ball.png");
+	m_pSprite = renderer.CreateSprite("..\\assets\\enemies\\demon.png");
 	const float MAX_SPEED = 250.0f;
 	const int EDGE_LIMIT = m_pSprite->GetWidth();
 	const int SCREEN_WIDTH = renderer.GetWidth();
@@ -72,7 +72,7 @@ EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	ID = b2CreateBody(WorldID, &WorldObj);
 	b2Body_SetType(ID, b2_dynamicBody);
 	b2Body_SetUserData(ID, this);
-	b2Polygon box = b2MakeBox(15.0f, 15.0f);
+	b2Polygon box = b2MakeRoundedBox(6, 6, 5.0f);
 
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
 	shapeDef.density = 1.0f;
@@ -82,7 +82,7 @@ EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	shapeDef.filter.categoryBits = 0x0002;//i am
 	shapeDef.filter.maskBits = 0x0001 | 0x0002;//i collide with
 
-	b2ShapeId shapeId = b2CreatePolygonShape(ID, &shapeDef, &box);
+	shapeId = b2CreatePolygonShape(ID, &shapeDef, &box);
 
 	m_position.x = b2Body_GetPosition(ID).x;
 	m_position.y = b2Body_GetPosition(ID).y;
@@ -150,6 +150,7 @@ EnemyBase::Process(float deltaTime)
 	b2Vec2 velocityVec = { velocity.x, velocity.y };
 	b2Body_SetLinearVelocity(ID, velocityVec);
 
+	m_pSprite->SetAngle(-angle * (180 / M_PI) - 90);
 	m_pSprite->SetX(static_cast<int>(b2Body_GetPosition(ID).x));
 	m_pSprite->SetY(static_cast<int>(b2Body_GetPosition(ID).y));
 	m_pSprite->Process(deltaTime);
@@ -171,6 +172,9 @@ void EnemyBase::ProcessDamageCollision(b2BodyId collidingwith) {
 			if (health <= 0) {
 				m_bAlive = false;
 			}
+		}
+		else if (address->CanTakeDamage()){
+			address->takedamage(damage);
 		}
 		
 	}

@@ -10,6 +10,7 @@ class PlayerObject;
 class b2BodyId;
 class b2WorldId;
 class InputSystem;
+class b2ShapeId;
 // Class declaration:
 class EnemyBase
 {
@@ -52,7 +53,9 @@ public:
 	float experiencetodrop;
 protected:
 	float health;
+	float damage;
 
+	b2ShapeId shapeId;
 	b2BodyId m_pPlayer;
 	Sprite* m_pSprite;
 	Vector2 m_position;

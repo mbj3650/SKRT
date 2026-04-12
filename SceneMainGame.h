@@ -42,18 +42,32 @@ protected:
 
 	static SceneMainGame* sm_MainGameInstance;
 	FMOD::System* SoundSystem;
-	ParticleEmitter* m_pParticleEmitter;
+	ParticleEmitter* m_pParticleEmitter[20];
 	EnemyBase* m_pEntityArray[100];
+
+
+	//world variables
+	int ScenesubStepCount;
 	b2WorldDef* World;
 	b2WorldId WorldPointer;
+
+
+	//renderer variables
 	Renderer* storage;
 	PlayerObject* m_pPlayerChar;
 	int m_iShowCount;
+
+	int gamespeed;
 	bool Shooting;
 	int cooldown;
 	int TotalEnemies;
 	int Score;
 	bool helddown;
+
+
+	float timebeforeunpause; //pause variables
+	bool paused;
+
 private:
 
 };
