@@ -5,10 +5,7 @@
 #include "renderer.h"
 #include "logmanager.h"
 #include "sprite.h"
-#include "SceneCheckerboards.h"
-#include "SceneBouncingBalls.h"
 #include "SceneMainGame.h"
-#include "SceneBallGame.h"
 #include "SceneSplashAut.h"
 #include <time.h>
 #include <cstdlib>

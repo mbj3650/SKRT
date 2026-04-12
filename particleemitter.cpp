@@ -10,6 +10,7 @@
 #include <cassert>
 #include "lib/imgui/imgui.h"
 #include "box2d.h"
+#include "inlinehelpers.h"
 //Sprite* m_pSharedSprite;
 //std::vector<Particle*> m_particles;
 //float m_fTimeElapsed;
@@ -53,13 +54,16 @@ bool ParticleEmitter::Initialise(Renderer& renderer,
 	return true;
 }
 void ParticleEmitter::Process(float deltaTime) {
-	m_fTimeElapsed += 1 * deltaTime;
-	if (m_fTimeElapsed > m_fEmitRate) {
-		m_fTimeElapsed = 0;
-		for (int b = 0; b < m_iSpawnBatchSize; b++) {
-			Spawn();
+	if (isemitting) {
+		m_fTimeElapsed += 1 * deltaTime;
+		if (m_fTimeElapsed > m_fEmitRate) {
+			m_fTimeElapsed = 0;
+			for (int b = 0; b < m_iSpawnBatchSize; b++) {
+				Spawn();
+			}
 		}
 	}
+
 	for (int i = 0; i < m_particles.size(); i++) {
 		if (m_particles.at(i)->m_bAlive == false) {
 			m_particles.erase(m_particles.begin() + i);//erase particle at a given position if dead
@@ -82,9 +86,9 @@ void ParticleEmitter::Spawn() {
 	pParticle->m_fMaxLifespan = m_fMaxLifespan;
 	pParticle->m_postion.x = m_fX;
 	pParticle->m_postion.y = m_fY;
-	float angle = (rand() % (static_cast<int>(m_fMaxAngle) - static_cast<int>(m_fMinAngle))) + m_fMinAngle;
-	pParticle->m_acceleration.x = m_fAccelerationScalar * cos(angle);
-	pParticle->m_acceleration.y = m_fAccelerationScalar * sin(angle);
+	float angle = GetRandom(m_fMinAngle, m_fMaxAngle);
+	pParticle->m_acceleration.x += m_fAccelerationScalar * cos(angle);
+	pParticle->m_acceleration.y += m_fAccelerationScalar * sin(angle);
 	for (int i = 0; i < 3; i++) {
 		pParticle->m_fColour[i] = m_fColour[i];
 	}
@@ -101,11 +105,22 @@ void ParticleEmitter::SetParticlePosition(b2Vec2 position) {
 	m_fY = position.y;
 }
 
-
+void ParticleEmitter::SetParticleAngle(float min, float max) {
+	m_fMaxAngle = max;
+	m_fMinAngle = min;
+}
 
 void ParticleEmitter::DebugDraw() {
 	ImGui::Text("PARTICLE INFORMATION:");
 	ImGui::Text("Particles %f", m_particles.size());
 	ImGui::Text("Time %f",m_fTimeElapsed);
 	ImGui::Text("Emit Rate %f", m_fEmitRate);
+}
+
+void ParticleEmitter::turnoff() {
+	isemitting = false;
+}
+
+void ParticleEmitter::turnon() {
+	isemitting = true;
 }

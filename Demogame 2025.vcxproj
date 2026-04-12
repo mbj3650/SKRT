@@ -176,8 +176,6 @@
     <ClCompile Include="matrix4.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="scene.cpp" />
-    <ClCompile Include="SceneBouncingBalls.cpp" />
-    <ClCompile Include="SceneCheckerboards.cpp" />
     <ClCompile Include="SceneCheckerboards.h" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="SceneSplashAut.cpp" />

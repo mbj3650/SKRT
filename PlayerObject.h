@@ -11,12 +11,14 @@ class b2Vec2;
 class Vector2;
 class b2BodyId;
 class b2WorldId;
+class b2ShapeId;
 class InputSystem;
 // Class declaration:
 class PlayerObject
 {
 	// Member methods:
 public:
+	static PlayerObject& GetInstance();
 	PlayerObject();
 	~PlayerObject();
 
@@ -27,10 +29,14 @@ public:
 	void Draw(Renderer& renderer);
 	void Kill();
 	void AddExp(float experienceamount);
+	void takedamage(float damagetotake);
 	float getSpeed();
 	float GetRadius();
 	b2Vec2 Position();
 	bool CanDamage();
+	bool CanTakeDamage();
+	bool isDrifting();
+	Vector2 getDriftAngle();
 	float getDamage();
 	float GetShipAngle();
 	void DebugDraw();
@@ -51,6 +57,7 @@ protected:
 	float exptolevel;
 	float experience;
 	float level;
+	bool Drifting;
 
 	float ratio;
 	float speedboost;
@@ -59,6 +66,11 @@ protected:
 	float Damage;
 	float Speedmin;
 	float reboundloss;
+
+	int health;
+	float IFrames;
+
+	Vector2 driftpos;
 	Vector2 Player_speed;
 	float storedvelocity;
 	Vector2 m_position;
@@ -68,6 +80,9 @@ protected:
 	Sprite* m_pSprite;
 	Sprite* m_pBoostPointer;
 	Vector2 clickpos;
+	b2ShapeId shapeId;
+
+	static PlayerObject* sm_pInstance;
 
 	bool m_bAlive;
 	static float sm_fBoundaryWidth;

@@ -31,8 +31,11 @@ public:
 	void Spawn();
 
 	void SetParticlePosition(b2Vec2 position);
+	void SetParticleAngle(float min, float max);
 	void SetParticlePosition(Vector2 position);
 	void DebugDraw();
+	void turnoff();
+	void turnon();
 protected:
 private:
 	ParticleEmitter(const ParticleEmitter& particleemitter);
@@ -52,6 +55,7 @@ protected:
 	float m_fMaxAngle;
 	float m_fX;
 	float m_fY;
+	bool isemitting;
 private:
 };
 #endif // __PARTICLEEMITTER_H__

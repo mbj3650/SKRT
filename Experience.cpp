@@ -23,8 +23,7 @@ Experience::Experience()
 };
 Experience::~Experience()
 {
-	//delete m_pSprite;
-	//m_pSprite = 0;
+	m_pSprite = 0;
 };
 
 bool
@@ -54,7 +53,7 @@ Experience::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Wor
 	ID = b2CreateBody(WorldID, &Exp);
 	b2Body_SetType(ID, b2_dynamicBody);
 	b2Body_SetUserData(ID, this);
-	b2Polygon box = b2MakeBox(experiencetodrop*2.5, experiencetodrop * 2.5);
+	b2Polygon box = b2MakeBox(experiencetodrop * experiencetodrop * 1.15, experiencetodrop * experiencetodrop * 1.15);
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
 	shapeDef.density = 1.0f;
 	shapeDef.friction = 1.0f;
@@ -90,11 +89,35 @@ float Experience::GetRadius() {
 void
 Experience::Process(float deltaTime)
 {
+	velocity.x = (speed * (cos(angle)));
+	velocity.y = (speed * (sin(angle)));
+	//bounce off edges
+	if (b2Body_GetPosition(ID).x + (radius / 2) > sm_fBoundaryWidth && velocity.x > 0)
+	{
+		velocity.x *= -1.0f;
+	}
+	else if (b2Body_GetPosition(ID).x - (radius / 2) < 0 && velocity.x < 0)
+	{
+		velocity.x *= -1.0f;
+
+	}
+	else if (b2Body_GetPosition(ID).y + (radius / 2) > sm_fBoundaryHeight && velocity.y > 0)
+	{
+		velocity.y *= -1.0f;
+
+	}
+	else if (b2Body_GetPosition(ID).y - (radius / 2) < 0 && velocity.y < 0)
+	{
+		velocity.y *= -1.0f;
+	}
+
 	if (TimerPostCollide > 0) {
-		b2Body_SetLinearVelocity(ID, { speed*TimerPostCollide/2 * (cos(angle)) , speed * TimerPostCollide / 2 * (sin(angle)) });
+		b2Body_SetLinearVelocity(ID, { TimerPostCollide/2 * velocity.x ,  TimerPostCollide / 2 * velocity.y });
 		TimerPostCollide -= deltaTime * 2;
 	}
 	else {
+
+
 		if (Cancollide == false) {
 			Cancollide == true;
 			b2Filter filter;
@@ -103,11 +126,15 @@ Experience::Process(float deltaTime)
 		}
 		
 		angle = atan2(b2Body_GetPosition(m_pPlayer).y - b2Body_GetPosition(ID).y, b2Body_GetPosition(m_pPlayer).x - b2Body_GetPosition(ID).x);
-		velocity.x = (speed * (cos(angle)));
-		velocity.y = (speed * (sin(angle)));
+
 		if (isColliding) {
 			isColliding = false;
 		}
+	
+
+
+
+
 		double distance =
 			sqrt(
 				pow(((b2Body_GetPosition(ID).x) - (b2Body_GetPosition(m_pPlayer).x)), 2)
