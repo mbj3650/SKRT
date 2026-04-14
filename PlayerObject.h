@@ -41,6 +41,7 @@ public:
 	bool isDrifting();
 	Vector2 getDriftAngle();
 	float getDamage();
+	bool HasUpgrade();
 	float GetShipAngle();
 	void DebugDraw();
 	void ComputeBounds(int width, int height);
@@ -84,7 +85,7 @@ protected:
 	Sprite* m_pBoostPointer;
 	Vector2 clickpos;
 	b2ShapeId shapeId;
-	UpgradeList CurrentUpgrades;
+	std::vector<int> CurrentUpgrades;
 
 
 	static PlayerObject* sm_pInstance;

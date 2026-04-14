@@ -40,7 +40,6 @@ PlayerObject& PlayerObject::GetInstance()
 	return onlyInstance;
 }
 
-
 bool
 PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 {
@@ -325,6 +324,10 @@ bool PlayerObject::CanTakeDamage() {
 
 float PlayerObject::getDamage() {
 	return Damage;
+}
+
+bool PlayerObject::AddUpgrade(int upgrade) {
+
 }
 
 void PlayerObject::DebugDraw(){

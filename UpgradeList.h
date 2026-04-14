@@ -7,11 +7,13 @@ class UpgradeList
 		UpgradeList();
 		~UpgradeList();
 		struct Template {
-			int cost;
-			int effect;
+			int ID;
 			std::string name;
+			int tier;
 			std::string iconpath;
 			std::string description;
+			int upgradesinto;
+			
 		};
 	protected:
 
