@@ -70,13 +70,25 @@ SceneMainGame::Initialise(Renderer& renderer)
 	m_pPlayerChar->Initialise(renderer, WorldPointer);
 
 
+	//PARTICLE SET UP
+
+	float defaultcolor[3] = { 1,1,1 };//dont change color of particle
 
 	ParticleEmitter* smokeparticles = new ParticleEmitter();
 	std::string particle = "..\\assets\\drift.png";
-	float defaultcolor[3] = { 1,1,1 };
+
 	smokeparticles->Initialise(renderer, particle.c_str(),0.1,0.3,600, defaultcolor,0,360,3);
 
 	m_pParticleEmitter[0] = smokeparticles;
+
+
+
+	ParticleEmitter* deathparticles = new ParticleEmitter();
+	particle = "..\\assets\\deathexplosion.png";
+	deathparticles->Initialise(renderer, particle.c_str(), -1, 0.3, 0, defaultcolor, 0, 360, 1);
+
+	m_pParticleEmitter[1] = deathparticles;
+
 
 	m_iShowCount = 0;
 	for (int i = 0; i < 20; i++) {
@@ -114,10 +126,10 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 		deltatime = 0;
 	}
 
-	m_pPlayerChar->Process(deltatime, inputsystem);//check for collissions
+	m_pPlayerChar->Process(deltatime, inputsystem);
 	if (m_pPlayerChar->CanDamage()){
-		m_pParticleEmitter[0]->turnon();
-		m_pParticleEmitter[0]->SetParticlePosition(m_pPlayerChar->Position());
+		m_pParticleEmitter[0]->turnon();//enable for speed particles
+		m_pParticleEmitter[0]->SetParticlePosition(m_pPlayerChar->Position());//setpositions
 	}
 	else{
 		m_pParticleEmitter[0]->turnoff();
@@ -153,6 +165,8 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 			m_pEntityArray[i]->Process(deltatime);
 			if (!m_pEntityArray[i]->isAlive()) {//and the body is valid
 				if (b2Body_IsValid(m_pEntityArray[i]->ID)) {
+					m_pParticleEmitter[1]->SetParticlePosition(b2Body_GetPosition(m_pEntityArray[i]->ID));
+					m_pParticleEmitter[1]->Spawn();
 					b2DestroyBody(m_pEntityArray[i]->ID);
 
 				}

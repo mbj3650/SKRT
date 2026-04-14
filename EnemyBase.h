@@ -25,7 +25,6 @@ public:
 	void startContact();
 	void endContact();
 
-
 	float getEnemyBaseAngle();
 	virtual void Process(float deltaTime);
 	virtual void ProcessDamageCollision(b2BodyId collidingwith);
@@ -50,11 +49,14 @@ public:
 	bool isColliding;
 	b2BodyId ID;
 	int type;
-	float experiencetodrop;
+	float experiencetodrop;//experience on death
+	float bloodback; //how much  health should be returned on collision
 protected:
 	float health;
 	float damage;
 
+	
+	//basic variables for how it should interact with the world + sprite info
 	b2ShapeId shapeId;
 	b2BodyId m_pPlayer;
 	Sprite* m_pSprite;
@@ -64,6 +66,8 @@ protected:
 	Vector2 m_boundaryLow;
 	Vector2 m_boundaryHigh;
 	bool m_bAlive;
+	
+	//movement and interaction variables
 	float angle;
 	float speed;
 	int EnemyBasesize;

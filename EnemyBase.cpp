@@ -16,7 +16,8 @@ float EnemyBase::sm_fBoundaryWidth = 0.0f;
 float EnemyBase::sm_fBoundaryHeight = 0.0f;
 EnemyBase::EnemyBase()
 	:speed(100.0f),
-	damage(5.0f)
+	damage(10.0f),
+	bloodback(1)
 {
 
 };
@@ -169,6 +170,10 @@ void EnemyBase::ProcessDamageCollision(b2BodyId collidingwith) {
 		PlayerObject* address = reinterpret_cast<PlayerObject*>(b2Body_GetUserData(collidingwith));
 		if (address->CanDamage()) {
 			health -= address->getDamage();
+			if (address->CanHeal()) {
+				address->AddHealth(bloodback);
+			}
+			
 			if (health <= 0) {
 				m_bAlive = false;
 			}

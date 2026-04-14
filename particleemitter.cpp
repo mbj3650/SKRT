@@ -54,7 +54,7 @@ bool ParticleEmitter::Initialise(Renderer& renderer,
 	return true;
 }
 void ParticleEmitter::Process(float deltaTime) {
-	if (isemitting) {
+	if (isemitting && m_fEmitRate != -1) {//if -1, this means that the game will manually emit for the particle emitter
 		m_fTimeElapsed += 1 * deltaTime;
 		if (m_fTimeElapsed > m_fEmitRate) {
 			m_fTimeElapsed = 0;

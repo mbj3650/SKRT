@@ -125,6 +125,11 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 		}
 
 
+		if (healthdelay > 0) {
+			healthdelay -= deltaTime * 1;
+		}
+
+
 		if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_HELD || IsAiming) {//if holding space, brake quickly
 			if (Drifting == false)//if player hasnt been drifting
 			{//get position so we can set up drifting angle particles
@@ -279,6 +284,20 @@ void PlayerObject::AddExp(float experienceamount) {
 	}
 }
 
+void PlayerObject::AddHealth(float healthtoadd) {
+	health += healthtoadd;
+	healthdelay = 0.1;//timer before health can be added
+}
+
+bool PlayerObject::CanHeal() {
+	if (healthdelay <= 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 void PlayerObject::takedamage(float damagetotake)
 {
 	health -= damagetotake;
@@ -310,6 +329,7 @@ float PlayerObject::getDamage() {
 
 void PlayerObject::DebugDraw(){
 	ImGui::Text("SHIP INFORMATION:");
+	ImGui::Text("Health: %d", health);
 	ImGui::Text("Angle %f", atan2(b2Body_GetPosition(ID).y - driftpos.y, b2Body_GetPosition(ID).x - driftpos.x));
 	ImGui::Text("momentum:%f", sqrt(pow((b2Body_GetLinearVelocity(ID).x), 2) + pow((b2Body_GetLinearVelocity(ID).y), 2)));
 	ImGui::Text("dist:%f", distancebetween);
@@ -317,4 +337,5 @@ void PlayerObject::DebugDraw(){
 	ImGui::Text("Mous Position x:%f y:%f", mouse_position.x, mouse_position.y);
 	ImGui::Text("Position x:%f y:%f", Position().x, Position().y);
 	ImGui::Text("Exp: %f/%f", experience, exptolevel);
+
 }

@@ -3,6 +3,7 @@
 #define __PlayerObject_H__
 #include "vector2.h"
 #include "box2d.h"
+#include "UpgradeList.h"
 // Forward declarations:
 class Renderer;
 class Sprite;
@@ -29,6 +30,8 @@ public:
 	void Draw(Renderer& renderer);
 	void Kill();
 	void AddExp(float experienceamount);
+	void AddHealth(float healthtoadd);
+	bool CanHeal();
 	void takedamage(float damagetotake);
 	float getSpeed();
 	float GetRadius();
@@ -53,7 +56,7 @@ public:
 	bool isColliding;
 	b2BodyId ID;
 protected:
-
+	float healthdelay;
 	float exptolevel;
 	float experience;
 	float level;
@@ -81,6 +84,8 @@ protected:
 	Sprite* m_pBoostPointer;
 	Vector2 clickpos;
 	b2ShapeId shapeId;
+	UpgradeList CurrentUpgrades;
+
 
 	static PlayerObject* sm_pInstance;
 
