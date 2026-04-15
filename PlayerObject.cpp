@@ -9,17 +9,17 @@
 #include "inputsystem.h"
 // Library includes:
 #include <cassert>
-
+#include <string>
 #include <box2d.h>
 #include <iostream>
 float PlayerObject::sm_fBoundaryWidth = 0.0f;
 float PlayerObject::sm_fBoundaryHeight = 0.0f;
 PlayerObject* PlayerObject::sm_pInstance = 0;
 PlayerObject::PlayerObject() :
-	Speedmin(250),
-	Damage(20),
-	speedboost(1.5),
-	reboundloss(0.85),
+	SpeedminBase(250),
+	DamageBase(20),
+	SpeedBase(1.2),
+	reboundlossbase(0.85),
 	experience(0),
 	level(1),
 	health(100)
@@ -43,6 +43,10 @@ PlayerObject& PlayerObject::GetInstance()
 bool
 PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 {
+	Speedmin = SpeedminBase;
+	Damage = DamageBase;
+	speed = SpeedBase;
+	reboundloss = reboundlossbase;
 	exptolevel = (level / 2 * 100) + (2/level);
 	//CREATE SPRITE TO FOLLOW SHAPE
 	m_pSprite = renderer.CreateSprite("..\\assets\\cursor.png");
@@ -166,7 +170,7 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 				distancebetween = maxdistance;
 			}
 
-			storedvelocity = distancebetween * speedboost;
+			storedvelocity = distancebetween * speed;//distance * speed
 
 
 			IsAiming = true;//aiming true
@@ -251,6 +255,14 @@ bool PlayerObject::isDrifting() {
 	return Drifting;
 }
 
+void PlayerObject::losemomentum() {
+	if (reboundloss * (speed / SpeedBase) < 1) {//make sure the player doesnt get FASTER if their speed is fast enough
+		Player_speed.x *= reboundloss * (speed / SpeedBase); //if player speed is 1.5 while the base is 1.2, that means that rebound loss upon hitting an enemy wont be as bad
+		Player_speed.y *= reboundloss * (speed / SpeedBase);
+	}
+	b2Body_SetLinearVelocity(ID, { Player_speed.x, Player_speed.y });//set velocity for obejct to move with
+}
+
 Vector2 PlayerObject::getDriftAngle() {
 	//float driftangle = atan2(b2Body_GetPosition(ID).y - driftpos.y, b2Body_GetPosition(ID).x - driftpos.x);//set angle 
 	//driftangle = (180 * driftangle)/M_PI;
@@ -277,6 +289,7 @@ b2Vec2 PlayerObject::Position() {
 void PlayerObject::AddExp(float experienceamount) {
 	experience += experienceamount;
 	if (experience > exptolevel) {
+		PlayerNeedsUpgrade = true;
 		level += 1;
 		exptolevel = (level / 5 * 100) * (level / 50) + 50;
 		experience = 0;
@@ -285,7 +298,8 @@ void PlayerObject::AddExp(float experienceamount) {
 
 void PlayerObject::AddHealth(float healthtoadd) {
 	health += healthtoadd;
-	healthdelay = 0.1;//timer before health can be added
+	losemomentum();
+	healthdelay = 0.2;//timer before health can be added
 }
 
 bool PlayerObject::CanHeal() {
@@ -326,8 +340,46 @@ float PlayerObject::getDamage() {
 	return Damage;
 }
 
-bool PlayerObject::AddUpgrade(int upgrade) {
+bool PlayerObject::AddUpgrade(UpgradeList::Template upgrade) {
+	for (int i = 0; i < CurrentUpgrades.size(); i++) {
+		if (CurrentUpgrades.at(i).upgradesinto == upgrade.ID) {//if one of the player's upgrades turn into the new one,
+			CurrentUpgrades.erase(CurrentUpgrades.begin()+ i);//replaces upgrades that turn into the new one, this can also work for 
+			//upgrades that require multiple predecessors
+		}
+	}
+	CurrentUpgrades.push_back(upgrade);//add upgrade
+	UpdateStats();
+	return true;
+}
 
+void PlayerObject::UpdateStats() {
+	float statchanges[3] = { SpeedBase, DamageBase, reboundlossbase };
+	for (int i = 0; i < CurrentUpgrades.size(); i++) {
+		if (CurrentUpgrades.at(i).stateffect != "-1") {
+			std::string statcheck;
+			float statmodifier;
+			statcheck.push_back(CurrentUpgrades.at(i).stateffect.at(0));//1 is speed, 2 is damage, 3 is rebound speed
+
+			//substr makes 1,012 into [1,] and [012] with 012 being the percentage increase
+			statmodifier = 1 + (0.01 * stoi(CurrentUpgrades.at(i).stateffect.substr(3, 3)));
+
+			switch (std::stoi(statcheck)) {//multiplies the values by each upgrade
+				case 1:
+					statchanges[0] *= statmodifier;
+					break;
+				case 2:
+					statchanges[1] *= statmodifier;
+					break;
+				case 3:
+					statchanges[2] *= statmodifier;
+					break;
+			}
+			
+		}
+	}
+	speed = statchanges[0];
+	Damage = statchanges[1];
+	reboundloss = statchanges[2];
 }
 
 void PlayerObject::DebugDraw(){

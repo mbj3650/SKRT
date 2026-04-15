@@ -5,6 +5,7 @@
 #include "scene.h"
 #include "fmod.hpp"
 #include "box2d.h"
+#include "UpgradeList.h"
 // Forward declarations:
 class Renderer;
 class InputSystem;
@@ -13,6 +14,8 @@ class EnemyBase;
 class b2WorldDef;
 class Player;
 class b2WorldId;
+class UpgradeList;
+struct UpgradeList::Template;
 class FMOD::System;
 class ParticleEmitter;
 // Class declaration:
@@ -68,6 +71,8 @@ protected:
 	float timebeforeunpause; //pause variables
 	bool paused;
 
+	UpgradeList UpgradeCopy;
+	std::vector<UpgradeList::Template> applicableupgrades;
 private:
 
 };

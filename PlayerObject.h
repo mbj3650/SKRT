@@ -39,8 +39,11 @@ public:
 	bool CanDamage();
 	bool CanTakeDamage();
 	bool isDrifting();
+	void losemomentum();
 	Vector2 getDriftAngle();
 	float getDamage();
+	bool AddUpgrade(UpgradeList::Template upgrade);
+	void UpdateStats();
 	bool HasUpgrade();
 	float GetShipAngle();
 	void DebugDraw();
@@ -53,21 +56,30 @@ private:
 
 	// Member data:
 public:
+	bool PlayerNeedsUpgrade;
 	bool colliding;
 	bool isColliding;
 	b2BodyId ID;
 protected:
 	float healthdelay;
-	float exptolevel;
+	int exptolevel;
 	float experience;
 	float level;
 	bool Drifting;
 
+	//base values for reference
+	float SpeedminBase;
+	float SpeedBase;
+	float DamageBase;
+	float reboundlossbase;
+
+	//values that will be used in the game
 	float ratio;
-	float speedboost;
+	float speed;
 	int maxdistance;
 	bool IsAiming;
 	float Damage;
+	
 	float Speedmin;
 	float reboundloss;
 
@@ -85,7 +97,7 @@ protected:
 	Sprite* m_pBoostPointer;
 	Vector2 clickpos;
 	b2ShapeId shapeId;
-	std::vector<int> CurrentUpgrades;
+	std::vector<UpgradeList::Template> CurrentUpgrades;
 
 
 	static PlayerObject* sm_pInstance;

@@ -6,6 +6,7 @@
 #include "renderer.h"
 #include "scene.h"
 #include "sprite.h"
+#include "UpgradeList.h"
 #include "PlayerObject.h"
 #include "Experience.h"
 #include "EnemyBase.h"
@@ -58,7 +59,14 @@ SceneMainGame::~SceneMainGame()
 bool
 SceneMainGame::Initialise(Renderer& renderer)
 {
-
+	UpgradeCopy.Initialize(renderer);
+	for (int i = 0; i < UpgradeCopy.m_upgrades.size(); i++) {
+		if (UpgradeCopy.m_upgrades.at(i).tier == 1) {
+			applicableupgrades.push_back(UpgradeCopy.m_upgrades.at(i));
+		}
+	}
+	
+	
 	World = new b2WorldDef();
 	*World = b2DefaultWorldDef();
 	WorldPointer = b2CreateWorld(World);
@@ -95,10 +103,6 @@ SceneMainGame::Initialise(Renderer& renderer)
 		CreateEnemy();
 		//m_iShowCount++;
 	}
-
-
-
-
 	return true;
 };
 
@@ -122,7 +126,7 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 		}
 
 	}
-	if (paused == true) {
+	if (paused == true || m_pPlayerChar->PlayerNeedsUpgrade == true) {//if paused or a menu is up, stop everything
 		deltatime = 0;
 	}
 
@@ -168,7 +172,6 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 					m_pParticleEmitter[1]->SetParticlePosition(b2Body_GetPosition(m_pEntityArray[i]->ID));
 					m_pParticleEmitter[1]->Spawn();
 					b2DestroyBody(m_pEntityArray[i]->ID);
-
 				}
 					delete m_pEntityArray[i];
 					m_pEntityArray[i] = 0;
@@ -335,7 +338,7 @@ SceneMainGame::EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2) {
 		}
 
 	}
-	catch (FMOD_ERRORCALLBACK_INSTANCETYPE) {
+	catch (...) {
 		std::cout << "Address wasnt enemy!";
 	}
 

@@ -1,10 +1,13 @@
 #pragma once
 #include <string>
 #include <vector>
+class Sprite;
+class Renderer;
 class UpgradeList
 {
 	public:
 		UpgradeList();
+		void Initialize(Renderer& renderer);
 		~UpgradeList();
 		struct Template {
 			int ID;
@@ -13,7 +16,8 @@ class UpgradeList
 			std::string iconpath;
 			std::string description;
 			int upgradesinto;
-			
+			std::string stateffect;
+			Sprite* Spriteobject;
 		};
 	protected:
 
@@ -25,7 +29,7 @@ class UpgradeList
 	public:
 		std::vector<Template> m_upgrades;
 	protected:
-	
+		Sprite* spritelist[100];
 	private:
 
 };
