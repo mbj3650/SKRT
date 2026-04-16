@@ -59,14 +59,7 @@ SceneMainGame::~SceneMainGame()
 bool
 SceneMainGame::Initialise(Renderer& renderer)
 {
-	UpgradeCopy.Initialize(renderer);
-	for (int i = 0; i < UpgradeCopy.m_upgrades.size(); i++) {
-		if (UpgradeCopy.m_upgrades.at(i).tier == 1) {
-			applicableupgrades.push_back(UpgradeCopy.m_upgrades.at(i));
-		}
-	}
-	
-	
+
 	World = new b2WorldDef();
 	*World = b2DefaultWorldDef();
 	WorldPointer = b2CreateWorld(World);
@@ -76,8 +69,9 @@ SceneMainGame::Initialise(Renderer& renderer)
 	storage = &renderer;
 	m_pPlayerChar = &m_pPlayerChar->GetInstance();
 	m_pPlayerChar->Initialise(renderer, WorldPointer);
-
-
+	int SCREEN_WIDTH = storage->GetWidth();
+	int SCREEN_HEIGHT = storage->GetHeight();
+	UpgradeCopy.Initialize(renderer, m_pPlayerChar);
 	//PARTICLE SET UP
 
 	float defaultcolor[3] = { 1,1,1 };//dont change color of particle
@@ -126,7 +120,15 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 		}
 
 	}
-	if (paused == true || m_pPlayerChar->PlayerNeedsUpgrade == true) {//if paused or a menu is up, stop everything
+	if (m_pPlayerChar->PlayerNeedsUpgrade == true) {
+		if (UpgradeCopy.showingupgrades == false) {
+			UpgradeCopy.PickThree();
+		}
+		UpgradeCopy.Process(deltatime, inputsystem);
+		deltatime = 0;
+	}
+
+	else if (paused == true) {//if paused or a menu is up, stop everything
 		deltatime = 0;
 	}
 
@@ -234,6 +236,9 @@ SceneMainGame::CheckCollisions() {
 void
 SceneMainGame::Draw(Renderer& renderer)
 {
+	if (m_pPlayerChar->PlayerNeedsUpgrade) {
+		UpgradeCopy.Draw(renderer);
+	}
 	for (int i = 0; i < 100; i++) {
 		if (m_pEntityArray[i] != NULL) {
 			if (m_pEntityArray[i]->isAlive()) {
@@ -260,6 +265,7 @@ void SceneMainGame::DebugDraw
 	ImGui::Text("Score: %d", Score);
 	ImGui::Text("Total Enemies %d", TotalEnemies);
 	m_pPlayerChar->DebugDraw();
+	UpgradeCopy.DebugDraw();
 	//m_pParticleEmitter->DebugDraw();
 }
 

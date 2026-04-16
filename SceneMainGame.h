@@ -60,6 +60,8 @@ protected:
 	PlayerObject* m_pPlayerChar;
 	int m_iShowCount;
 
+
+
 	int gamespeed;
 	bool Shooting;
 	int cooldown;

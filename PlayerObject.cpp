@@ -17,10 +17,10 @@ float PlayerObject::sm_fBoundaryHeight = 0.0f;
 PlayerObject* PlayerObject::sm_pInstance = 0;
 PlayerObject::PlayerObject() :
 	SpeedminBase(250),
-	DamageBase(20),
+	DamageBase(220),
 	SpeedBase(1.2),
 	reboundlossbase(0.85),
-	experience(0),
+	experience(50),
 	level(1),
 	health(100)
 {
@@ -289,16 +289,16 @@ b2Vec2 PlayerObject::Position() {
 void PlayerObject::AddExp(float experienceamount) {
 	experience += experienceamount;
 	if (experience > exptolevel) {
-		PlayerNeedsUpgrade = true;
 		level += 1;
 		exptolevel = (level / 5 * 100) * (level / 50) + 50;
 		experience = 0;
+		PlayerNeedsUpgrade = true;
 	}
 }
 
 void PlayerObject::AddHealth(float healthtoadd) {
 	health += healthtoadd;
-	losemomentum();
+	//losemomentum();
 	healthdelay = 0.2;//timer before health can be added
 }
 
@@ -347,6 +347,7 @@ bool PlayerObject::AddUpgrade(UpgradeList::Template upgrade) {
 			//upgrades that require multiple predecessors
 		}
 	}
+	PlayerNeedsUpgrade = false;
 	CurrentUpgrades.push_back(upgrade);//add upgrade
 	UpdateStats();
 	return true;
@@ -391,6 +392,5 @@ void PlayerObject::DebugDraw(){
 	ImGui::Text("Velocity x:%f y:%f", b2Body_GetLinearVelocity(ID).x, b2Body_GetLinearVelocity(ID).y);
 	ImGui::Text("Mous Position x:%f y:%f", mouse_position.x, mouse_position.y);
 	ImGui::Text("Position x:%f y:%f", Position().x, Position().y);
-	ImGui::Text("Exp: %f/%f", experience, exptolevel);
-
+	ImGui::Text("Exp: %f/%d", experience, exptolevel);
 }
