@@ -1,7 +1,7 @@
 // COMP710 JESSE
 // This include:
 #include "PlayerObject.h"
-
+#include "UpgradeList.h"
 // Local includes:
 #include "renderer.h"
 #include "sprite.h"
@@ -20,7 +20,7 @@ PlayerObject::PlayerObject() :
 	DamageBase(220),
 	SpeedBase(1.2),
 	reboundlossbase(0.85),
-	experience(50),
+	experience(500),
 	level(1),
 	health(100)
 {
@@ -291,9 +291,13 @@ void PlayerObject::AddExp(float experienceamount) {
 	if (experience > exptolevel) {
 		level += 1;
 		exptolevel = (level / 5 * 100) * (level / 50) + 50;
-		experience = 0;
+		experience -= exptolevel;
 		PlayerNeedsUpgrade = true;
 	}
+}
+
+void PlayerObject::CheckLevel() {
+	AddExp(0);//we can just check if the player can level up again by adding 0 exp lol
 }
 
 void PlayerObject::AddHealth(float healthtoadd) {
@@ -340,6 +344,10 @@ float PlayerObject::getDamage() {
 	return Damage;
 }
 
+std::vector<UpgradeList::Template> PlayerObject::GetUgprades() {
+	return CurrentUpgrades;
+}
+
 bool PlayerObject::AddUpgrade(UpgradeList::Template upgrade) {
 	for (int i = 0; i < CurrentUpgrades.size(); i++) {
 		if (CurrentUpgrades.at(i).upgradesinto == upgrade.ID) {//if one of the player's upgrades turn into the new one,
@@ -350,6 +358,7 @@ bool PlayerObject::AddUpgrade(UpgradeList::Template upgrade) {
 	PlayerNeedsUpgrade = false;
 	CurrentUpgrades.push_back(upgrade);//add upgrade
 	UpdateStats();
+	CheckLevel(); //check if we need to level up again
 	return true;
 }
 

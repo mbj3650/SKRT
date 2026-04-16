@@ -30,6 +30,7 @@ public:
 	void Draw(Renderer& renderer);
 	void Kill();
 	void AddExp(float experienceamount);
+	void CheckLevel();
 	void AddHealth(float healthtoadd);
 	bool CanHeal();
 	void takedamage(float damagetotake);
@@ -42,6 +43,7 @@ public:
 	void losemomentum();
 	Vector2 getDriftAngle();
 	float getDamage();
+	std::vector<UpgradeList::Template> GetUgprades();
 	bool AddUpgrade(UpgradeList::Template upgrade);
 	void UpdateStats();
 	bool HasUpgrade();
