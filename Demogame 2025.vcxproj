@@ -152,8 +152,6 @@
   <ItemGroup>
     <ClCompile Include="AnimatedSprite.cpp" />
     <ClCompile Include="EnemyBase.cpp" />
-    <ClCompile Include="ball.cpp" />
-    <ClCompile Include="EntityBall.cpp" />
     <ClCompile Include="Experience.cpp" />
     <ClCompile Include="lib\FMOD\include\common.cpp" />
     <ClCompile Include="lib\FMOD\include\common_platform.cpp" />
@@ -161,7 +159,6 @@
     <ClCompile Include="particleemitter.cpp" />
     <ClCompile Include="PlayerObject.cpp" />
     <ClCompile Include="SceneMainGame.cpp" />
-    <ClCompile Include="SceneBallGame.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="inputsystem.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
@@ -176,7 +173,6 @@
     <ClCompile Include="matrix4.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="scene.cpp" />
-    <ClCompile Include="SceneCheckerboards.h" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="SceneSplashAut.cpp" />
     <ClCompile Include="sprite.cpp" />
@@ -190,8 +186,6 @@
   <ItemGroup>
     <ClInclude Include="AnimatedSprite.h" />
     <ClInclude Include="EnemyBase.h" />
-    <ClInclude Include="ball.h" />
-    <ClInclude Include="EntityBall.h" />
     <ClInclude Include="Experience.h" />
     <ClInclude Include="lib\FMOD\include\common.h" />
     <ClInclude Include="lib\FMOD\include\common_platform.h" />
@@ -207,7 +201,6 @@
     <ClInclude Include="particleemitter.h" />
     <ClInclude Include="PlayerObject.h" />
     <ClInclude Include="SceneMainGame.h" />
-    <ClInclude Include="SceneBallGame.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="inlinehelpers.h" />
     <ClInclude Include="inputsystem.h" />
@@ -224,7 +217,6 @@
     <ClInclude Include="matrix4.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="scene.h" />
-    <ClInclude Include="SceneBouncingBalls.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="SceneSplashAut.h" />
     <ClInclude Include="sprite.h" />

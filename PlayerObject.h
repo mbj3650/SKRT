@@ -45,6 +45,7 @@ public:
 	float getDamage();
 	std::vector<UpgradeList::Template> GetUgprades();
 	bool AddUpgrade(UpgradeList::Template upgrade);
+	bool AddUpgrade(int upgrade);
 	void UpdateStats();
 	bool HasUpgrade();
 	float GetShipAngle();

@@ -25,12 +25,6 @@
     <Filter Include="Header Files\Scenes">
       <UniqueIdentifier>{78bdc94a-46db-4b77-8364-b20f04f41702}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Scenes\BallGame">
-      <UniqueIdentifier>{4fab00f7-fda8-4933-b178-b90d765fe927}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scenes\Ballgame">
-      <UniqueIdentifier>{d7dd9475-d83f-4660-913f-b8413632448d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Required">
       <UniqueIdentifier>{5993e28f-08ce-4fc7-888d-cb4db410dcf9}</UniqueIdentifier>
     </Filter>
@@ -74,18 +68,6 @@
     </ClCompile>
     <ClCompile Include="SceneSplashAut.cpp">
       <Filter>Source Files\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneCheckerboards.h">
-      <Filter>Header Files\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneBallGame.cpp">
-      <Filter>Source Files\Scenes\BallGame</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityBall.cpp">
-      <Filter>Source Files\Scenes\BallGame</Filter>
-    </ClCompile>
-    <ClCompile Include="ball.cpp">
-      <Filter>Source Files\Scenes\BallGame</Filter>
     </ClCompile>
     <ClCompile Include="SceneMainGame.cpp">
       <Filter>Source Files\Scenes\MainGame</Filter>
@@ -188,20 +170,8 @@
     <ClInclude Include="lib\imgui\imstb_truetype.h">
       <Filter>Header Files\Imgui</Filter>
     </ClInclude>
-    <ClInclude Include="SceneBouncingBalls.h">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="SceneSplashAut.h">
       <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneBallGame.h">
-      <Filter>Header Files\Scenes\Ballgame</Filter>
-    </ClInclude>
-    <ClInclude Include="ball.h">
-      <Filter>Header Files\Scenes\Ballgame</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityBall.h">
-      <Filter>Header Files\Scenes\Ballgame</Filter>
     </ClInclude>
     <ClInclude Include="EnemyBase.h">
       <Filter>Header Files\Scenes\MainGame</Filter>

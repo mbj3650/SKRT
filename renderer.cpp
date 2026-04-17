@@ -230,8 +230,7 @@ void
 Renderer::CreateStaticText(const char* pText, int pointsize)
 {
 	Texture* pTexture = new Texture();
-
-	pTexture->LoadTextTexture(pText, "..\\Fonts\\PROXON.ttf", pointsize);
+	pTexture->LoadTextTexture(pText, "..\\Fonts\\VCR_OSD_MONO.ttf", pointsize);
 	m_pTextureManager->AddTexture(pText, pTexture);
 }
 

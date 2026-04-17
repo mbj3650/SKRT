@@ -31,6 +31,7 @@ class UpgradeList
 		void Initialize(Renderer& renderer, PlayerObject* player);
 		~UpgradeList();
 		void PickThree();
+		Sprite* CreateText(char string[]);
 		void Process(float deltaTime, InputSystem& inputSystem);
 		void Draw(Renderer& renderer);
 		void ReplaceApplicableupgrade(Template Upgradetograb);
@@ -47,6 +48,8 @@ class UpgradeList
 		
 		bool showingupgrades;
 	protected:
+		bool skipped;
+		bool anticipationskip;
 		int selected;
 		PlayerObject* player;
 		Vector2 mouse_position;
@@ -54,10 +57,16 @@ class UpgradeList
 		int timer;
 		std::vector<Template> m_upgrades;//all upgrades
 		std::vector<Template> applicableupgrades;//upgrades the player can currently get
+		std::vector<Template> specialapplicableupgrades;//special upgrades the player can currently get
 		std::vector<Template> selection;//3 selected upgrade choices
 		std::vector<int> SpecialIDs;//holds all special ids from upgradeables
 		int SCREEN_WIDTH;
 		int SCREEN_HEIGHT;
+		Sprite* Menu;
+		Sprite* NameHover;
+		Sprite* Skip;
+		Sprite* SkipSpecial;
+		Sprite* DescriptionHover;
 		Sprite* spritelist[100];
 		Sprite* spritestodraw[3];
 	private:

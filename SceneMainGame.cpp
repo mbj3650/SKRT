@@ -71,7 +71,7 @@ SceneMainGame::Initialise(Renderer& renderer)
 	m_pPlayerChar->Initialise(renderer, WorldPointer);
 	int SCREEN_WIDTH = storage->GetWidth();
 	int SCREEN_HEIGHT = storage->GetHeight();
-	UpgradeCopy.Initialize(renderer, m_pPlayerChar);
+
 	//PARTICLE SET UP
 
 	float defaultcolor[3] = { 1,1,1 };//dont change color of particle
@@ -97,6 +97,7 @@ SceneMainGame::Initialise(Renderer& renderer)
 		CreateEnemy();
 		//m_iShowCount++;
 	}
+	UpgradeCopy.Initialize(renderer, m_pPlayerChar);
 	return true;
 };
 
@@ -236,8 +237,11 @@ SceneMainGame::CheckCollisions() {
 void
 SceneMainGame::Draw(Renderer& renderer)
 {
-	if (m_pPlayerChar->PlayerNeedsUpgrade) {
-		UpgradeCopy.Draw(renderer);
+
+	for (int i = 0; i < 20; i++) {
+		if (m_pParticleEmitter[i] != NULL) {
+			m_pParticleEmitter[i]->Draw(renderer);
+		}
 	}
 	for (int i = 0; i < 100; i++) {
 		if (m_pEntityArray[i] != NULL) {
@@ -248,12 +252,11 @@ SceneMainGame::Draw(Renderer& renderer)
 		}
 	}
 
-	for (int i = 0; i < 20; i++) {
-		if (m_pParticleEmitter[i] != NULL) {
-			m_pParticleEmitter[i]->Draw(renderer);
-		}
-	}
 	m_pPlayerChar->Draw(renderer);
+
+	if (m_pPlayerChar->PlayerNeedsUpgrade) {
+		UpgradeCopy.Draw(renderer);
+	}
 };
 
 

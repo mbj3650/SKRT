@@ -42,9 +42,21 @@ void UpgradeList::Initialize(Renderer& renderer, PlayerObject* player) {
 	m_upgrades.push_back({ 323,"Boomerang",3,"rebound_3","Decreases player speed loss on collision by 45%",-10,"3,045" });
 
 	m_upgrades.push_back({ -10,"Ricochet",4,"ricochet","Upon hitting an enemy, automatically bounce towards another enemy",0,"-1" });
+	selected = -1;
 
-	SCREEN_WIDTH = renderer.GetWidth();
-	SCREEN_HEIGHT = renderer.GetHeight();
+	//SET UP SPRITES
+	Menu = renderer.CreateSprite("..\\assets\\upgrades\\upgrademenu.png");
+	Menu->SetScale(0.5f);
+	Menu->SetX(SCREEN_WIDTH / 2);
+	Menu->SetY(SCREEN_HEIGHT / 2);
+
+
+	Skip = renderer.CreateSprite("..\\assets\\upgrades\\skipbutton.png");
+	Skip->SetScale(0.5f);
+
+	SkipSpecial = renderer.CreateSprite("..\\assets\\upgrades\\skipbutton.png");
+	SkipSpecial->SetScale(0.5f);
+
 
 	//set up all sprites, and the applicable starting list (contains all tier 1s at the start)
 	for (int i = 0; i < m_upgrades.size(); i++) {
@@ -58,6 +70,10 @@ void UpgradeList::Initialize(Renderer& renderer, PlayerObject* player) {
 		if (m_upgrades.at(i).tier == 1) {
 			applicableupgrades.push_back(m_upgrades.at(i));
 		}
+
+	}
+	for (int i = 0; i < m_upgrades.size(); i++) {
+
 	}
 }
 
@@ -72,21 +88,28 @@ void UpgradeList::PickThree() {
 		selectionsize = applicableupgrades.size();//the size of the applicable array
 	}
 
-
+	bool selectedspecial = false;
 	for (int i = 0; i < selectionsize; i++) {//for selection 1-3 upgrades
 		int toselect;//select a random upgrade from applicable upgrades
 		bool found; //this will tell us how many times the picked element appears in the selection array, if its more than 0, that means it already exists and we need to reroll
-		do {
-			
-			toselect = GetRandom(0, applicableupgrades.size()-1);//pick a random applicable one
-			found = false;//assume theres none at the start
-			for (int i = 0; i < selection.size(); i++) {
-				if (selection.at(i).ID == applicableupgrades.at(toselect).ID) {//if id is already found inside the array, then its already inluded
-					found = true;//if its already picked, reroll
+		if (specialapplicableupgrades.size() > 0 && skipped == true && selectedspecial == false) {//if player skipped and theres an applicable special upgrade, guarantee one
+			toselect = GetRandom(0, specialapplicableupgrades.size() - 1);//pick a random applicable one
+			selection.push_back(specialapplicableupgrades.at(toselect));//add it 
+			anticipationskip = false;
+			selectedspecial = true;
+		}
+		else {
+			do {
+				toselect = GetRandom(0, applicableupgrades.size() - 1);//pick a random applicable one
+				found = false;//assume theres none at the start
+				for (int i = 0; i < selection.size(); i++) {
+					if (selection.at(i).ID == applicableupgrades.at(toselect).ID) {//if id is already found inside the array, then its already inluded
+						found = true;//if its already picked, reroll
+					}
 				}
-			}
-		} while (found != false);//do this until it doesnt appear 
-
+			} while (found != false);//do this until it doesnt appear 
+		}
+		
 		selection.push_back(applicableupgrades.at(toselect));//add unique upgrade to the selection
 	}//do this 3 times for 3 upgrades in selection vector
 
@@ -97,27 +120,46 @@ void UpgradeList::PickThree() {
 	spritestodraw[0] = spritelist[selection.at(0).SpritePointer];
 
 	if (selection.size() > 1) {
-		spritelist[selection.at(1).SpritePointer]->SetX(SCREEN_WIDTH / 2 - (spritelist[selection.at(1).SpritePointer]->GetWidth() * 3));//left
+		spritelist[selection.at(1).SpritePointer]->SetX(SCREEN_WIDTH / 2 - (spritelist[selection.at(1).SpritePointer]->GetWidth() * 2.75));//left
 		spritelist[selection.at(1).SpritePointer]->SetY(SCREEN_HEIGHT / 2);
 		spritestodraw[1] = spritelist[selection.at(1).SpritePointer];
 	}
 
 
 	if (selection.size() > 2 ) {
-		spritelist[selection.at(2).SpritePointer]->SetX(SCREEN_WIDTH / 2 + (spritelist[selection.at(1).SpritePointer]->GetWidth() * 3));//right
+		spritelist[selection.at(2).SpritePointer]->SetX(SCREEN_WIDTH / 2 + (spritelist[selection.at(1).SpritePointer]->GetWidth() * 2.75));//right
 		spritelist[selection.at(2).SpritePointer]->SetY(SCREEN_HEIGHT / 2);
 		spritestodraw[2] = spritelist[selection.at(2).SpritePointer];
 	}
-
+	offsetposition.y = -(SCREEN_HEIGHT / 2);
 
 	
 	
 	showingupgrades = true;
 }
 
+Sprite* UpgradeList::CreateText(char string[]) {
+	return NULL;
+}
+
+
 void
 UpgradeList::Process(float deltaTime, InputSystem& inputSystem)
 {
+
+	if (showingupgrades = true) {
+		if (offsetposition.y < 0) {
+			offsetposition.y += deltaTime * SCREEN_HEIGHT * (offsetposition.y/-100);
+			Menu->SetY(offsetposition.y + (SCREEN_HEIGHT / 2));
+			for (int i = 0; i < selection.size(); i++) {
+				spritestodraw[i]->SetY(offsetposition.y + (SCREEN_HEIGHT / 2));
+			}
+		}
+
+
+
+	}
+
 	int result = inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT);
 	mouse_position.x = inputSystem.GetMousePosition().x;
 	mouse_position.y = inputSystem.GetMousePosition().y;
@@ -133,59 +175,97 @@ UpgradeList::Process(float deltaTime, InputSystem& inputSystem)
 			selected = i;//set selected
 			break;
 		}
+		else if (mouse_position.x < Skip->GetX() + Skip->GetWidth() //IF WITHIN THE BOUNDS OF THE UPGRADE i SQUARE
+			&&
+			mouse_position.x >(Skip->GetX() - Skip->GetWidth())
+			&&
+			mouse_position.y <(Skip->GetY() + Skip->GetHeight())
+			&&
+			mouse_position.y >(Skip->GetY() - Skip->GetHeight())
+			) {
+			selected = 99;//set selected
+			break;
+		}
 		else {
 			selected = -1;
 		}
 	}
+
+
 	
 	if (result == BS_PRESSED) {
-		switch (selected) {
-		case 0:
-		
-			player->AddUpgrade(selection.at(0));
-			
-			showingupgrades = false;
-			ReplaceApplicableupgrade(selection.at(0));
-			selection.clear();//clear selections
-			break;
-		case 1:
-			
-			player->AddUpgrade(selection.at(1));
-			showingupgrades = false;
-			ReplaceApplicableupgrade(selection.at(1));
-			selection.clear();//clear selections
-			
-			
-			break;
-		case 2:
-			
-			player->AddUpgrade(selection.at(2));
-			
-			showingupgrades = false;
-			ReplaceApplicableupgrade(selection.at(2));
-			selection.clear();//clear selections
-			break;
-		default:
-			break;
-		}
-				
+		if (selected != -1) {
+			if (selected != 99) {//if player didnt skip
+				player->AddUpgrade(selection.at(selected));
+				showingupgrades = false;
+				skipped = false;//they didnt skip
+				ReplaceApplicableupgrade(selection.at(selected));
+				selection.clear();//clear selections
+			}
+			else {
+				player->AddUpgrade(0);
+				showingupgrades = false;
+				skipped = true;//they can now get a special upgrade
+				selection.clear();//clear selections
+			}
+		}				
 	}
-	
+
+	SkipSpecial->SetX(Menu->GetX() + Menu->GetWidth() / 2);
+	SkipSpecial->SetY(Menu->GetY() - Menu->GetHeight() / 2);
+
+	Skip->SetX(Menu->GetX() + Menu->GetWidth() / 2);
+	Skip->SetY(Menu->GetY() - Menu->GetHeight()/2);
 };
 void UpgradeList::Draw(Renderer& renderer)
 {
+	Menu->Draw(renderer);
+	if (selected >= 0 && showingupgrades && selected < 10) {
+		renderer.CreateStaticText(selection.at(selected).name.c_str(), 16);
+		renderer.CreateStaticText(selection.at(selected).description.c_str(), 16);
+		NameHover = renderer.CreateSprite(selection.at(selected).name.c_str());
+		DescriptionHover = renderer.CreateSprite(selection.at(selected).description.c_str());
+		NameHover->SetX(Menu->GetX());
+		NameHover->SetY(Menu->GetY() - 100);
+
+		DescriptionHover->SetX(Menu->GetX());
+		DescriptionHover->SetY(Menu->GetY() + 100);
+
+
+		NameHover->Draw(renderer);
+		DescriptionHover->Draw(renderer);
+
+	}
+	if (anticipationskip == true) {
+		SkipSpecial->Draw(renderer);
+	}
+	else {
+		Skip->Draw(renderer);
+	}
+	
 	for (int f = 0; f < selection.size();f++) {
 		spritestodraw[f]->Draw(renderer);
 	}
 }
+
 void UpgradeList::ReplaceApplicableupgrade(Template Upgradetograb)
 {
 	if (Upgradetograb.upgradesinto == 0) {//if upgrade cant evolve
-		for (int b = 0; b < applicableupgrades.size(); b++) {//go through the applicable upgrades list
-			if (applicableupgrades.at(b).ID == Upgradetograb.ID) {//until we find the upgrade we want to replace
-				applicableupgrades.erase(applicableupgrades.begin() + b);//and remove it since we dont want it to appear again
+		if (Upgradetograb.ID > 0) {//if its not special
+			for (int b = 0; b < applicableupgrades.size(); b++) {//go through the applicable upgrades list
+				if (applicableupgrades.at(b).ID == Upgradetograb.ID) {//until we find the upgrade we want to replace
+					applicableupgrades.erase(applicableupgrades.begin() + b);//and remove it since we dont want it to appear again
+				}
 			}
 		}
+		else {
+			for (int b = 0; b < specialapplicableupgrades.size(); b++) {//go through the applicable upgrades list
+				if (specialapplicableupgrades.at(b).ID == Upgradetograb.ID) {//until we find the upgrade we want to replace
+					specialapplicableupgrades.erase(specialapplicableupgrades.begin() + b);//and remove it since we dont want it to appear again
+				}
+			}
+		}
+
 	}
 	else if (Upgradetograb.upgradesinto > 0) {//otherwise, if it has an evolution
 		for (int i = 0; i < m_upgrades.size(); i++) {//go through all available upgrades
@@ -202,11 +282,11 @@ void UpgradeList::ReplaceApplicableupgrade(Template Upgradetograb)
 	else if (Upgradetograb.upgradesinto < 0) {//if upgrade is special
 		SpecialIDs.push_back(Upgradetograb.upgradesinto);//push special ID into the array
 		for (int i = 0; i < SpecialIDs.size(); i++) {//go through all Special IDS 
-			std::cout << "enough! \n"<< SpecialIDs.size() << "\n";
 			//and if special ids appear more than once, add it to the applicable array
 			if (std::count(SpecialIDs.begin(), SpecialIDs.end(), SpecialIDs.at(i)) > 1) {
-				if (std::count(applicableupgrades.begin(), applicableupgrades.end(), FetchUpgrade(SpecialIDs.at(i))) < 1) {//if applicable upgrades doesnt already have the upgrade
-					applicableupgrades.push_back(FetchUpgrade(SpecialIDs.at(i)));//add it
+				if (std::count(specialapplicableupgrades.begin(), specialapplicableupgrades.end(), FetchUpgrade(SpecialIDs.at(i))) < 1) {//if applicable upgrades doesnt already have the upgrade
+					specialapplicableupgrades.push_back(FetchUpgrade(SpecialIDs.at(i)));//add it to applicable special upgrades
+					anticipationskip = true;
 				}
 			}
 		}
@@ -232,8 +312,8 @@ UpgradeList::Template UpgradeList::FetchUpgrade(int ID) {//search through array
 
 void UpgradeList::DebugDraw() {
 	ImGui::Text("HOVER INFORMATION: %d", selected);
-	for (int i = 0; i < applicableupgrades.size(); i++) {
-		ImGui::Text("Name info: %s", applicableupgrades.at(i).name.c_str());
+	for (int i = 0; i < specialapplicableupgrades.size(); i++) {
+		ImGui::Text("Name info: %s", specialapplicableupgrades.at(i).name.c_str());
 	}
 	for (int i = 0; i < selection.size(); i++) {
 		ImGui::Text("Sprite %d info: ", i);

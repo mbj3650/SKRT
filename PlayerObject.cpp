@@ -17,10 +17,11 @@ float PlayerObject::sm_fBoundaryHeight = 0.0f;
 PlayerObject* PlayerObject::sm_pInstance = 0;
 PlayerObject::PlayerObject() :
 	SpeedminBase(250),
+	maxdistance (200),
 	DamageBase(220),
 	SpeedBase(1.2),
 	reboundlossbase(0.85),
-	experience(500),
+	experience(5000),
 	level(1),
 	health(100)
 {
@@ -51,7 +52,7 @@ PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 	//CREATE SPRITE TO FOLLOW SHAPE
 	m_pSprite = renderer.CreateSprite("..\\assets\\cursor.png");
 	m_bAlive = true;
-	maxdistance = 200;
+	
 	ratio = maxdistance / 100;
 	m_pSprite->SetScale(0.075);
 
@@ -358,6 +359,13 @@ bool PlayerObject::AddUpgrade(UpgradeList::Template upgrade) {
 	PlayerNeedsUpgrade = false;
 	CurrentUpgrades.push_back(upgrade);//add upgrade
 	UpdateStats();
+	CheckLevel(); //check if we need to level up again
+	return true;
+}
+
+bool PlayerObject::AddUpgrade(int upgrade)//skip
+{
+	PlayerNeedsUpgrade = false;
 	CheckLevel(); //check if we need to level up again
 	return true;
 }

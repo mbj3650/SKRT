@@ -76,6 +76,7 @@ bool Game::Initialise()
 	int bbWidth = 1500;
 	int bbHeight = 920;
 	m_pRenderer = new Renderer();
+	
 	m_pInputSystem = new InputSystem();
 	if (!m_pRenderer->Initialise(true, bbWidth, bbHeight))
 	{
@@ -99,7 +100,12 @@ bool Game::Initialise()
 	pMainGame->Initialise(*m_pRenderer);
 	m_scenes.push_back(pMainGame);
 
+	char letters[26][2] = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
+	"P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
 
+	for (int i = 0; i < 26; i++) {
+		m_pRenderer->CreateStaticText(letters[i], 50);
+	}
 
 
 	//// Load static text textures into the Texture Manager...
