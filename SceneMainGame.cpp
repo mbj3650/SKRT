@@ -283,7 +283,7 @@ void SceneMainGame::CreateEnemy() {
 		if (m_pEntityArray[z] == NULL) {
 			m_pEntityArray[z] = new EnemyBase();
 			TotalEnemies++;
-			m_pEntityArray[z]->Initialise(*storage, m_pPlayerChar->ID, WorldPointer);
+			m_pEntityArray[z]->Initialise(*storage, m_pPlayerChar->ID, WorldPointer, {100,100});
 			break;
 		}
 	}

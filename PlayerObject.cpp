@@ -20,7 +20,7 @@ PlayerObject::PlayerObject() :
 	maxdistance (200),
 	DamageBase(210),
 	SpeedBase(1.2),
-	reboundlossbase(0.85),
+	reboundlossbase(0.75),
 	experience(80),
 	level(1),
 	health(100)
@@ -201,23 +201,23 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 		if (b2Body_GetPosition(ID).x + (radius / 2) > sm_fBoundaryWidth && Player_speed.x > 0)
 		{
 			Player_speed.x *= -1.0f;
-			Player_speed.x *= reboundloss;
+			losemomentum();
 		}
 		else if (b2Body_GetPosition(ID).x - (radius / 2) < 0 && Player_speed.x < 0)
 		{
 			Player_speed.x *= -1.0f;
-			Player_speed.x *= reboundloss;
+			losemomentum();
 
 		}
 		else if (b2Body_GetPosition(ID).y + (radius / 2) > sm_fBoundaryHeight && Player_speed.y > 0)
 		{
 			Player_speed.y *= -1.0f;
-			Player_speed.y *= reboundloss;
+			losemomentum();
 		}
 		else if (b2Body_GetPosition(ID).y - (radius / 2) < 0 && Player_speed.y < 0)
 		{
 			Player_speed.y *= -1.0f;
-			Player_speed.y *= reboundloss;
+			losemomentum();
 		}
 
 
@@ -303,7 +303,6 @@ void PlayerObject::CheckLevel() {
 
 void PlayerObject::AddHealth(float healthtoadd) {
 	health += healthtoadd;
-	losemomentum();
 	healthdelay = 0.2;//timer before health can be added
 }
 
@@ -319,6 +318,7 @@ bool PlayerObject::CanHeal() {
 void PlayerObject::takedamage(float damagetotake)
 {
 	health -= damagetotake;
+	losemomentum();//punish player
 	IFrames = 2;//player cant take damage again
 }
 

@@ -164,7 +164,7 @@ UpgradeList::Process(float deltaTime, InputSystem& inputSystem)
 
 
 
-	}
+
 
 	int result = inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT);
 	mouse_position.x = inputSystem.GetMousePosition().x;
@@ -240,15 +240,17 @@ UpgradeList::Process(float deltaTime, InputSystem& inputSystem)
 
 	Skip->SetX(Menu->GetX() + Menu->GetWidth() / 2);
 	Skip->SetY(Menu->GetY() - Menu->GetHeight()/2);
+
+	}
 };
 void UpgradeList::Draw(Renderer& renderer)
 {
 	if (pausemenuupgrades) {
-		int yoffset = 0;
-		for (int i = 0; i < player->GetUgprades().size(); i++) {//rows of 5 upgrades each row
-			Sprite* currentsprite = spritelist[player->GetUgprades().at(i).SpritePointer];
-			currentsprite->SetX(32 + (currentsprite->GetWidth() * (i%5)));
-			currentsprite->SetY(32 + (currentsprite->GetHeight() * (i / 5)));
+		Sprite* currentsprite;//go through all player upgrades
+		for (int i = 0; i < player->GetUgprades().size(); i++) {//rows of 7 upgrades each row
+			currentsprite = spritelist[player->GetUgprades().at(i).SpritePointer];
+			currentsprite->SetX(32 + (currentsprite->GetWidth() * (i%7)));
+			currentsprite->SetY(32 + (currentsprite->GetHeight() * (i / 7)));
 			currentsprite->Draw(renderer);
 		}
 	}
@@ -283,8 +285,6 @@ void UpgradeList::Draw(Renderer& renderer)
 			spritestodraw[f]->Draw(renderer);
 		}
 	}
-
-
 }
 
 void UpgradeList::ReplaceApplicableupgrade(Template Upgradetograb)

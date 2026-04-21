@@ -151,6 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnimatedSprite.cpp" />
+    <ClCompile Include="Director.cpp" />
     <ClCompile Include="EnemyBase.cpp" />
     <ClCompile Include="Experience.cpp" />
     <ClCompile Include="lib\FMOD\include\common.cpp" />
@@ -185,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedSprite.h" />
+    <ClInclude Include="Director.h" />
     <ClInclude Include="EnemyBase.h" />
     <ClInclude Include="Experience.h" />
     <ClInclude Include="lib\FMOD\include\common.h" />

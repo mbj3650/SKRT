@@ -27,7 +27,7 @@ EnemyBase::~EnemyBase()
 };
 
 bool
-EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID)
+EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position)
 {
 	type = 100;
 	experiencetodrop = GetRandom(1, 5);
@@ -46,30 +46,36 @@ EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	
 	//CREATE BODY FOR THE WORLD TO USE AS SHAPE REFERENCE
 	b2BodyDef WorldObj = b2DefaultBodyDef();
-
-	int sidetospawn = rand() % 4;//pick a random side to spawn from
-	switch (sidetospawn) {
-	case 1:
-		WorldObj.position.x = 0 - m_pSprite->GetWidth();
-		WorldObj.position.y = static_cast<float>(GetRandom(EDGE_LIMIT, SCREEN_HEIGHT - EDGE_LIMIT));
-		//spawn on left anywhere
-		break;
-	case 2:
-		WorldObj.position.x = static_cast<float>(SCREEN_WIDTH) + m_pSprite->GetWidth();
-		WorldObj.position.y = static_cast<float>(GetRandom(EDGE_LIMIT, SCREEN_HEIGHT - EDGE_LIMIT));
-		//spawn on right anywhere
-		break;
-	case 3:
-		WorldObj.position.x = static_cast<float>(GetRandom(EDGE_LIMIT, SCREEN_WIDTH - EDGE_LIMIT));
-		WorldObj.position.y = static_cast<float>(SCREEN_HEIGHT) + m_pSprite->GetHeight();
-		//spawn on bottom anywhere
-		break;
-	default:
-		WorldObj.position.x = static_cast<float>(GetRandom(EDGE_LIMIT, SCREEN_WIDTH - EDGE_LIMIT));
-		WorldObj.position.y = 0 - m_pSprite->GetHeight();
-		//spawn top anywhere
-		break;
+	if (position.x == -9999) {
+		int sidetospawn = rand() % 4;//pick a random side to spawn from
+		switch (sidetospawn) {
+		case 1:
+			WorldObj.position.x = 0 - m_pSprite->GetWidth();
+			WorldObj.position.y = static_cast<float>(GetRandom(EDGE_LIMIT, SCREEN_HEIGHT - EDGE_LIMIT));
+			//spawn on left anywhere
+			break;
+		case 2:
+			WorldObj.position.x = static_cast<float>(SCREEN_WIDTH) + m_pSprite->GetWidth();
+			WorldObj.position.y = static_cast<float>(GetRandom(EDGE_LIMIT, SCREEN_HEIGHT - EDGE_LIMIT));
+			//spawn on right anywhere
+			break;
+		case 3:
+			WorldObj.position.x = static_cast<float>(GetRandom(EDGE_LIMIT, SCREEN_WIDTH - EDGE_LIMIT));
+			WorldObj.position.y = static_cast<float>(SCREEN_HEIGHT) + m_pSprite->GetHeight();
+			//spawn on bottom anywhere
+			break;
+		default:
+			WorldObj.position.x = static_cast<float>(GetRandom(EDGE_LIMIT, SCREEN_WIDTH - EDGE_LIMIT));
+			WorldObj.position.y = 0 - m_pSprite->GetHeight();
+			//spawn top anywhere
+			break;
+		}
 	}
+	else {
+		WorldObj.position.x = position.x;
+		WorldObj.position.y = position.y;
+	}
+	
 	ID = b2CreateBody(WorldID, &WorldObj);
 	b2Body_SetType(ID, b2_dynamicBody);
 	b2Body_SetUserData(ID, this);
@@ -96,7 +102,7 @@ EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	ComputeBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
 	return true;
 }
-bool EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position)
+bool EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID)
 {
 	return false;
 }
