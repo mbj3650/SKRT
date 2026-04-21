@@ -114,8 +114,10 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 			timebeforeunpause = 2;
 			if (paused == true) {
 				paused = false;
+				UpgradeCopy.pausemenuupgrades = false;
 			}
 			else {
+				UpgradeCopy.pausemenuupgrades = true;
 				paused = true;
 			}
 		}
@@ -253,9 +255,9 @@ SceneMainGame::Draw(Renderer& renderer)
 	}
 
 	m_pPlayerChar->Draw(renderer);
-
+	UpgradeCopy.Draw(renderer);
 	if (m_pPlayerChar->PlayerNeedsUpgrade) {
-		UpgradeCopy.Draw(renderer);
+		
 	}
 };
 

@@ -188,8 +188,8 @@ void EnemyBase::ProcessDamageCollision(b2BodyId collidingwith) {
 
 
 	float angle = atan2(b2Body_GetLocalCenterOfMass(collidingwith).y - m_position.y, b2Body_GetLocalCenterOfMass(collidingwith).x - m_position.x);
-	offsetvelocity.x += (b2Body_GetLinearVelocity(collidingwith).x * (cos(angle)));
-	offsetvelocity.y += (b2Body_GetLinearVelocity(collidingwith).y * (sin(angle)));
+	offsetvelocity.x += (b2Body_GetLinearVelocity(collidingwith).x * (cos(angle)))/3;
+	offsetvelocity.y += (b2Body_GetLinearVelocity(collidingwith).y * (sin(angle))) / 3;
 	m_pSprite->SetBlueTint(0.0f);
 	TimerPostCollide = 3;
 }

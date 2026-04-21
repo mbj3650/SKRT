@@ -18,10 +18,10 @@ PlayerObject* PlayerObject::sm_pInstance = 0;
 PlayerObject::PlayerObject() :
 	SpeedminBase(250),
 	maxdistance (200),
-	DamageBase(220),
+	DamageBase(210),
 	SpeedBase(1.2),
 	reboundlossbase(0.85),
-	experience(5000),
+	experience(80),
 	level(1),
 	health(100)
 {
@@ -303,7 +303,7 @@ void PlayerObject::CheckLevel() {
 
 void PlayerObject::AddHealth(float healthtoadd) {
 	health += healthtoadd;
-	//losemomentum();
+	losemomentum();
 	healthdelay = 0.2;//timer before health can be added
 }
 
@@ -366,6 +366,7 @@ bool PlayerObject::AddUpgrade(UpgradeList::Template upgrade) {
 bool PlayerObject::AddUpgrade(int upgrade)//skip
 {
 	PlayerNeedsUpgrade = false;
+	UpdateStats();
 	CheckLevel(); //check if we need to level up again
 	return true;
 }

@@ -54,7 +54,7 @@ void UpgradeList::Initialize(Renderer& renderer, PlayerObject* player) {
 	Skip = renderer.CreateSprite("..\\assets\\upgrades\\skipbutton.png");
 	Skip->SetScale(0.5f);
 
-	SkipSpecial = renderer.CreateSprite("..\\assets\\upgrades\\skipbutton.png");
+	SkipSpecial = renderer.CreateSprite("..\\assets\\upgrades\\skipbutton_special.png");
 	SkipSpecial->SetScale(0.5f);
 
 
@@ -66,7 +66,7 @@ void UpgradeList::Initialize(Renderer& renderer, PlayerObject* player) {
 		m_upgrades.at(i).SpritePointer = i;
 		Sprite* newsprite = renderer.CreateSprite(spritepath.c_str());
 		spritelist[i] = newsprite;//create the list
-		spritelist[i]->SetScale(2.0f);
+		spritelist[i]->SetScale((64 / newsprite->GetWidth()));
 		if (m_upgrades.at(i).tier == 1) {
 			applicableupgrades.push_back(m_upgrades.at(i));
 		}
@@ -86,6 +86,9 @@ void UpgradeList::PickThree() {
 	int selectionsize = 3;//pick 3
 	if (applicableupgrades.size() < 3) {//unless theres less than 3 applicable, then just pick from 
 		selectionsize = applicableupgrades.size();//the size of the applicable array
+	}
+	if (specialapplicableupgrades.size() > 0 && skipped == false) {
+		anticipationskip = true;
 	}
 
 	bool selectedspecial = false;
@@ -113,26 +116,29 @@ void UpgradeList::PickThree() {
 		selection.push_back(applicableupgrades.at(toselect));//add unique upgrade to the selection
 	}//do this 3 times for 3 upgrades in selection vector
 
+	if (selection.size() <= 0) {
 
-	//set the position here, since we wont need it to be constantly moving
-	spritelist[selection.at(0).SpritePointer]->SetX(SCREEN_WIDTH / 2);//middle
-	spritelist[selection.at(0).SpritePointer]->SetY(SCREEN_HEIGHT / 2);
-	spritestodraw[0] = spritelist[selection.at(0).SpritePointer];
-
-	if (selection.size() > 1) {
-		spritelist[selection.at(1).SpritePointer]->SetX(SCREEN_WIDTH / 2 - (spritelist[selection.at(1).SpritePointer]->GetWidth() * 2.75));//left
-		spritelist[selection.at(1).SpritePointer]->SetY(SCREEN_HEIGHT / 2);
-		spritestodraw[1] = spritelist[selection.at(1).SpritePointer];
 	}
+	else {
+		//set the position here, since we wont need it to be constantly moving
+		spritelist[selection.at(0).SpritePointer]->SetX(SCREEN_WIDTH / 2);//middle
+		spritelist[selection.at(0).SpritePointer]->SetY(SCREEN_HEIGHT / 2);
+		spritestodraw[0] = spritelist[selection.at(0).SpritePointer];
+
+		if (selection.size() > 1) {
+			spritelist[selection.at(1).SpritePointer]->SetX(SCREEN_WIDTH / 2 - (spritelist[selection.at(1).SpritePointer]->GetWidth() * 2.75));//left
+			spritelist[selection.at(1).SpritePointer]->SetY(SCREEN_HEIGHT / 2);
+			spritestodraw[1] = spritelist[selection.at(1).SpritePointer];
+		}
 
 
-	if (selection.size() > 2 ) {
-		spritelist[selection.at(2).SpritePointer]->SetX(SCREEN_WIDTH / 2 + (spritelist[selection.at(1).SpritePointer]->GetWidth() * 2.75));//right
-		spritelist[selection.at(2).SpritePointer]->SetY(SCREEN_HEIGHT / 2);
-		spritestodraw[2] = spritelist[selection.at(2).SpritePointer];
+		if (selection.size() > 2) {
+			spritelist[selection.at(2).SpritePointer]->SetX(SCREEN_WIDTH / 2 + (spritelist[selection.at(1).SpritePointer]->GetWidth() * 2.75));//right
+			spritelist[selection.at(2).SpritePointer]->SetY(SCREEN_HEIGHT / 2);
+			spritestodraw[2] = spritelist[selection.at(2).SpritePointer];
+		}
+		offsetposition.y = -(SCREEN_HEIGHT / 2);
 	}
-	offsetposition.y = -(SCREEN_HEIGHT / 2);
-
 	
 	
 	showingupgrades = true;
@@ -163,19 +169,37 @@ UpgradeList::Process(float deltaTime, InputSystem& inputSystem)
 	int result = inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT);
 	mouse_position.x = inputSystem.GetMousePosition().x;
 	mouse_position.y = inputSystem.GetMousePosition().y;
-	for (int i = 0; i < selection.size(); i++) {
-		if (mouse_position.x < (spritelist[selection.at(i).SpritePointer]->GetX() + spritelist[selection.at(i).SpritePointer]->GetWidth()) //IF WITHIN THE BOUNDS OF THE UPGRADE i SQUARE
-			&&
-			mouse_position.x >(spritelist[selection.at(i).SpritePointer]->GetX() - spritelist[selection.at(i).SpritePointer]->GetWidth())
-			&&
-			mouse_position.y <(spritelist[selection.at(i).SpritePointer]->GetY() + spritelist[selection.at(i).SpritePointer]->GetWidth())
-			&&
-			mouse_position.y >(spritelist[selection.at(i).SpritePointer]->GetY() - spritelist[selection.at(i).SpritePointer]->GetWidth())
-			) {
-			selected = i;//set selected
-			break;
+	if (selection.size() > 0) {//if theres upgrades to choose from check for buttons
+		for (int i = 0; i < selection.size(); i++) {
+			if (mouse_position.x < (spritelist[selection.at(i).SpritePointer]->GetX() + spritelist[selection.at(i).SpritePointer]->GetWidth()) //IF WITHIN THE BOUNDS OF THE UPGRADE i SQUARE
+				&&
+				mouse_position.x >(spritelist[selection.at(i).SpritePointer]->GetX() - spritelist[selection.at(i).SpritePointer]->GetWidth())
+				&&
+				mouse_position.y <(spritelist[selection.at(i).SpritePointer]->GetY() + spritelist[selection.at(i).SpritePointer]->GetWidth())
+				&&
+				mouse_position.y >(spritelist[selection.at(i).SpritePointer]->GetY() - spritelist[selection.at(i).SpritePointer]->GetWidth())
+				) {
+				selected = i;//set selected
+				break;
+			}
+			else if (mouse_position.x < Skip->GetX() + Skip->GetWidth() //IF WITHIN THE BOUNDS OF THE UPGRADE i SQUARE
+				&&
+				mouse_position.x >(Skip->GetX() - Skip->GetWidth())
+				&&
+				mouse_position.y <(Skip->GetY() + Skip->GetHeight())
+				&&
+				mouse_position.y >(Skip->GetY() - Skip->GetHeight())
+				) {
+				selected = 99;//set selected
+				break;
+			}
+			else {
+				selected = -1;
+			}
 		}
-		else if (mouse_position.x < Skip->GetX() + Skip->GetWidth() //IF WITHIN THE BOUNDS OF THE UPGRADE i SQUARE
+	}
+	else {//else just check if user pressed skip
+		if (mouse_position.x < Skip->GetX() + Skip->GetWidth() //IF WITHIN THE BOUNDS OF THE UPGRADE i SQUARE
 			&&
 			mouse_position.x >(Skip->GetX() - Skip->GetWidth())
 			&&
@@ -184,12 +208,12 @@ UpgradeList::Process(float deltaTime, InputSystem& inputSystem)
 			mouse_position.y >(Skip->GetY() - Skip->GetHeight())
 			) {
 			selected = 99;//set selected
-			break;
 		}
 		else {
 			selected = -1;
 		}
 	}
+	
 
 
 	
@@ -219,33 +243,48 @@ UpgradeList::Process(float deltaTime, InputSystem& inputSystem)
 };
 void UpgradeList::Draw(Renderer& renderer)
 {
-	Menu->Draw(renderer);
-	if (selected >= 0 && showingupgrades && selected < 10) {
-		renderer.CreateStaticText(selection.at(selected).name.c_str(), 16);
-		renderer.CreateStaticText(selection.at(selected).description.c_str(), 16);
-		NameHover = renderer.CreateSprite(selection.at(selected).name.c_str());
-		DescriptionHover = renderer.CreateSprite(selection.at(selected).description.c_str());
-		NameHover->SetX(Menu->GetX());
-		NameHover->SetY(Menu->GetY() - 100);
-
-		DescriptionHover->SetX(Menu->GetX());
-		DescriptionHover->SetY(Menu->GetY() + 100);
-
-
-		NameHover->Draw(renderer);
-		DescriptionHover->Draw(renderer);
-
+	if (pausemenuupgrades) {
+		int yoffset = 0;
+		for (int i = 0; i < player->GetUgprades().size(); i++) {//rows of 5 upgrades each row
+			Sprite* currentsprite = spritelist[player->GetUgprades().at(i).SpritePointer];
+			currentsprite->SetX(32 + (currentsprite->GetWidth() * (i%5)));
+			currentsprite->SetY(32 + (currentsprite->GetHeight() * (i / 5)));
+			currentsprite->Draw(renderer);
+		}
 	}
-	if (anticipationskip == true) {
-		SkipSpecial->Draw(renderer);
+	if (showingupgrades) {//if showing upgrades
+		Menu->Draw(renderer);
+		if (selection.size() > 0) {
+			if (selected >= 0 && selected < 10) {
+				renderer.CreateStaticText(selection.at(selected).name.c_str(), 16);
+				renderer.CreateStaticText(selection.at(selected).description.c_str(), 16);
+				NameHover = renderer.CreateSprite(selection.at(selected).name.c_str());
+				DescriptionHover = renderer.CreateSprite(selection.at(selected).description.c_str());
+				NameHover->SetX(Menu->GetX());
+				NameHover->SetY(Menu->GetY() - 100);
+
+				DescriptionHover->SetX(Menu->GetX());
+				DescriptionHover->SetY(Menu->GetY() + 100);
+
+
+				NameHover->Draw(renderer);
+				DescriptionHover->Draw(renderer);
+
+			}
+		}
+		if (anticipationskip == true) {
+			SkipSpecial->Draw(renderer);
+		}
+		else {
+			Skip->Draw(renderer);
+		}
+
+		for (int f = 0; f < selection.size(); f++) {
+			spritestodraw[f]->Draw(renderer);
+		}
 	}
-	else {
-		Skip->Draw(renderer);
-	}
-	
-	for (int f = 0; f < selection.size();f++) {
-		spritestodraw[f]->Draw(renderer);
-	}
+
+
 }
 
 void UpgradeList::ReplaceApplicableupgrade(Template Upgradetograb)

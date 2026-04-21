@@ -45,7 +45,7 @@ class UpgradeList
 
 		// Member data:
 	public:
-		
+		bool pausemenuupgrades;
 		bool showingupgrades;
 	protected:
 		bool skipped;
