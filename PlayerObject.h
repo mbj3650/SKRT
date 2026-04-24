@@ -3,6 +3,7 @@
 #define __PlayerObject_H__
 #include "vector2.h"
 #include "box2d.h"
+
 #include "UpgradeList.h"
 // Forward declarations:
 class Renderer;
@@ -31,7 +32,7 @@ public:
 	void Kill();
 	void AddExp(float experienceamount);
 	void CheckLevel();
-	void AddHealth(float healthtoadd);
+	void AddHealth(float healthtoadd,bool isdead);
 	bool CanHeal();
 	void takedamage(float damagetotake);
 	float getSpeed();

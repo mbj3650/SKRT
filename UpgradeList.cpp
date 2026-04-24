@@ -161,11 +161,6 @@ UpgradeList::Process(float deltaTime, InputSystem& inputSystem)
 				spritestodraw[i]->SetY(offsetposition.y + (SCREEN_HEIGHT / 2));
 			}
 		}
-
-
-
-
-
 	int result = inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT);
 	mouse_position.x = inputSystem.GetMousePosition().x;
 	mouse_position.y = inputSystem.GetMousePosition().y;
@@ -232,7 +227,9 @@ UpgradeList::Process(float deltaTime, InputSystem& inputSystem)
 				skipped = true;//they can now get a special upgrade
 				selection.clear();//clear selections
 			}
-		}				
+			offsetposition.y = -(SCREEN_HEIGHT / 2);
+		}		
+		
 	}
 
 	SkipSpecial->SetX(Menu->GetX() + Menu->GetWidth() / 2);

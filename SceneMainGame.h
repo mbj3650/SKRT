@@ -12,6 +12,7 @@ class InputSystem;
 class PlayerObject;
 class EnemyBase;
 class b2WorldDef;
+class Director;
 class Player;
 class b2WorldId;
 class UpgradeList;
@@ -46,7 +47,7 @@ protected:
 	static SceneMainGame* sm_MainGameInstance;
 	FMOD::System* SoundSystem;
 	ParticleEmitter* m_pParticleEmitter[20];
-	EnemyBase* m_pEntityArray[100];
+	std::vector<EnemyBase*>* m_pEntityArray;
 
 
 	//world variables
@@ -58,6 +59,7 @@ protected:
 	//renderer variables
 	Renderer* storage;
 	PlayerObject* m_pPlayerChar;
+	Director* m_pDirector;
 	int m_iShowCount;
 
 
@@ -65,7 +67,7 @@ protected:
 	int gamespeed;
 	bool Shooting;
 	int cooldown;
-	int TotalEnemies;
+	int TotalEntities;
 	int Score;
 	bool helddown;
 

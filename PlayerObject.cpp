@@ -18,10 +18,10 @@ PlayerObject* PlayerObject::sm_pInstance = 0;
 PlayerObject::PlayerObject() :
 	SpeedminBase(250),
 	maxdistance (200),
-	DamageBase(210),
+	DamageBase(20),
 	SpeedBase(1.2),
 	reboundlossbase(0.75),
-	experience(80),
+	experience(0),
 	level(1),
 	health(100)
 {
@@ -301,9 +301,12 @@ void PlayerObject::CheckLevel() {
 	AddExp(0);//we can just check if the player can level up again by adding 0 exp lol
 }
 
-void PlayerObject::AddHealth(float healthtoadd) {
+void PlayerObject::AddHealth(float healthtoadd, bool isdead) {
 	health += healthtoadd;
 	healthdelay = 0.2;//timer before health can be added
+	if (isdead == true && IFrames <= 0) {//if enemy is dead from the hit and player can take damage
+		losemomentum();//lose momentum
+	}
 }
 
 bool PlayerObject::CanHeal() {
@@ -318,7 +321,6 @@ bool PlayerObject::CanHeal() {
 void PlayerObject::takedamage(float damagetotake)
 {
 	health -= damagetotake;
-	losemomentum();//punish player
 	IFrames = 2;//player cant take damage again
 }
 

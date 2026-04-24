@@ -4,7 +4,12 @@
 
 // Forward declarations:
 class Renderer;
-
+class EnemyBase;
+class PlayerObject;
+class b2WorldId;
+class b2BodyId;
+#include "box2d.h"
+#include <vector>
 // Class declaration:
 class Director
 {
@@ -12,11 +17,16 @@ class Director
 public:
 	Director();
 	~Director();
-
-	bool Initialise(Renderer& renderer);
+	enum Enemies
+	{
+		DEMON,
+		RANGER,
+		SLOWER,
+	};
+	bool Initialise(Renderer& renderer, std::vector<EnemyBase*>& EnemyArray, PlayerObject* m_pPlayerChar, b2WorldId WorldP);
 	void Process(float deltaTime);
 	void Draw(Renderer& renderer);
-
+	void CreateEnemy(Enemies input);
 protected:
 
 private:
@@ -25,7 +35,16 @@ private:
 
 	// Member data:
 public:
-
+	int EnemyPrice[3];
+	std::vector<EnemyBase*>* m_pDirectorArray;
+	PlayerObject* m_pPlayer;
+	Renderer* storage;
+	b2WorldId Worldref;
+	int TotalEntities;
+	int Credits;
+	float Timetospawn = 1;
+	float Timepassed = 0;
+	
 protected:
 
 private:

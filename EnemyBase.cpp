@@ -11,12 +11,11 @@
 #include "inlinehelpers.h"
 #include "lib/imgui/imgui.h"
 #include <box2d.h>
-#include <stdexcept>
 float EnemyBase::sm_fBoundaryWidth = 0.0f;
 float EnemyBase::sm_fBoundaryHeight = 0.0f;
 EnemyBase::EnemyBase()
 	:speed(100.0f),
-	damage(10.0f),
+	damage(4.0f),
 	bloodback(1)
 {
 
@@ -51,21 +50,21 @@ EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 		switch (sidetospawn) {
 		case 1:
 			WorldObj.position.x = 0 - m_pSprite->GetWidth();
-			WorldObj.position.y = static_cast<float>(GetRandom(EDGE_LIMIT, SCREEN_HEIGHT - EDGE_LIMIT));
+			WorldObj.position.y = static_cast<float>(GetRandom(0, SCREEN_HEIGHT));
 			//spawn on left anywhere
 			break;
 		case 2:
 			WorldObj.position.x = static_cast<float>(SCREEN_WIDTH) + m_pSprite->GetWidth();
-			WorldObj.position.y = static_cast<float>(GetRandom(EDGE_LIMIT, SCREEN_HEIGHT - EDGE_LIMIT));
+			WorldObj.position.y = static_cast<float>(GetRandom(0, SCREEN_HEIGHT));
 			//spawn on right anywhere
 			break;
 		case 3:
-			WorldObj.position.x = static_cast<float>(GetRandom(EDGE_LIMIT, SCREEN_WIDTH - EDGE_LIMIT));
+			WorldObj.position.x = static_cast<float>(GetRandom(0, SCREEN_WIDTH));
 			WorldObj.position.y = static_cast<float>(SCREEN_HEIGHT) + m_pSprite->GetHeight();
 			//spawn on bottom anywhere
 			break;
 		default:
-			WorldObj.position.x = static_cast<float>(GetRandom(EDGE_LIMIT, SCREEN_WIDTH - EDGE_LIMIT));
+			WorldObj.position.x = static_cast<float>(GetRandom(0, SCREEN_WIDTH));
 			WorldObj.position.y = 0 - m_pSprite->GetHeight();
 			//spawn top anywhere
 			break;
@@ -177,7 +176,7 @@ void EnemyBase::ProcessDamageCollision(b2BodyId collidingwith) {
 		if (address->CanDamage()) {
 			health -= address->getDamage();
 			if (address->CanHeal()) {
-				address->AddHealth(bloodback);
+				address->AddHealth(bloodback, (health <= 0));//add health, and if enemy is dead (true) then dont lose momentum
 			}
 			
 			if (health <= 0) {
@@ -189,7 +188,7 @@ void EnemyBase::ProcessDamageCollision(b2BodyId collidingwith) {
 		}
 		
 	}
-	catch (std::invalid_argument&) {
+	catch (...) {
 	}
 
 

@@ -6,6 +6,7 @@
 #include "renderer.h"
 #include "scene.h"
 #include "sprite.h"
+#include "Director.h"
 #include "UpgradeList.h"
 #include "PlayerObject.h"
 #include "Experience.h"
@@ -31,15 +32,15 @@ SceneMainGame::SceneMainGame()
 };
 SceneMainGame::~SceneMainGame()
 {
-	for (int k = 0; k < 100; ++k)
+	
+	for (int k = 0; k < m_pEntityArray->size(); ++k)
 	{
-		if (b2Body_IsValid(m_pEntityArray[k]->ID)) {
-			b2DestroyBody(m_pEntityArray[k]->ID);
+		if (b2Body_IsValid(m_pEntityArray->at(k)->ID)) {
+			b2DestroyBody(m_pEntityArray->at(k)->ID);
 		}
-		delete m_pEntityArray[k];
-		m_pEntityArray[k] = NULL;
 	}
-	delete[] m_pEntityArray;
+	m_pEntityArray->clear();
+	delete m_pEntityArray;
 	delete m_pPlayerChar;
 	m_pPlayerChar = 0;
 
@@ -59,7 +60,9 @@ SceneMainGame::~SceneMainGame()
 bool
 SceneMainGame::Initialise(Renderer& renderer)
 {
-
+	srand(time(NULL));
+	m_pEntityArray = new std::vector<EnemyBase*>;
+	m_pDirector = new Director();
 	World = new b2WorldDef();
 	*World = b2DefaultWorldDef();
 	WorldPointer = b2CreateWorld(World);
@@ -92,12 +95,13 @@ SceneMainGame::Initialise(Renderer& renderer)
 	m_pParticleEmitter[1] = deathparticles;
 
 
-	m_iShowCount = 0;
-	for (int i = 0; i < 20; i++) {
-		CreateEnemy();
-		//m_iShowCount++;
-	}
+	//m_iShowCount = 0;
+	//for (int i = 0; i < 20; i++) {
+	//	CreateEnemy();
+	//	//m_iShowCount++;
+	//}
 	UpgradeCopy.Initialize(renderer, m_pPlayerChar);
+	m_pDirector->Initialise(renderer, *m_pEntityArray, m_pPlayerChar, WorldPointer);
 	return true;
 };
 
@@ -134,7 +138,7 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 	else if (paused == true) {//if paused or a menu is up, stop everything
 		deltatime = 0;
 	}
-
+	m_pDirector->Process(deltatime);
 	m_pPlayerChar->Process(deltatime, inputsystem);
 	if (m_pPlayerChar->CanDamage()){
 		m_pParticleEmitter[0]->turnon();//enable for speed particles
@@ -169,32 +173,29 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 	}
 
 
-	for (int i = 0; i < 100; i++) {
-		if (m_pEntityArray[i] != NULL) {
-			m_pEntityArray[i]->Process(deltatime);
-			if (!m_pEntityArray[i]->isAlive()) {//and the body is valid
-				if (b2Body_IsValid(m_pEntityArray[i]->ID)) {
-					m_pParticleEmitter[1]->SetParticlePosition(b2Body_GetPosition(m_pEntityArray[i]->ID));
+	for (int i = 1; i < m_pEntityArray->size(); i++) {
+			m_pEntityArray->at(i)->Process(deltatime);
+			if (!m_pEntityArray->at(i)->isAlive()) {//and the body is valid
+				if (b2Body_IsValid(m_pEntityArray->at(i)->ID)) {
+					m_pParticleEmitter[1]->SetParticlePosition(b2Body_GetPosition(m_pEntityArray->at(i)->ID));
 					m_pParticleEmitter[1]->Spawn();
-					b2DestroyBody(m_pEntityArray[i]->ID);
+					b2DestroyBody(m_pEntityArray->at(i)->ID);
 				}
-					delete m_pEntityArray[i];
-					m_pEntityArray[i] = 0;
+					m_pEntityArray->erase(m_pEntityArray->begin()+i);
 			}
-		}
 	}
 
 	/*if (m_pPlayerChar->CanDamage()) {
 		for (int i = 0; i < 100; i++) {
-			if (m_pEntityArray[i] != NULL) {
-				if (m_pEntityArray[i]->isColliding == false) {
+			if (m_pEntityArray.at(i) != NULL) {
+				if (m_pEntityArray.at(i)->isColliding == false) {
 					double distance =
 						sqrt(
-							pow(((m_pEntityArray[i]->Position().x) - (m_pPlayerChar->Position().x)), 2)
-							+ pow(((m_pEntityArray[i]->Position().y) - (m_pPlayerChar->Position().y)), 2)
-						) - m_pPlayerChar->GetRadius() - m_pEntityArray[i]->GetRadius();
+							pow(((m_pEntityArray.at(i)->Position().x) - (m_pPlayerChar->Position().x)), 2)
+							+ pow(((m_pEntityArray.at(i)->Position().y) - (m_pPlayerChar->Position().y)), 2)
+						) - m_pPlayerChar->GetRadius() - m_pEntityArray.at(i)->GetRadius();
 					if (distance <= 0) {
-						m_pEntityArray[i]->ProcessCollision(m_pPlayerChar->ID, deltatime);
+						m_pEntityArray.at(i)->ProcessCollision(m_pPlayerChar->ID, deltatime);
 						break;
 					}
 				}
@@ -205,18 +206,18 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 
 
 	for (int i = 0; i < 100; i++) {
-		if (m_pEntityArray[i] != NULL) {
-			if (m_pEntityArray[i]->isColliding == false) {
+		if (m_pEntityArray.at(i) != NULL) {
+			if (m_pEntityArray.at(i)->isColliding == false) {
 				for (int ib = 0; ib < 100; ib++) {
 					if (m_pEntityArray[ib] != NULL && ib != i) {
 						if (m_pEntityArray[ib]->isColliding == false) {
 							double distance =
 								sqrt(
-									pow(((m_pEntityArray[i]->Position().x) - (m_pEntityArray[ib]->Position().x)), 2)
-									+ pow(((m_pEntityArray[i]->Position().y) - (m_pEntityArray[ib]->Position().y)), 2)
-								) - m_pEntityArray[ib]->GetRadius() - m_pEntityArray[i]->GetRadius();
+									pow(((m_pEntityArray.at(i)->Position().x) - (m_pEntityArray[ib]->Position().x)), 2)
+									+ pow(((m_pEntityArray.at(i)->Position().y) - (m_pEntityArray[ib]->Position().y)), 2)
+								) - m_pEntityArray[ib]->GetRadius() - m_pEntityArray.at(i)->GetRadius();
 							if (distance <= 0) {
-								m_pEntityArray[i]->ProcessCollision(m_pEntityArray[ib], deltatime);
+								m_pEntityArray.at(i)->ProcessCollision(m_pEntityArray[ib], deltatime);
 								break;
 							}
 						}
@@ -245,13 +246,11 @@ SceneMainGame::Draw(Renderer& renderer)
 			m_pParticleEmitter[i]->Draw(renderer);
 		}
 	}
-	for (int i = 0; i < 100; i++) {
-		if (m_pEntityArray[i] != NULL) {
-			if (m_pEntityArray[i]->isAlive()) {
-				m_pEntityArray[i]->Draw(renderer);
+	for (int i = 1; i < m_pEntityArray->size(); i++) {
+		m_pEntityArray->at(i)->Draw(renderer);
+			if (m_pEntityArray->at(i)->isAlive()) {
+				
 			}
-			
-		}
 	}
 
 	m_pPlayerChar->Draw(renderer);
@@ -268,7 +267,7 @@ void SceneMainGame::DebugDraw
 {
 	ImGui::Text("Scene: SKRT_MAIN");
 	ImGui::Text("Score: %d", Score);
-	ImGui::Text("Total Enemies %d", TotalEnemies);
+	//ImGui::Text("Total Entities %d", m_pEntityArray->size());
 	m_pPlayerChar->DebugDraw();
 	UpgradeCopy.DebugDraw();
 	//m_pParticleEmitter->DebugDraw();
@@ -278,25 +277,15 @@ void SceneMainGame::SetSystem(FMOD::System& system) {
 	*SoundSystem = system;
 }
 
-void SceneMainGame::CreateEnemy() {
-	for (int z = 0; z < 100; z++) {
-		if (m_pEntityArray[z] == NULL) {
-			m_pEntityArray[z] = new EnemyBase();
-			TotalEnemies++;
-			m_pEntityArray[z]->Initialise(*storage, m_pPlayerChar->ID, WorldPointer, {100,100});
-			break;
-		}
-	}
-}
+//void SceneMainGame::CreateEnemy() {
+//	m_pEntityArray.push_back(new EnemyBase());
+//	m_pEntityArray.at(m_pEntityArray.size()-1)->Initialise(*storage, m_pPlayerChar->ID, WorldPointer, { -9999,-9999 });
+//	TotalEntities++;
+//}
 
 void SceneMainGame::SpawnExp(b2Vec2 EnemyPosition, float experiencetodrop) {
-	for (int z = 0; z < 100; z++) {
-		if (m_pEntityArray[z] == NULL) {
-			m_pEntityArray[z] = new Experience();
-			m_pEntityArray[z]->Initialise(*storage, m_pPlayerChar->ID, WorldPointer, EnemyPosition, experiencetodrop);
-			break;
-		}
-	}
+	m_pEntityArray->push_back(new Experience());
+	m_pEntityArray->at(m_pEntityArray->size()-1)->Initialise(*storage, m_pPlayerChar->ID, WorldPointer, EnemyPosition, experiencetodrop);
 }
 
 void
