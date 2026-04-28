@@ -156,6 +156,8 @@
     <ClCompile Include="Experience.cpp" />
     <ClCompile Include="lib\FMOD\include\common.cpp" />
     <ClCompile Include="lib\FMOD\include\common_platform.cpp" />
+    <ClCompile Include="Mine.cpp" />
+    <ClCompile Include="Minelayer.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="particleemitter.cpp" />
     <ClCompile Include="PlayerObject.cpp" />
@@ -199,6 +201,8 @@
     <ClInclude Include="lib\FMOD\include\fmod_errors.h" />
     <ClInclude Include="lib\FMOD\include\fmod_output.h" />
     <ClInclude Include="lib\SDL2_ttf-2.22.0\include\SDL_ttf.h" />
+    <ClInclude Include="Mine.h" />
+    <ClInclude Include="Minelayer.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="particleemitter.h" />
     <ClInclude Include="PlayerObject.h" />

@@ -11,6 +11,7 @@
 #include "PlayerObject.h"
 #include "Experience.h"
 #include "EnemyBase.h"
+#include "Minelayer.h"
 // Library includes:
 #include <cassert>
 #include "lib/imgui/imgui.h"
@@ -22,8 +23,8 @@
 #include "particleemitter.h"
 SceneMainGame* SceneMainGame::sm_MainGameInstance = 0;
 SceneMainGame::SceneMainGame()
-	: m_pEntityArray{ 0 }
-	, m_iShowCount(0)
+	: m_iShowCount(0)
+	, m_pEntityArray{ 0 }
 	, cooldown(0)//time between shooting
 	, Score(0)
 	, timebeforeunpause(0)
@@ -62,6 +63,7 @@ SceneMainGame::Initialise(Renderer& renderer)
 {
 	srand(time(NULL));
 	m_pEntityArray = new std::vector<EnemyBase*>;
+	std::cout << "cap"<<m_pEntityArray->capacity() << "\n";
 	m_pDirector = new Director();
 	World = new b2WorldDef();
 	*World = b2DefaultWorldDef();
@@ -94,14 +96,9 @@ SceneMainGame::Initialise(Renderer& renderer)
 
 	m_pParticleEmitter[1] = deathparticles;
 
-
-	//m_iShowCount = 0;
-	//for (int i = 0; i < 20; i++) {
-	//	CreateEnemy();
-	//	//m_iShowCount++;
-	//}
 	UpgradeCopy.Initialize(renderer, m_pPlayerChar);
 	m_pDirector->Initialise(renderer, *m_pEntityArray, m_pPlayerChar, WorldPointer);
+
 	return true;
 };
 
@@ -138,6 +135,7 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 	else if (paused == true) {//if paused or a menu is up, stop everything
 		deltatime = 0;
 	}
+
 	m_pDirector->Process(deltatime);
 	m_pPlayerChar->Process(deltatime, inputsystem);
 	if (m_pPlayerChar->CanDamage()){
@@ -173,7 +171,7 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 	}
 
 
-	for (int i = 1; i < m_pEntityArray->size(); i++) {
+	for (int i = 0; i < m_pEntityArray->size(); i++) {
 			m_pEntityArray->at(i)->Process(deltatime);
 			if (!m_pEntityArray->at(i)->isAlive()) {//and the body is valid
 				if (b2Body_IsValid(m_pEntityArray->at(i)->ID)) {
@@ -184,52 +182,6 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 					m_pEntityArray->erase(m_pEntityArray->begin()+i);
 			}
 	}
-
-	/*if (m_pPlayerChar->CanDamage()) {
-		for (int i = 0; i < 100; i++) {
-			if (m_pEntityArray.at(i) != NULL) {
-				if (m_pEntityArray.at(i)->isColliding == false) {
-					double distance =
-						sqrt(
-							pow(((m_pEntityArray.at(i)->Position().x) - (m_pPlayerChar->Position().x)), 2)
-							+ pow(((m_pEntityArray.at(i)->Position().y) - (m_pPlayerChar->Position().y)), 2)
-						) - m_pPlayerChar->GetRadius() - m_pEntityArray.at(i)->GetRadius();
-					if (distance <= 0) {
-						m_pEntityArray.at(i)->ProcessCollision(m_pPlayerChar->ID, deltatime);
-						break;
-					}
-				}
-			}
-		}
-	}
-	
-
-
-	for (int i = 0; i < 100; i++) {
-		if (m_pEntityArray.at(i) != NULL) {
-			if (m_pEntityArray.at(i)->isColliding == false) {
-				for (int ib = 0; ib < 100; ib++) {
-					if (m_pEntityArray[ib] != NULL && ib != i) {
-						if (m_pEntityArray[ib]->isColliding == false) {
-							double distance =
-								sqrt(
-									pow(((m_pEntityArray.at(i)->Position().x) - (m_pEntityArray[ib]->Position().x)), 2)
-									+ pow(((m_pEntityArray.at(i)->Position().y) - (m_pEntityArray[ib]->Position().y)), 2)
-								) - m_pEntityArray[ib]->GetRadius() - m_pEntityArray.at(i)->GetRadius();
-							if (distance <= 0) {
-								m_pEntityArray.at(i)->ProcessCollision(m_pEntityArray[ib], deltatime);
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-		}*/
-
-
-
 };
 
 void
@@ -246,11 +198,8 @@ SceneMainGame::Draw(Renderer& renderer)
 			m_pParticleEmitter[i]->Draw(renderer);
 		}
 	}
-	for (int i = 1; i < m_pEntityArray->size(); i++) {
+	for (int i = 0; i < m_pEntityArray->size(); i++) {
 		m_pEntityArray->at(i)->Draw(renderer);
-			if (m_pEntityArray->at(i)->isAlive()) {
-				
-			}
 	}
 
 	m_pPlayerChar->Draw(renderer);
@@ -267,9 +216,11 @@ void SceneMainGame::DebugDraw
 {
 	ImGui::Text("Scene: SKRT_MAIN");
 	ImGui::Text("Score: %d", Score);
+
 	//ImGui::Text("Total Entities %d", m_pEntityArray->size());
 	m_pPlayerChar->DebugDraw();
 	UpgradeCopy.DebugDraw();
+	m_pDirector->DebugDraw();
 	//m_pParticleEmitter->DebugDraw();
 }
 
@@ -277,14 +228,9 @@ void SceneMainGame::SetSystem(FMOD::System& system) {
 	*SoundSystem = system;
 }
 
-//void SceneMainGame::CreateEnemy() {
-//	m_pEntityArray.push_back(new EnemyBase());
-//	m_pEntityArray.at(m_pEntityArray.size()-1)->Initialise(*storage, m_pPlayerChar->ID, WorldPointer, { -9999,-9999 });
-//	TotalEntities++;
-//}
-
 void SceneMainGame::SpawnExp(b2Vec2 EnemyPosition, float experiencetodrop) {
 	m_pEntityArray->push_back(new Experience());
+	m_pDirector->AddCredits(experiencetodrop);
 	m_pEntityArray->at(m_pEntityArray->size()-1)->Initialise(*storage, m_pPlayerChar->ID, WorldPointer, EnemyPosition, experiencetodrop);
 }
 

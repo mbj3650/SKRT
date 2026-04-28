@@ -23,10 +23,12 @@ public:
 		RANGER,
 		SLOWER,
 	};
-	bool Initialise(Renderer& renderer, std::vector<EnemyBase*>& EnemyArray, PlayerObject* m_pPlayerChar, b2WorldId WorldP);
+	bool Initialise(Renderer& renderer, std::vector<EnemyBase*> &EnemyArray, PlayerObject* m_pPlayerChar, b2WorldId WorldP);
 	void Process(float deltaTime);
 	void Draw(Renderer& renderer);
+	void AddCredits(int exp);
 	void CreateEnemy(Enemies input);
+	void DebugDraw();
 protected:
 
 private:
@@ -35,16 +37,17 @@ private:
 
 	// Member data:
 public:
-	int EnemyPrice[3];
+	float EnemyPrice[3];
+	float EnemyPriceMultiplier[3];
 	std::vector<EnemyBase*>* m_pDirectorArray;
 	PlayerObject* m_pPlayer;
 	Renderer* storage;
 	b2WorldId Worldref;
 	int TotalEntities;
-	int Credits;
+	float Credits = 0;
 	float Timetospawn = 1;
 	float Timepassed = 0;
-	
+	int Arraysize;
 protected:
 
 private:

@@ -8,6 +8,7 @@
 #include "lib/imgui/imgui.h"
 // Library includes:
 #include <cassert>
+#include "lib/imgui/imgui.h"
 AnimatedSprite::AnimatedSprite()
 	: m_pVertexData(0)
 	, m_iFrameWidth(0)

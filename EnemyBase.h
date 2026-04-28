@@ -54,8 +54,8 @@ public:
 protected:
 	float health;
 	float damage;
-
-	
+	int SCREEN_WIDTH;
+	int SCREEN_HEIGHT;
 	//basic variables for how it should interact with the world + sprite info
 	b2ShapeId shapeId;
 	b2BodyId m_pPlayer;

@@ -43,6 +43,12 @@
     <Filter Include="Header Files\Scenes\Required">
       <UniqueIdentifier>{0c6c7cca-eb5a-44ed-a7e9-c01514df9b60}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Scenes\MainGame\Minelayer">
+      <UniqueIdentifier>{c0dfbe13-96d6-45a6-9814-ab86b518567b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scenes\MainGame\Minelayer">
+      <UniqueIdentifier>{1693fa49-abef-4917-bfdf-7d4837e09a64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lib\imgui\imgui.cpp">
@@ -143,6 +149,12 @@
     </ClCompile>
     <ClCompile Include="Director.cpp">
       <Filter>Source Files\Scenes\MainGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Minelayer.cpp">
+      <Filter>Source Files\Scenes\MainGame\Minelayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Mine.cpp">
+      <Filter>Source Files\Scenes\MainGame\Minelayer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -274,6 +286,12 @@
     </ClInclude>
     <ClInclude Include="Director.h">
       <Filter>Header Files\Scenes\MainGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Mine.h">
+      <Filter>Header Files\Scenes\MainGame\Minelayer</Filter>
+    </ClInclude>
+    <ClInclude Include="Minelayer.h">
+      <Filter>Header Files\Scenes\MainGame\Minelayer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
