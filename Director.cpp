@@ -95,7 +95,7 @@ void Director::CreateEnemy(Enemies input) {
 				m_pDirectorArray->push_back(new EnemyBase());
 				break;
 			case 0:
-				m_pDirectorArray->push_back(new Minelayer());
+				m_pDirectorArray->push_back(new EnemyBase());
 				break;
 			}
 			TotalEntities++;

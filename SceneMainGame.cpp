@@ -12,6 +12,7 @@
 #include "Experience.h"
 #include "EnemyBase.h"
 #include "Minelayer.h"
+#include "Mine.h"
 // Library includes:
 #include <cassert>
 #include "lib/imgui/imgui.h"
@@ -86,7 +87,7 @@ SceneMainGame::Initialise(Renderer& renderer)
 
 	smokeparticles->Initialise(renderer, particle.c_str(),0.1,0.3,600, defaultcolor,0,360,3);
 
-	m_pParticleEmitter[0] = smokeparticles;
+	m_pParticleEmitter.push_back(smokeparticles);
 
 
 
@@ -94,7 +95,14 @@ SceneMainGame::Initialise(Renderer& renderer)
 	particle = "..\\assets\\deathexplosion.png";
 	deathparticles->Initialise(renderer, particle.c_str(), -1, 0.3, 0, defaultcolor, 0, 360, 1);
 
-	m_pParticleEmitter[1] = deathparticles;
+	m_pParticleEmitter.push_back(deathparticles);
+
+
+	ParticleEmitter* mineparticles = new ParticleEmitter();
+	particle = "..\\assets\\mineexplosion.png";
+	mineparticles->Initialise(renderer, particle.c_str(), -1, 0.3, 0, defaultcolor, 0, 360, 1);
+
+	m_pParticleEmitter.push_back(mineparticles);
 
 	UpgradeCopy.Initialize(renderer, m_pPlayerChar);
 	m_pDirector->Initialise(renderer, *m_pEntityArray, m_pPlayerChar, WorldPointer);
@@ -139,15 +147,15 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 	m_pDirector->Process(deltatime);
 	m_pPlayerChar->Process(deltatime, inputsystem);
 	if (m_pPlayerChar->CanDamage()){
-		m_pParticleEmitter[0]->turnon();//enable for speed particles
-		m_pParticleEmitter[0]->SetParticlePosition(m_pPlayerChar->Position());//setpositions
+		m_pParticleEmitter.at(0)->turnon();//enable for speed particles
+		m_pParticleEmitter.at(0)->SetParticlePosition(m_pPlayerChar->Position());//setpositions
 	}
 	else{
-		m_pParticleEmitter[0]->turnoff();
+		m_pParticleEmitter.at(0)->turnoff();
 	}
-	for (int i = 0; i < 20; i++) {
-		if (m_pParticleEmitter[i] != NULL) {
-			m_pParticleEmitter[i]->Process(deltatime);
+	for (int i = 0; i < m_pParticleEmitter.size(); i++) {
+		if (m_pParticleEmitter.at(i) != NULL) {
+			m_pParticleEmitter.at(i)->Process(deltatime);
 		}
 	}
 	
@@ -173,10 +181,29 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 
 	for (int i = 0; i < m_pEntityArray->size(); i++) {
 			m_pEntityArray->at(i)->Process(deltatime);
+			if (m_pEntityArray->at(i)->type == 102) {
+				
+				try {//attempt minespawn
+					Minelayer* MineEntity = reinterpret_cast<Minelayer*>(m_pEntityArray->at(i));
+					if (MineEntity->needsmine == true) {//if needs mine
+						std::cout << "Minelayer\n";
+						SpawnMine(b2Body_GetPosition(m_pEntityArray->at(i)->ID));
+						MineEntity->MinePlaced();//turn off mine call
+					}
+				}
+				catch (...) {
+				}
+			}
 			if (!m_pEntityArray->at(i)->isAlive()) {//and the body is valid
 				if (b2Body_IsValid(m_pEntityArray->at(i)->ID)) {
-					m_pParticleEmitter[1]->SetParticlePosition(b2Body_GetPosition(m_pEntityArray->at(i)->ID));
-					m_pParticleEmitter[1]->Spawn();
+					if (m_pEntityArray->at(i)->type == 70) {
+						m_pParticleEmitter.at(2)->SetParticlePosition(b2Body_GetPosition(m_pEntityArray->at(i)->ID));
+						m_pParticleEmitter.at(2)->Spawn();
+					}
+					else {
+						m_pParticleEmitter.at(1)->SetParticlePosition(b2Body_GetPosition(m_pEntityArray->at(i)->ID));
+						m_pParticleEmitter.at(1)->Spawn();
+					}
 					b2DestroyBody(m_pEntityArray->at(i)->ID);
 				}
 					m_pEntityArray->erase(m_pEntityArray->begin()+i);
@@ -193,9 +220,9 @@ void
 SceneMainGame::Draw(Renderer& renderer)
 {
 
-	for (int i = 0; i < 20; i++) {
-		if (m_pParticleEmitter[i] != NULL) {
-			m_pParticleEmitter[i]->Draw(renderer);
+	for (int i = 0; i < m_pParticleEmitter.size(); i++) {
+		if (m_pParticleEmitter.at(i) != NULL) {
+			m_pParticleEmitter.at(i)->Draw(renderer);
 		}
 	}
 	for (int i = 0; i < m_pEntityArray->size(); i++) {
@@ -234,6 +261,12 @@ void SceneMainGame::SpawnExp(b2Vec2 EnemyPosition, float experiencetodrop) {
 	m_pEntityArray->at(m_pEntityArray->size()-1)->Initialise(*storage, m_pPlayerChar->ID, WorldPointer, EnemyPosition, experiencetodrop);
 }
 
+
+void SceneMainGame::SpawnMine(b2Vec2 EnemyPosition) {
+	m_pEntityArray->push_back(new Mine());
+	m_pEntityArray->at(m_pEntityArray->size() - 1)->Initialise(*storage, m_pPlayerChar->ID, WorldPointer, EnemyPosition);
+}
+
 void
 SceneMainGame::EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2) {
 
@@ -253,6 +286,7 @@ SceneMainGame::EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2) {
 		if (isplayer != 0) {
 			switch (getType) {
 			case 50:
+			case 70:
 				if (isplayer == 1) {
 					address->ProcessDamageCollision(bodyA);
 				}
@@ -262,6 +296,7 @@ SceneMainGame::EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2) {
 
 				break;
 			case 100:
+			case 102:
 				if (isplayer == 1) {
 					address->ProcessDamageCollision(bodyA);
 				}

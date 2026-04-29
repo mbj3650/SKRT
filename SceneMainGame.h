@@ -30,6 +30,7 @@ public:
 	void CreateEnemy();
 	void SpawnExp(b2Vec2 EnemyPosition, float experiencetodrop);
 	void CheckCollisions();
+	void SpawnMine(b2Vec2 EnemyPosition);
 	void EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2);
 	void EntityHitting(b2ShapeId Shape1, b2ShapeId Shape2);
 	void Process(float deltaTime, InputSystem& inputSystem);
@@ -46,7 +47,7 @@ protected:
 
 	static SceneMainGame* sm_MainGameInstance;
 	FMOD::System* SoundSystem;
-	ParticleEmitter* m_pParticleEmitter[20];
+	std::vector <ParticleEmitter*> m_pParticleEmitter;
 	std::vector<EnemyBase*>* m_pEntityArray;
 
 

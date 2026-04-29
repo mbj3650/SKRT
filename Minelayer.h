@@ -15,6 +15,8 @@ public:
 	~Minelayer();
 
 	bool Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position) override;
+	void PickNewSpot();
+	void MinePlaced();
 	void Process(float deltaTime);
 	void Draw(Renderer& renderer);
 	void ProcessDamageCollision(b2BodyId collidingwith) override;
@@ -27,12 +29,13 @@ private:
 
 	// Member data:
 public:
-
+	bool needsmine;
 protected:
-	float timetillnextspot;//wait till leaving the spot aka "minelaying" phase
+	
+	float minetimer;//wait till leaving the spot aka "minelaying" phase
 	Vector2 target;
 	bool travelling;//go to a specific point and when in range drop a mine
-	AnimatedSprite* m_pSprite;
+	Sprite* m_pSprite;
 private:
 
 };

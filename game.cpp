@@ -100,14 +100,6 @@ bool Game::Initialise()
 	pMainGame->Initialise(*m_pRenderer);
 	m_scenes.push_back(pMainGame);
 
-	char letters[26][2] = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
-	"P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
-
-	for (int i = 0; i < 26; i++) {
-		m_pRenderer->CreateStaticText(letters[i], 50);
-	}
-
-
 	//// Load static text textures into the Texture Manager...
 	//m_pRenderer->CreateStaticText("Auckland University of Technology", 50);
 

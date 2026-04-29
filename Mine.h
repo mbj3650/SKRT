@@ -13,10 +13,10 @@ public:
 	Mine();
 	~Mine();
 
-	bool Initialise(Renderer& renderer);
+	bool Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position);
 	void Process(float deltaTime);
 	void Draw(Renderer& renderer);
-
+	void ProcessDamageCollision(b2BodyId collidingwith) override;
 protected:
 
 private:
@@ -27,7 +27,8 @@ private:
 public:
 
 protected:
-
+	float lifetime = 5;
+	float flickertimer;
 private:
 
 };

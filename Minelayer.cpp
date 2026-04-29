@@ -12,6 +12,7 @@
 #include "inlinehelpers.h"
 #include "PlayerObject.h"
 Minelayer::Minelayer()
+
 {
 
 };
@@ -23,14 +24,16 @@ Minelayer::~Minelayer()
 bool
 Minelayer::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position)
 {
-	type = 100;
+	type = 102;
+
 	experiencetodrop = GetRandom(1, 5);
 	m_pPlayer = playerAddress;
-	m_pSprite = renderer.CreateAnimatedSprite("..\\assets\\enemies\\minelayer.png");
-	m_pSprite->SetLooping(true);
-	m_pSprite->Animate();
-	m_pSprite->SetupFrames(307, 307);
-	m_pSprite->SetFrameDuration(0.2);
+	TimerPostCollide = 0;
+	m_pSprite = renderer.CreateSprite("..\\assets\\enemies\\minelayer.png");
+	//m_pSprite->SetupFrames(66, 66);
+	//m_pSprite->SetFrameDuration(0.2);
+	//m_pSprite->SetLooping(true);
+	//m_pSprite->Animate();
 	const float MAX_SPEED = 250.0f;
 	const int EDGE_LIMIT = m_pSprite->GetWidth();
 	SCREEN_WIDTH = renderer.GetWidth();
@@ -39,12 +42,13 @@ Minelayer::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	target.y = GetRandom(100, SCREEN_HEIGHT - 100);
 	travelling = true;//immeadiately begin looking for a spot to travel to
 	m_bAlive = true;
-	health = 60;
+	damage = 0;
+	health = 30;
 	speed = GetRandom(50, 80);
 	sm_fBoundaryWidth = static_cast<float>(SCREEN_WIDTH);
 	sm_fBoundaryHeight = static_cast<float>(SCREEN_HEIGHT);
 	m_pSprite->SetScale(0.1f * 307/m_pSprite->GetWidth());
-	
+	needsmine = false;
 	//CREATE BODY FOR THE WORLD TO USE AS SHAPE REFERENCE
 	b2BodyDef WorldObj = b2DefaultBodyDef();
 	if (position.x == -9999) {
@@ -88,7 +92,7 @@ Minelayer::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 
 
 	shapeDef.filter.categoryBits = 0x0022;//i am
-	shapeDef.filter.maskBits = 0x0001 | 0x0002;//i collide with enemies and player
+	shapeDef.filter.maskBits = 0x0001;//i collide with enemies and player
 
 	shapeId = b2CreatePolygonShape(ID, &shapeDef, &box);
 
@@ -103,6 +107,20 @@ Minelayer::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	return true;
 }
 
+
+void Minelayer::PickNewSpot() {
+	minetimer = 0;//reset minelaying timer
+	target.x = GetRandom(100, SCREEN_WIDTH - 100);//pick new spot
+	target.y = GetRandom(100, SCREEN_HEIGHT - 100);
+	travelling = true;//start moving
+	m_pSprite->SetBlueTint(1);
+	m_pSprite->SetGreenTint(1);
+}
+
+void Minelayer::MinePlaced() {
+	needsmine = false;//call this when a mine is placed
+}
+
 void
 Minelayer::Process(float deltaTime)
 {
@@ -113,28 +131,41 @@ Minelayer::Process(float deltaTime)
 		) - m_pSprite->GetWidth()/2;//get distance to player
 
 
-	if (distance < 10) {
-		if (travelling == true) {//set travelling to false
+	if (distance < 1 && TimerPostCollide <= 0) {//if reached spot
+		if (travelling == true) {//set travelling to false and stop moving
 			travelling = false;
-			timetillnextspot = 3;//also set cooldown
+			minetimer = 3;//also set cooldown
 		}
-				
-		b2Vec2 velocityVec = { b2Body_GetLinearVelocity(ID).x / 1.1,b2Body_GetLinearVelocity(ID).y / 1.1 };
-		b2Body_SetLinearVelocity(ID, velocityVec);
 	}
 
-	if (timetillnextspot > 0) {
-		timetillnextspot -= deltaTime;
+	if (TimerPostCollide >= 0) {//if stunned
+		travelling = true;//tells it not to pick a new spot since it needs to spin away
+		TimerPostCollide -= deltaTime;//reduce timer
+		if (TimerPostCollide > 0.1) {
+			angle += (45 * deltaTime);//funny spinning animation
+		}
+		
 	}
+	else {//if isnt stunned, then see if laying a mine now
+		if (minetimer > 0) {//if currently laying mine
+			minetimer -= deltaTime;
+			m_pSprite->SetBlueTint(1 * (minetimer) / 2);
+			m_pSprite->SetGreenTint(1 * (minetimer) / 2);
+			b2Body_SetLinearVelocity(ID, { 0,0 });
+		}
+	}
+	
 
-	if (travelling == false && timetillnextspot <= 0) {
+
+	if (travelling == false) {//if not travelling and hasnt been interrupted for 3 seconds
+		if (minetimer <= 0) {//if isnt waiting to place mine
 		//LAYMINE FUNCTION HERE
-		target.x = GetRandom(100, SCREEN_WIDTH-100);
-		target.y = GetRandom(100, SCREEN_HEIGHT-100);
-		travelling = true;
+			needsmine = true;
+			PickNewSpot();
+		}
+		
 	}
-
-	if (travelling == true) {
+	else if (TimerPostCollide <= 0){//if travelling and not collide and not laying mine
 		m_position.x = b2Body_GetPosition(ID).x;
 		m_position.y = b2Body_GetPosition(ID).y;
 		angle = atan2(target.y - m_position.y, target.x - m_position.x);
@@ -145,18 +176,8 @@ Minelayer::Process(float deltaTime)
 			speed = 100;
 		}
 
-		if (TimerPostCollide > 0) {
-			TimerPostCollide -= 2 * deltaTime;
-		}
-		else {
-			if (offsetvelocity.x != 0) {
-				offsetvelocity.x = 0;
-				offsetvelocity.y = 0;
-			}
-			m_pSprite->SetRedTint(1.0f);
-		}
-		velocity.x = (speed * (cos(angle))) + (offsetvelocity.x * (TimerPostCollide / 2));
-		velocity.y = (speed * (sin(angle))) + (offsetvelocity.y * (TimerPostCollide / 2));
+		velocity.x = (speed * (cos(angle))) - (offsetvelocity.x * (TimerPostCollide) * (TimerPostCollide));
+		velocity.y = (speed * (sin(angle))) - (offsetvelocity.y * (TimerPostCollide) * (TimerPostCollide));
 
 
 		b2Vec2 velocityVec = { velocity.x, velocity.y };
@@ -200,17 +221,13 @@ Minelayer::ProcessDamageCollision(b2BodyId collidingwith) {
 	}
 	catch (...) {
 	}
-
-	if (travelling == false) {//if hit while laying mine
-		target.x = GetRandom(100, SCREEN_WIDTH - 100);//pick new spot and flee
-		target.y = GetRandom(100, SCREEN_HEIGHT - 100);
-		travelling = true;
-	}
+	PickNewSpot();
+	TimerPostCollide = 3;//also stun him for a while
+	travelling == false;
 	float angle = atan2(b2Body_GetLocalCenterOfMass(collidingwith).y - m_position.y, b2Body_GetLocalCenterOfMass(collidingwith).x - m_position.x);
-	offsetvelocity.x += (b2Body_GetLinearVelocity(collidingwith).x * (cos(angle))) / 3;
-	offsetvelocity.y += (b2Body_GetLinearVelocity(collidingwith).y * (sin(angle))) / 3;
-	m_pSprite->SetRedTint(0.0f);
-	TimerPostCollide = 3;
+	offsetvelocity.x += (b2Body_GetLinearVelocity(collidingwith).x * (cos(angle))) / 5;
+	offsetvelocity.y += (b2Body_GetLinearVelocity(collidingwith).y * (sin(angle))) / 5;
+	
 }
 
 
