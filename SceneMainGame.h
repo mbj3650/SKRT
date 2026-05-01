@@ -15,6 +15,7 @@ class b2WorldDef;
 class Director;
 class Player;
 class b2WorldId;
+class Sprite;
 class UpgradeList;
 struct UpgradeList::Template;
 class FMOD::System;
@@ -71,7 +72,7 @@ protected:
 	int TotalEntities;
 	int Score;
 	bool helddown;
-
+	Sprite* m_pCursor;
 
 	float timebeforeunpause; //pause variables
 	bool paused;

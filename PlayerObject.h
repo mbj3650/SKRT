@@ -15,6 +15,7 @@ class b2BodyId;
 class b2WorldId;
 class b2ShapeId;
 class InputSystem;
+class ParticleEmitter;
 // Class declaration:
 class PlayerObject
 {
@@ -49,6 +50,8 @@ public:
 	bool AddUpgrade(int upgrade);
 	void UpdateStats();
 	bool HasUpgrade();
+
+	bool Aiming();
 	float GetShipAngle();
 	void DebugDraw();
 	void ComputeBounds(int width, int height);
@@ -64,6 +67,7 @@ public:
 	bool colliding;
 	bool isColliding;
 	b2BodyId ID;
+	Vector2 clickpos;
 protected:
 	float healthdelay;
 	int exptolevel;
@@ -99,13 +103,14 @@ protected:
 	Vector2 m_boundaryHigh;
 	Sprite* m_pSprite;
 	Sprite* m_pBoostPointer;
-	Vector2 clickpos;
+
 	b2ShapeId shapeId;
 	std::vector<UpgradeList::Template> CurrentUpgrades;
 
 
+	std::vector < ParticleEmitter*>Tracer;
 	static PlayerObject* sm_pInstance;
-
+	float TracerFlash;
 	bool m_bAlive;
 	static float sm_fBoundaryWidth;
 	static float sm_fBoundaryHeight;

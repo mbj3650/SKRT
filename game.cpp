@@ -73,12 +73,11 @@ bool Game::Initialise()
 	system->createSound("..\\lib\\FMOD\\sound_samples\\swish.wav", FMOD_DEFAULT, NULL, &newSound);
 	m_pSounds.push_back(newSound);
 	system->playSound(m_pSounds.front(),NULL,false,NULL);
-	int bbWidth = 1500;
-	int bbHeight = 920;
+	int bbWidth = 1920;
+	int bbHeight = 1200;
 	m_pRenderer = new Renderer();
-	
 	m_pInputSystem = new InputSystem();
-	if (!m_pRenderer->Initialise(true, bbWidth, bbHeight))
+	if (!m_pRenderer->Initialise(false, bbWidth, bbHeight))
 	{
 		LogManager::GetInstance().Log("Renderer failed to initialise!");
 		return false;

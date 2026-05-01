@@ -75,8 +75,8 @@ SceneMainGame::Initialise(Renderer& renderer)
 	storage = &renderer;
 	m_pPlayerChar = &m_pPlayerChar->GetInstance();
 	m_pPlayerChar->Initialise(renderer, WorldPointer);
-	int SCREEN_WIDTH = storage->GetWidth();
-	int SCREEN_HEIGHT = storage->GetHeight();
+	int SCREEN_WIDTH = renderer.GetWidth();
+	int SCREEN_HEIGHT = renderer.GetHeight();
 
 	//PARTICLE SET UP
 
@@ -89,6 +89,7 @@ SceneMainGame::Initialise(Renderer& renderer)
 
 	m_pParticleEmitter.push_back(smokeparticles);
 
+	m_pCursor = renderer.CreateSprite("..\\assets\\crosshair.png");
 
 
 	ParticleEmitter* deathparticles = new ParticleEmitter();
@@ -104,6 +105,8 @@ SceneMainGame::Initialise(Renderer& renderer)
 
 	m_pParticleEmitter.push_back(mineparticles);
 
+	
+
 	UpgradeCopy.Initialize(renderer, m_pPlayerChar);
 	m_pDirector->Initialise(renderer, *m_pEntityArray, m_pPlayerChar, WorldPointer);
 
@@ -115,6 +118,15 @@ SceneMainGame::Initialise(Renderer& renderer)
 void
 SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 {
+	if (!m_pPlayerChar->Aiming()) {
+		m_pCursor->SetX(inputsystem.GetMousePosition().x);
+		m_pCursor->SetY(inputsystem.GetMousePosition().y);
+	}
+	else {
+		m_pCursor->SetX(m_pPlayerChar->clickpos.x);
+		m_pCursor->SetY(m_pPlayerChar->clickpos.y);
+	}
+
 	if (timebeforeunpause >= 0) {
 		timebeforeunpause -= 2 * deltatime;
 	}
@@ -186,7 +198,6 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 				try {//attempt minespawn
 					Minelayer* MineEntity = reinterpret_cast<Minelayer*>(m_pEntityArray->at(i));
 					if (MineEntity->needsmine == true) {//if needs mine
-						std::cout << "Minelayer\n";
 						SpawnMine(b2Body_GetPosition(m_pEntityArray->at(i)->ID));
 						MineEntity->MinePlaced();//turn off mine call
 					}
@@ -231,9 +242,7 @@ SceneMainGame::Draw(Renderer& renderer)
 
 	m_pPlayerChar->Draw(renderer);
 	UpgradeCopy.Draw(renderer);
-	if (m_pPlayerChar->PlayerNeedsUpgrade) {
-		
-	}
+	m_pCursor->Draw(renderer);
 };
 
 

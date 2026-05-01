@@ -96,26 +96,35 @@ bool Renderer::InitialiseOpenGL(int screenWidth, int screenHeight)
 {
 	m_iWidth = screenWidth;
 	m_iHeight = screenHeight;
-	m_pWindow = SDL_CreateWindow("COMP710 GP Framework 2025", SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED);
+
+	m_pWindow = SDL_CreateWindow("COMP710 Game Framework 2025", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_OPENGL);
+
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+
 	m_glContext = SDL_GL_CreateContext(m_pWindow);
+
 	GLenum glewResult = glewInit();
+
 	if (glewResult != GLEW_OK)
 	{
 		return false;
 	}
-	// Disable VSYNC
+
+	// Disable VSYN
 	SDL_GL_SetSwapInterval(0);
+
 	bool shadersLoaded = SetupSpriteShader();
+
 	return shadersLoaded;
 }
 void Renderer::Clear()

@@ -12,6 +12,7 @@
 #include <string>
 #include <box2d.h>
 #include <iostream>
+#include "particleemitter.h"
 float PlayerObject::sm_fBoundaryWidth = 0.0f;
 float PlayerObject::sm_fBoundaryHeight = 0.0f;
 PlayerObject* PlayerObject::sm_pInstance = 0;
@@ -65,7 +66,18 @@ PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 	m_pBoostPointer->SetScale(0.0);
 	m_pBoostPointer->SetBlueTint(0.0f);
 
+	float defaultcolor[3] = { 1,1,1 };//dont change color of particle
+	std::string particle = "..\\assets\\tracer.png";
 
+	for (int i = 0; i < 11;i++) {
+		ParticleEmitter* TracerParticle = new ParticleEmitter();
+		TracerParticle->Initialise(renderer, particle.c_str(), -1, 0.3, 0, defaultcolor, 0, 0, 1);
+		Tracer.push_back(TracerParticle);
+	}
+
+
+
+	TracerFlash = 0.2;
 	const float MAX_SPEED = 250.0f;
 	const int EDGE_LIMIT = m_pSprite->GetWidth();
 	const int SCREEN_WIDTH = renderer.GetWidth();
@@ -104,10 +116,16 @@ PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 	return true;
 };
 
+
+
 void
 PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 {
 	if (deltaTime != 0) {
+		for (int t = 0; t < Tracer.size(); t++) {
+			Tracer.at(t)->Process(deltaTime);
+		}
+		
 		int result = inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT);
 		mouse_position.x = inputSystem.GetMousePosition().x;
 		mouse_position.y = inputSystem.GetMousePosition().y;
@@ -160,25 +178,45 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 			}
 		}
 		if (result == BS_PRESSED || IsAiming) {
+
 			if (IsAiming == false) {//if first frame in which mouse is pressed
 				//store mouse position to fling from
-				clickpos.x = mouse_position.x; 
+				clickpos.x = mouse_position.x;
 				clickpos.y = mouse_position.y;
 
 			}
+
 			distancebetween = sqrt((pow((mouse_position.x - clickpos.x), 2) + pow((mouse_position.y - clickpos.y), 2))) * 0.2;//get distance to mouse and original click position
 			if (distancebetween > maxdistance) {
 				distancebetween = maxdistance;
 			}
+			angle = atan2(mouse_position.y - clickpos.y, mouse_position.x - clickpos.x);//set angle 
+			
+			angle = (180.0 / M_PI) * -angle;
+			float aimangle = angle;
+			angle += 180;
 
+			if (TracerFlash <= 0) {//draw tracer if flash timer is off
+				Tracer.at(0)->SetParticlePosition(clickpos);
+				Tracer.at(0)->Spawn();
+				for (int i = 1; i <= 10;i++) {
+					Vector2 tracerpos;
+					tracerpos.x = clickpos.x+(i * (distancebetween / 10) * (cos((M_PI / 180) * -aimangle )));
+					tracerpos.y = clickpos.y+(i * (distancebetween / 10) * (sin((M_PI / 180) * -aimangle )));
+					Tracer.at(i)->SetParticlePosition(tracerpos);
+					Tracer.at(i)->Spawn();
+				}
+				TracerFlash = 0.2;
+			}
+			else {
+				TracerFlash -= deltaTime;
+			}
+			
 			storedvelocity = distancebetween * speed;//distance * speed
 
 
 			IsAiming = true;//aiming true
-			angle = atan2(mouse_position.y - clickpos.y, mouse_position.x - clickpos.x);//set angle 
 
-			angle = (180.0 / M_PI) * -angle;
-			angle += 180;
 			m_pBoostPointer->SetScale(0.0015 * (distancebetween / ratio));
 			m_pBoostPointer->SetRedTint(50 / (distancebetween / ratio));
 			m_pBoostPointer->SetGreenTint((distancebetween / ratio) / 50);
@@ -247,6 +285,9 @@ PlayerObject::Draw(Renderer& renderer)
 		m_pBoostPointer->Draw(renderer);
 	}
 	m_pSprite->Draw(renderer);
+	for (int t = 0; t < Tracer.size(); t++) {
+		Tracer.at(t)->Draw(renderer);
+	}
 };
 
 bool PlayerObject::isDrifting() {
@@ -322,6 +363,11 @@ void PlayerObject::takedamage(float damagetotake)
 {
 	health -= damagetotake;
 	IFrames = 2;//player cant take damage again
+}
+
+bool PlayerObject::Aiming()
+{
+	return IsAiming;
 }
 
 float PlayerObject::GetShipAngle() {
