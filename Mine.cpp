@@ -26,23 +26,20 @@ Mine::~Mine()
 bool
 Mine::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position)
 {
-	type = 70;
-	m_pPlayer = playerAddress;
-	m_pSprite = renderer.CreateSprite("..\\assets\\enemies\\mine.png");
+	type = 70;//type
+	m_pPlayer = playerAddress;//player address
+	m_pSprite = renderer.CreateSprite("..\\assets\\enemies\\mine.png");//sprite
 	const float MAX_SPEED = 250.0f;
 	const int EDGE_LIMIT = m_pSprite->GetWidth();
 	const int SCREEN_WIDTH = renderer.GetWidth();
 	const int SCREEN_HEIGHT = renderer.GetHeight();
-	m_bAlive = true;
-	flickertimer = 2;
+	m_bAlive = true;//basic enemy stuff
+	flickertimer = 2;//blink red every so often
 	health = 1;
-	damage = 5;
-	angle = GetRandom(0, 360);
-	m_pSprite->SetBlueTint(0.0f);
-	m_pSprite->SetRedTint(0.0f);
+	damage = 5;//damage to player
 	sm_fBoundaryWidth = static_cast<float>(SCREEN_WIDTH);
 	sm_fBoundaryHeight = static_cast<float>(SCREEN_HEIGHT);
-	m_pSprite->SetScale(0.06f * 307/m_pSprite->GetWidth());
+	m_pSprite->SetScale(0.06f * 307/m_pSprite->GetWidth());//set size
 
 		//CREATE BODY FOR THE WORLD TO USE AS SHAPE REFERENCE
 	b2BodyDef WorldObj = b2DefaultBodyDef();
@@ -111,8 +108,8 @@ Mine::Process(float deltaTime)
 		else {
 			flickertimer = 2;
 		}
-		if (lifetime > 0) {
-			lifetime -= deltaTime;
+		if (lifetime > 0) {//if still alive
+			lifetime -= deltaTime;//tick down timer
 		}
 		else {
 			m_bAlive = false;
@@ -127,18 +124,18 @@ Mine::Process(float deltaTime)
 	}
 };
 
-void Mine::ProcessDamageCollision(b2BodyId collidingwith) {
+void Mine::ProcessDamageCollision(b2BodyId collidingwith) {//always damage player, dont take damage
 	try {//attempt player damage
 		PlayerObject* address = reinterpret_cast<PlayerObject*>(b2Body_GetUserData(collidingwith));
 		address->takedamage(damage);
-		m_bAlive = false;
+		m_bAlive = false;//explode
 	}
 	catch (...) {
 	}
 }
 
 void
-Mine::Draw(Renderer& renderer)
+Mine::Draw(Renderer& renderer)//draw it
 {
 	if (m_bAlive) {
 		m_pSprite->Draw(renderer);

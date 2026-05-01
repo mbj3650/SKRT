@@ -196,14 +196,3 @@ Experience::Kill() {
 bool Experience::isAlive() {
 	return m_bAlive;
 }
-
-
-
-void Experience::DebugDraw
-()
-{
-	ImGui::InputFloat2("Position", reinterpret_cast<float*>(&m_position));
-	ImGui::InputFloat2("VelocityX", reinterpret_cast<float*>(&velocity));
-	ImGui::Text("Lowerbound (%f, %f)", m_boundaryLow.x, m_boundaryLow.y);
-	ImGui::Text("Upperbound (%f, %f)", m_boundaryHigh.x, m_boundaryHigh.y);
-}

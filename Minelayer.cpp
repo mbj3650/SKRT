@@ -169,13 +169,13 @@ Minelayer::Process(float deltaTime)
 		m_position.x = b2Body_GetPosition(ID).x;
 		m_position.y = b2Body_GetPosition(ID).y;
 		angle = atan2(target.y - m_position.y, target.x - m_position.x);
-		if (speed < 100) {
+		if (speed < 100) {//try to reach 100 speed if slower
 			speed += 2;
 		}
 		else {
 			speed = 100;
 		}
-
+		//velocity is speed + the offset of being collided with
 		velocity.x = (speed * (cos(angle))) - (offsetvelocity.x * (TimerPostCollide) * (TimerPostCollide));
 		velocity.y = (speed * (sin(angle))) - (offsetvelocity.y * (TimerPostCollide) * (TimerPostCollide));
 
@@ -190,7 +190,7 @@ Minelayer::Process(float deltaTime)
 	m_pSprite->Process(deltaTime);
 };
 void
-Minelayer::Draw(Renderer& renderer)
+Minelayer::Draw(Renderer& renderer)//draw
 {
 	if (m_bAlive)
 	{

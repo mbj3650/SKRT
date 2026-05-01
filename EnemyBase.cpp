@@ -28,8 +28,8 @@ EnemyBase::~EnemyBase()
 bool
 EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position)
 {
-	type = 100;
-	experiencetodrop = GetRandom(1, 5);
+	type = 100;//defaut enemy type
+	experiencetodrop = GetRandom(1, 5);//drop a random amount of exp
 	m_pPlayer = playerAddress;
 	m_pSprite = renderer.CreateSprite("..\\assets\\enemies\\demon.png");
 	const float MAX_SPEED = 250.0f;
@@ -37,11 +37,11 @@ EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	SCREEN_WIDTH = renderer.GetWidth();
 	SCREEN_HEIGHT = renderer.GetHeight();
 	m_bAlive = true;
-	health = 100;
-	speed = GetRandom(80, 100);
+	health = 70;//needs 4 hits to kill until later upgrades
+	speed = GetRandom(80, 100);//randomize the speed a bit
 	sm_fBoundaryWidth = static_cast<float>(SCREEN_WIDTH);
 	sm_fBoundaryHeight = static_cast<float>(SCREEN_HEIGHT);
-	m_pSprite->SetScale(0.1f);
+	m_pSprite->SetScale(0.1f);//sprite
 	
 	//CREATE BODY FOR THE WORLD TO USE AS SHAPE REFERENCE
 	b2BodyDef WorldObj = b2DefaultBodyDef();
@@ -96,24 +96,25 @@ EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	b2Body_SetAwake(ID, true);
 	return true;
 	b2Shape_EnableContactEvents(shapeId, true);
+	//set initial velocity
 	b2Vec2 speedVec = { speed * (cos(m_pSprite->GetAngle())) , speed * (sin(m_pSprite->GetAngle())) };
 	b2Body_SetLinearVelocity(ID, speedVec);
 	ComputeBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
 	return true;
 }
-bool EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID)
+bool EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID)//for subclasses
 {
 	return false;
 }
 ;
 
-bool EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position, float experiencetodrop)
+bool EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position, float experiencetodrop)//for subclasses
 {
 	return false;
 }
 ;
 
-
+//gets
 float EnemyBase::getEnemyBaseAngle() {
 	return m_pSprite->GetAngle();
 }
@@ -129,17 +130,17 @@ float EnemyBase::GetRadius() {
 void
 EnemyBase::Process(float deltaTime)
 {
-	m_position.x = b2Body_GetPosition(ID).x;
+	m_position.x = b2Body_GetPosition(ID).x;//position set to box2d position
 	m_position.y = b2Body_GetPosition(ID).y;
-	angle = atan2(b2Body_GetPosition(m_pPlayer).y - m_position.y, b2Body_GetPosition(m_pPlayer).x - m_position.x);
-	if (speed < 100) {
+	angle = atan2(b2Body_GetPosition(m_pPlayer).y - m_position.y, b2Body_GetPosition(m_pPlayer).x - m_position.x);//point at player
+	if (speed < 100) {//speed t oreach 100 if possible
 		speed += 2;
 	}
 	else {
 		speed = 100;
 	}
 
-	if (TimerPostCollide > 0) {
+	if (TimerPostCollide > 0) {//post collision timer decrease
 		TimerPostCollide -= 2 * deltaTime;
 	}
 	else {
@@ -147,22 +148,23 @@ EnemyBase::Process(float deltaTime)
 			offsetvelocity.x = 0;
 			offsetvelocity.y = 0;
 		}
-		m_pSprite->SetBlueTint(1.0f);
+		//m_pSprite->SetBlueTint(1.0f);
 	}
+	//slowly remove offset speed from main velocity
 		velocity.x = (speed * (cos(angle))) + (offsetvelocity.x * (TimerPostCollide / 2));
 		velocity.y = (speed * (sin(angle))) + (offsetvelocity.y * (TimerPostCollide / 2));
 
-
+		//set speed
 	b2Vec2 velocityVec = { velocity.x, velocity.y };
 	b2Body_SetLinearVelocity(ID, velocityVec);
-
+	//sprite appearance functions
 	m_pSprite->SetAngle(-angle * (180 / M_PI) - 90);
 	m_pSprite->SetX(static_cast<int>(b2Body_GetPosition(ID).x));
 	m_pSprite->SetY(static_cast<int>(b2Body_GetPosition(ID).y));
 	m_pSprite->Process(deltaTime);
 };
 
-void EnemyBase::ProcessCollision(b2BodyId collidingwith) {
+void EnemyBase::ProcessCollision(b2BodyId collidingwith) {//doesnt do much otehr than just dont merge into it (deprecated due to maskbits but keeping just in case)
 	float angle = atan2(b2Body_GetLocalCenterOfMass(collidingwith).y - m_position.y, b2Body_GetLocalCenterOfMass(collidingwith).x - m_position.x);
 	b2Vec2 OffsetForce = {0,0};
 	OffsetForce.x -= (b2Body_GetLinearVelocity(collidingwith).x * (cos(angle)));
@@ -170,7 +172,7 @@ void EnemyBase::ProcessCollision(b2BodyId collidingwith) {
 	b2Body_ApplyForce(collidingwith, OffsetForce, b2Body_GetLocalCenterOfMass(collidingwith), true);
 }
 
-void EnemyBase::ProcessDamageCollision(b2BodyId collidingwith) {
+void EnemyBase::ProcessDamageCollision(b2BodyId collidingwith) {//player damage
 	try {//attempt player damage
 		PlayerObject* address = reinterpret_cast<PlayerObject*>(b2Body_GetUserData(collidingwith));
 		if (address->CanDamage()) {
@@ -183,14 +185,14 @@ void EnemyBase::ProcessDamageCollision(b2BodyId collidingwith) {
 				m_bAlive = false;
 			}
 		}
-		else if (address->CanTakeDamage()){
+		else if (address->CanTakeDamage()){//if player is too slow then damage them
 			address->takedamage(damage);
 		}
 		
 	}
 	catch (...) {
 	}
-
+	//get knocked away from collision
 
 	float angle = atan2(b2Body_GetLocalCenterOfMass(collidingwith).y - m_position.y, b2Body_GetLocalCenterOfMass(collidingwith).x - m_position.x);
 	offsetvelocity.x += (b2Body_GetLinearVelocity(collidingwith).x * (cos(angle)))/3;
@@ -201,7 +203,7 @@ void EnemyBase::ProcessDamageCollision(b2BodyId collidingwith) {
 
 void
 EnemyBase::Draw(Renderer& renderer)
-{
+{//draw
 	if (m_bAlive)
 	{
 		m_pSprite->Draw(renderer);
@@ -216,7 +218,7 @@ Vector2& EnemyBase::Position
 
 void
 EnemyBase::ComputeBounds(int width, int height)
-{
+{//bounds
 	m_boundaryLow.x = (m_pSprite->GetWidth() / 2.0f);
 	m_boundaryLow.y = (m_pSprite->GetHeight() / 2.0f);
 	m_boundaryHigh.x = width - (m_pSprite->GetWidth() / 2.0f);
@@ -234,9 +236,12 @@ bool EnemyBase::isAlive() {
 
 
 
-void EnemyBase::DebugDraw
+void EnemyBase::DebugDraw//
 ()
 {
+	ImGui::Text("Type %d",type);
+	ImGui::Text("Health %f", health);
+	ImGui::Text("Damage %f", damage);
 	ImGui::InputFloat2("Position", reinterpret_cast<float*>(&m_position));
 	ImGui::InputFloat2("VelocityX", reinterpret_cast<float*>(&velocity));
 	ImGui::Text("Lowerbound (%f, %f)", m_boundaryLow.x, m_boundaryLow.y);

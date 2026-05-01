@@ -30,6 +30,7 @@ class UpgradeList
 		UpgradeList();
 		void Initialize(Renderer& renderer, PlayerObject* player);
 		~UpgradeList();
+		void AllUpgrades();
 		void PickThree();
 		Sprite* CreateText(char string[]);
 		void Process(float deltaTime, InputSystem& inputSystem);

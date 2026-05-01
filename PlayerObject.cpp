@@ -16,15 +16,7 @@
 float PlayerObject::sm_fBoundaryWidth = 0.0f;
 float PlayerObject::sm_fBoundaryHeight = 0.0f;
 PlayerObject* PlayerObject::sm_pInstance = 0;
-PlayerObject::PlayerObject() :
-	SpeedminBase(250),
-	maxdistance (200),
-	DamageBase(20),
-	SpeedBase(1.2),
-	reboundlossbase(0.75),
-	experience(0),
-	level(1),
-	health(100)
+PlayerObject::PlayerObject()
 {
 
 };
@@ -36,48 +28,78 @@ sm_pInstance = 0;
 };
 
 
-PlayerObject& PlayerObject::GetInstance()
+PlayerObject& PlayerObject::GetInstance()//single instance
 {
 	static PlayerObject onlyInstance;
 	return onlyInstance;
 }
 
+
+bool PlayerObject::isAlive() {//living or dead
+	if (health <= 0) {
+		b2Body_SetLinearVelocity(ID, {0,0});//set velocity for obejct to move with
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
 bool
 PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 {
-	Speedmin = SpeedminBase;
+	SpeedminBase = 250;
+	maxdistance=200;
+	DamageBase=20;
+	SpeedBase=1.2;
+	reboundlossbase=0.75;
+	experience=0;
+	level=1;
+	health=100;
+	infinitedamage=false;
+	nospeedloss=false;
+	godmode = false;
+	Speedmin = SpeedminBase;//set base stats
 	Damage = DamageBase;
 	speed = SpeedBase;
 	reboundloss = reboundlossbase;
-	exptolevel = (level / 2 * 100) + (2/level);
+	exptolevel = (level / 2 * 100) + (2/level);//xp algo
 	//CREATE SPRITE TO FOLLOW SHAPE
-	m_pSprite = renderer.CreateSprite("..\\assets\\cursor.png");
+	if (m_pSprite == NULL) {
+		m_pSprite = renderer.CreateSprite("..\\assets\\cursor.png");
+	}
+	
 	m_bAlive = true;
 	
-	ratio = maxdistance / 100;
+	ratio = maxdistance / 100;//ratio of dragging the arrow back for speed
 	m_pSprite->SetScale(0.075);
 
 	//m_pSprite->SetAngle(180.0f);
 
 	//ComputeBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
+	//sprite info
 	radius = m_pSprite->GetWidth();
+
+	//pointer arrow info
 	m_pBoostPointer = renderer.CreateSprite("..\\assets\\booster.png");
 	m_pBoostPointer->SetGreenTint(0.0f);
 	m_pBoostPointer->SetScale(0.0);
 	m_pBoostPointer->SetBlueTint(0.0f);
 
 	float defaultcolor[3] = { 1,1,1 };//dont change color of particle
-	std::string particle = "..\\assets\\tracer.png";
+	std::string particle = "..\\assets\\tracer.png";//tracer to tell drags
 
-	for (int i = 0; i < 11;i++) {
+	for (int i = 0; i < 11;i++) {//tracer particles
 		ParticleEmitter* TracerParticle = new ParticleEmitter();
 		TracerParticle->Initialise(renderer, particle.c_str(), -1, 0.3, 0, defaultcolor, 0, 0, 1);
 		Tracer.push_back(TracerParticle);
 	}
 
 
-
+	//tracer info
 	TracerFlash = 0.2;
+
+	//speed + internal information values
 	const float MAX_SPEED = 250.0f;
 	const int EDGE_LIMIT = m_pSprite->GetWidth();
 	const int SCREEN_WIDTH = renderer.GetWidth();
@@ -97,10 +119,12 @@ PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
 	shapeDef.density = 1000.0f;
 	shapeDef.friction = 1.0f;
-
+	b2Body_SetAwake(ID, false);
 
 	shapeDef.filter.categoryBits = 0x0001;//i am
-	shapeDef.filter.maskBits = 0x0008 | 0x0002;//i collide with
+	shapeDef.filter.maskBits = 0x0008 | 0x0002;//i collide with enemies and exp (usually dont need to set this 
+	//since setting maskbits for other entities will mirror it
+	//onto the recieving entity
 
 
 	b2Body_SetUserData(ID, this);
@@ -112,7 +136,6 @@ PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 	m_position.y = b2Body_GetPosition(ID).y;
 	angle = 0;
 	b2Body_SetAwake(ID, true);
-
 	return true;
 };
 
@@ -121,25 +144,26 @@ PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 void
 PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 {
+	//if deltatime isnt 0
 	if (deltaTime != 0) {
-		for (int t = 0; t < Tracer.size(); t++) {
+		for (int t = 0; t < Tracer.size(); t++) {//tracer particle process
 			Tracer.at(t)->Process(deltaTime);
 		}
-		
+		//mouse input
 		int result = inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT);
 		mouse_position.x = inputSystem.GetMousePosition().x;
 		mouse_position.y = inputSystem.GetMousePosition().y;
-		if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) != BS_HELD) {
-			Drifting = false;
-			driftpos.x = 0;
+		if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) != BS_HELD) {//if space isnt held then set 
+			Drifting = false;//drifting to false
+			driftpos.x = 0;//reset values
 			driftpos.y = 0;
 		}
 
-		if (IFrames > 0) {
+		if (IFrames > 0) {//timer tick down animation
 			IFrames -= deltaTime * 2;
 			int Framelogic = IFrames * 10;
 			if (Framelogic % 2 == 0) {
-				m_pSprite->SetAlpha(1.0f);
+				m_pSprite->SetAlpha(1.0f);//flashing animation
 			}
 			else {
 				m_pSprite->SetAlpha(0.0f);
@@ -147,7 +171,7 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 		}
 
 
-		if (healthdelay > 0) {
+		if (healthdelay > 0) {//time before player can get another piece of health
 			healthdelay -= deltaTime * 1;
 		}
 
@@ -160,16 +184,16 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 				driftpos.y = b2Body_GetPosition(ID).y;
 			}
 			Drifting = false;
-			if (b2Body_GetLinearVelocity(ID).x > 15 || b2Body_GetLinearVelocity(ID).x < -15) {
-				Player_speed.x *= (0.996);
+			if (b2Body_GetLinearVelocity(ID).x > 15 || b2Body_GetLinearVelocity(ID).x < -15) {//if player is drifting and x velocity moving above 15/below -15
+				Player_speed.x *= (0.996);//decrease speed
 				Drifting = true;
 			}
 			else {
-				Player_speed.x = 0;
+				Player_speed.x = 0;//else just set to 0
 			}
 
 
-			if (b2Body_GetLinearVelocity(ID).y > 15 || b2Body_GetLinearVelocity(ID).y < -15) {
+			if (b2Body_GetLinearVelocity(ID).y > 15 || b2Body_GetLinearVelocity(ID).y < -15) {//same with the y velocity
 				Player_speed.y *= (0.996);
 				Drifting = true;
 			}
@@ -177,7 +201,7 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 				Player_speed.y = 0;
 			}
 		}
-		if (result == BS_PRESSED || IsAiming) {
+		if (result == BS_PRESSED || IsAiming) {//if aiming or just clicked mouse
 
 			if (IsAiming == false) {//if first frame in which mouse is pressed
 				//store mouse position to fling from
@@ -185,30 +209,30 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 				clickpos.y = mouse_position.y;
 
 			}
-
+			//distance between point and where the user is currently dragging
 			distancebetween = sqrt((pow((mouse_position.x - clickpos.x), 2) + pow((mouse_position.y - clickpos.y), 2))) * 0.2;//get distance to mouse and original click position
-			if (distancebetween > maxdistance) {
+			if (distancebetween > maxdistance) {//just to see how much to fling user, and make sure they have a speed cap
 				distancebetween = maxdistance;
 			}
 			angle = atan2(mouse_position.y - clickpos.y, mouse_position.x - clickpos.x);//set angle 
 			
-			angle = (180.0 / M_PI) * -angle;
-			float aimangle = angle;
-			angle += 180;
+			angle = (180.0 / M_PI) * -angle;//sprite stuff
+			float aimangle = angle;//make tracer follow mouse
+			angle += 180;//make arrow point opposite too mouse
 
 			if (TracerFlash <= 0) {//draw tracer if flash timer is off
 				Tracer.at(0)->SetParticlePosition(clickpos);
 				Tracer.at(0)->Spawn();
-				for (int i = 1; i <= 10;i++) {
+				for (int i = 1; i <= 10;i++) {//set angle and pos of each tracer particle
 					Vector2 tracerpos;
 					tracerpos.x = clickpos.x+(i * (distancebetween / 10) * (cos((M_PI / 180) * -aimangle )));
 					tracerpos.y = clickpos.y+(i * (distancebetween / 10) * (sin((M_PI / 180) * -aimangle )));
 					Tracer.at(i)->SetParticlePosition(tracerpos);
-					Tracer.at(i)->Spawn();
+					Tracer.at(i)->Spawn();//spawn particle there
 				}
 				TracerFlash = 0.2;
 			}
-			else {
+			else {//else reduce timer
 				TracerFlash -= deltaTime;
 			}
 			
@@ -217,7 +241,7 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 
 			IsAiming = true;//aiming true
 
-			m_pBoostPointer->SetScale(0.0015 * (distancebetween / ratio));
+			m_pBoostPointer->SetScale(0.0015 * (distancebetween / ratio));//the more the user pulls the mouse the greener it gets and larger it gets
 			m_pBoostPointer->SetRedTint(50 / (distancebetween / ratio));
 			m_pBoostPointer->SetGreenTint((distancebetween / ratio) / 50);
 
@@ -290,14 +314,14 @@ PlayerObject::Draw(Renderer& renderer)
 	}
 };
 
-bool PlayerObject::isDrifting() {
+bool PlayerObject::isDrifting() {//as it says on the fucntion
 	if (sqrt(pow((b2Body_GetLinearVelocity(ID).x), 2) + pow((b2Body_GetLinearVelocity(ID).y), 2)) < 5) {
 		return false;
 	}
 	return Drifting;
 }
 
-void PlayerObject::losemomentum() {
+void PlayerObject::losemomentum() {//decrease player speed as a punishment
 	if (reboundloss * (speed / SpeedBase) < 1) {//make sure the player doesnt get FASTER if their speed is fast enough
 		Player_speed.x *= reboundloss * (speed / SpeedBase); //if player speed is 1.5 while the base is 1.2, that means that rebound loss upon hitting an enemy wont be as bad
 		Player_speed.y *= reboundloss * (speed / SpeedBase);
@@ -328,7 +352,7 @@ b2Vec2 PlayerObject::Position() {
 	return b2Body_GetPosition(ID);
 }
 
-void PlayerObject::AddExp(float experienceamount) {
+void PlayerObject::AddExp(float experienceamount) {//add exp on pickup
 	experience += experienceamount;
 	if (experience > exptolevel) {
 		level += 1;
@@ -350,6 +374,7 @@ void PlayerObject::AddHealth(float healthtoadd, bool isdead) {
 	}
 }
 
+//can the player heal yet
 bool PlayerObject::CanHeal() {
 	if (healthdelay <= 0) {
 		return true;
@@ -361,8 +386,21 @@ bool PlayerObject::CanHeal() {
 
 void PlayerObject::takedamage(float damagetotake)
 {
-	health -= damagetotake;
-	IFrames = 2;//player cant take damage again
+	//if not invincible
+	if(!godmode)
+	{
+		if (health - damagetotake <= 0) {
+			b2Body_SetLinearVelocity(ID, { 0,0 });
+			Player_speed.x = 0;
+			Player_speed.y = 0;
+			health -= damagetotake;//take damage
+		}
+		else {
+			health -= damagetotake;//take damage
+			IFrames = 2;//player cant take damage again
+		}
+		
+	}
 }
 
 bool PlayerObject::Aiming()
@@ -382,22 +420,53 @@ bool PlayerObject::CanDamage() {
 
 bool PlayerObject::CanTakeDamage() {
 	if (IFrames <= 0) {
-		return true;
+		return true;//if can take damgae
 	}
 	else {
 		return false;
 	}
 }
 
-float PlayerObject::getDamage() {
+float PlayerObject::getDamage() {//get player damage for enemy collissions
 	return Damage;
 }
 
-std::vector<UpgradeList::Template> PlayerObject::GetUgprades() {
+void PlayerObject::ActivateCheat(int cheat) {//cheats
+	switch (cheat) {
+	case 1:
+		
+		if (!nospeedloss) {
+			nospeedloss = true;
+		}
+		else {
+			nospeedloss = false;
+		}
+		break;
+	case 2:
+		if (!godmode) {
+			godmode = true;
+		}
+		else {
+			godmode = false;
+		}
+		break;
+	case 3:
+		if (!infinitedamage) {
+			infinitedamage = true;
+		}
+		else {
+			infinitedamage = false;
+		}
+		break;
+	}
+	UpdateStats();
+}
+
+std::vector<UpgradeList::Template> PlayerObject::GetUgprades() {//get player upgrades
 	return CurrentUpgrades;
 }
 
-bool PlayerObject::AddUpgrade(UpgradeList::Template upgrade) {
+bool PlayerObject::AddUpgrade(UpgradeList::Template upgrade) {//add upgrades
 	for (int i = 0; i < CurrentUpgrades.size(); i++) {
 		if (CurrentUpgrades.at(i).upgradesinto == upgrade.ID) {//if one of the player's upgrades turn into the new one,
 			CurrentUpgrades.erase(CurrentUpgrades.begin()+ i);//replaces upgrades that turn into the new one, this can also work for 
@@ -411,7 +480,7 @@ bool PlayerObject::AddUpgrade(UpgradeList::Template upgrade) {
 	return true;
 }
 
-bool PlayerObject::AddUpgrade(int upgrade)//skip
+bool PlayerObject::AddUpgrade(int upgrade)//itll onnly take ints if the program wants to call a skip
 {
 	PlayerNeedsUpgrade = false;
 	UpdateStats();
@@ -419,7 +488,7 @@ bool PlayerObject::AddUpgrade(int upgrade)//skip
 	return true;
 }
 
-void PlayerObject::UpdateStats() {
+void PlayerObject::UpdateStats() {//update stats upon state change
 	float statchanges[3] = { SpeedBase, DamageBase, reboundlossbase };
 	for (int i = 0; i < CurrentUpgrades.size(); i++) {
 		if (CurrentUpgrades.at(i).stateffect != "-1") {
@@ -445,12 +514,36 @@ void PlayerObject::UpdateStats() {
 		}
 	}
 	speed = statchanges[0];
-	Damage = statchanges[1];
-	reboundloss = statchanges[2];
+	if(infinitedamage == false)
+	{
+		std::cout << infinitedamage;
+		Damage = statchanges[1];
+	}
+	else {
+		Damage = 999999;
+	}
+	if (nospeedloss == false) {
+		reboundloss = statchanges[2];
+	}
+	else {
+		reboundloss = 100;
+	}
+	
 }
 
-void PlayerObject::DebugDraw(){
-	ImGui::Text("SHIP INFORMATION:");
+bool PlayerObject::HasUpgrade(int ID)//does player have a certain upgrade?
+{
+	for (int i = 0; i < CurrentUpgrades.size(); i++) {
+		if (CurrentUpgrades.at(i).ID == ID) {
+			return true;
+			break;
+		}
+	}
+	return false;
+}
+
+void PlayerObject::DebugDraw(){//debug
+	ImGui::Text("PLAYER INFORMATION:");
 	ImGui::Text("Health: %d", health);
 	ImGui::Text("Angle %f", atan2(b2Body_GetPosition(ID).y - driftpos.y, b2Body_GetPosition(ID).x - driftpos.x));
 	ImGui::Text("momentum:%f", sqrt(pow((b2Body_GetLinearVelocity(ID).x), 2) + pow((b2Body_GetLinearVelocity(ID).y), 2)));

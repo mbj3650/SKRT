@@ -35,6 +35,7 @@ public:
 	void EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2);
 	void EntityHitting(b2ShapeId Shape1, b2ShapeId Shape2);
 	void Process(float deltaTime, InputSystem& inputSystem);
+	void Restart();
 	virtual void Draw(Renderer& renderer);
 	virtual void DebugDraw();
 	void SetSystem(FMOD::System& system);
@@ -63,7 +64,7 @@ protected:
 	PlayerObject* m_pPlayerChar;
 	Director* m_pDirector;
 	int m_iShowCount;
-
+	int selectedentity;
 
 
 	int gamespeed;
@@ -73,7 +74,7 @@ protected:
 	int Score;
 	bool helddown;
 	Sprite* m_pCursor;
-
+	Sprite* m_pPause;
 	float timebeforeunpause; //pause variables
 	bool paused;
 

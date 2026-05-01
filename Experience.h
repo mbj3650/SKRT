@@ -31,7 +31,6 @@ public:
 	 bool isAlive() override;
 	float GetRadius();
 	Vector2& Position();
-	void DebugDraw() override;
 	void ComputeBounds(int width, int height);
 protected:
 

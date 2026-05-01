@@ -49,8 +49,9 @@ public:
 	bool AddUpgrade(UpgradeList::Template upgrade);
 	bool AddUpgrade(int upgrade);
 	void UpdateStats();
-	bool HasUpgrade();
-
+	bool HasUpgrade(int ID);
+	void ActivateCheat(int Cheat);
+	bool isAlive();
 	bool Aiming();
 	float GetShipAngle();
 	void DebugDraw();
@@ -93,7 +94,7 @@ protected:
 
 	int health;
 	float IFrames;
-
+	//position stuff
 	Vector2 driftpos;
 	Vector2 Player_speed;
 	float storedvelocity;
@@ -101,22 +102,29 @@ protected:
 	Vector2 mouse_position;
 	Vector2 m_boundaryLow;
 	Vector2 m_boundaryHigh;
+	static float sm_fBoundaryWidth;
+	static float sm_fBoundaryHeight;
+	float distancebetween;
+	//sprite stuff
 	Sprite* m_pSprite;
 	Sprite* m_pBoostPointer;
+	float radius;
+	float angle;
 
+	//collission
 	b2ShapeId shapeId;
 	std::vector<UpgradeList::Template> CurrentUpgrades;
 
-
+	//tracer + information
 	std::vector < ParticleEmitter*>Tracer;
 	static PlayerObject* sm_pInstance;
 	float TracerFlash;
 	bool m_bAlive;
-	static float sm_fBoundaryWidth;
-	static float sm_fBoundaryHeight;
-	float radius;
-	float angle;
-	float distancebetween;
+
+	//cheats 
+	bool infinitedamage;
+	bool	nospeedloss;
+	bool	godmode;
 
 private:
 

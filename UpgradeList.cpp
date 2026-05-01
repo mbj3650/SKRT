@@ -81,6 +81,15 @@ UpgradeList::~UpgradeList()
 {
 }
 
+void UpgradeList::AllUpgrades() {
+	for (int i = m_upgrades.size()-1; i >=0 ;i--) {
+		std::cout << m_upgrades.at(i).name << "\n";
+		if (!player->HasUpgrade(m_upgrades.at(i).ID)) {
+			player->AddUpgrade(FetchUpgrade(m_upgrades.at(i).ID));//add all missing upgrades
+		}
+	}
+}
+
 void UpgradeList::PickThree() {
 	selection.clear();//clear selections
 	int selectionsize = 3;//pick 3
