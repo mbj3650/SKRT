@@ -22,9 +22,22 @@ PlayerObject::PlayerObject()
 };
 PlayerObject::~PlayerObject()
 {
-b2DestroyBody(ID);
-delete sm_pInstance;
-sm_pInstance = 0;
+	delete sm_pInstance;
+	sm_pInstance = 0;
+	std::cout << "PLAYER INSTANCE DESTROYED\n";
+	delete	m_pBoostPointer;
+	m_pBoostPointer = 0;
+	delete m_pSprite;
+	m_pSprite = 0;
+	std::cout << "PLAYER SPRITE DESTROYED\n";
+	
+	
+	for (int i = 0; i < Tracer.size(); i++) {
+		delete Tracer.at(i);
+		Tracer.at(i) = 0;
+	}
+	Tracer.clear();
+	std::cout << "TRACER DESTROYED\n";
 };
 
 

@@ -40,7 +40,7 @@ bool InputSystem::Initialise
 	}
 	ShowMouseCursor(false);
 	m_iNumAttachedControllers = SDL_NumJoysticks();
-	m_pXboxController = new XboxController[m_iNumAttachedControllers];
+	//m_pXboxController = new XboxController[m_iNumAttachedControllers];
 	for (int k = 0; k < m_iNumAttachedControllers; ++k)
 	{
 		if (SDL_IsGameController(k))

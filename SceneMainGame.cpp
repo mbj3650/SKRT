@@ -34,27 +34,46 @@ SceneMainGame::SceneMainGame()
 };
 SceneMainGame::~SceneMainGame()
 {
-	
 	for (int k = 0; k < m_pEntityArray->size(); ++k)
 	{
-		if (b2Body_IsValid(m_pEntityArray->at(k)->ID)) {
+		try{
 			b2DestroyBody(m_pEntityArray->at(k)->ID);
 		}
+		catch (...) {
+
+		}
+		delete m_pEntityArray->at(k);
+		m_pEntityArray->at(k) = 0;
 	}
+	std::cout << "BODY DESTROYED\n";
+	for (int i = 0; i < m_pParticleEmitter.size(); i++) {
+		delete m_pParticleEmitter.at(i);
+		m_pParticleEmitter.at(i) = 0;
+	}
+	m_pParticleEmitter.clear();
+	std::cout << "PARTICLE DESTROYED\n";
 	m_pEntityArray->clear();
 	delete m_pEntityArray;
-	delete m_pPlayerChar;
-	m_pPlayerChar = 0;
+	std::cout << "ENTITY ARRAY DESTROYED\n";
 
+	delete m_pCursor;
+	delete m_pPause;
+
+	delete m_pDirector;
+	m_pDirector = 0;
+	std::cout << "DIRECTOR DESTROYED\n";
+
+
+	std::cout << "PLAYER DESTROYED\n";
 	SoundSystem->release();
 	delete SoundSystem;
 	SoundSystem = 0;
-	delete storage;
-	storage = 0;
+	std::cout << "SOUND DESTROYED\n";
 
 	b2DestroyWorld(WorldPointer);
 	delete World;
 	World = 0;
+	std::cout << "WORLD DESTROYED\n";
 };
 
 

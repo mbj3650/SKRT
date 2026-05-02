@@ -29,8 +29,19 @@ ParticleEmitter::ParticleEmitter() :
 
 }
 ParticleEmitter::~ParticleEmitter() {
+	for (int i = 0; i < m_particles.size(); i++) {
+		delete m_particles.at(i);
+		m_particles.at(i) = 0;
+	}
 	m_particles.clear();
-	delete(m_pSharedSprite);
+	
+	try {
+		delete(m_pSharedSprite);
+		m_pSharedSprite = 0;
+	}
+	catch (...) {
+
+	}
 }
 bool ParticleEmitter::Initialise(Renderer& renderer, 
 	const char* texture, 
@@ -66,6 +77,8 @@ void ParticleEmitter::Process(float deltaTime) {
 
 	for (int i = 0; i < m_particles.size(); i++) {
 		if (m_particles.at(i)->m_bAlive == false) {
+			delete m_particles.at(i);
+			m_particles.at(i) = 0;
 			m_particles.erase(m_particles.begin() + i);//erase particle at a given position if dead
 		}
 		else {

@@ -15,7 +15,6 @@ SceneSplashAUT::~SceneSplashAUT()
 {
 	delete m_pCentre;
 	m_pCentre = 0;
-	delete this;
 }
 bool SceneSplashAUT::Initialise(Renderer& renderer)
 {

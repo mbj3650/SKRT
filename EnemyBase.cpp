@@ -22,7 +22,14 @@ EnemyBase::EnemyBase()
 };
 EnemyBase::~EnemyBase()
 {
-	m_pSprite = 0;
+	try {
+		delete m_pSprite;
+		m_pSprite = 0;
+	}
+	catch (...) {
+
+	}
+	
 };
 
 bool

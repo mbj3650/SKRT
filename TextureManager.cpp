@@ -8,18 +8,23 @@
 #include <cassert>
 #include <SDL.h>
 #include "lib/imgui/imgui.h"
+#include <iostream>
 TextureManager::TextureManager()
 {
 }
 TextureManager::~TextureManager()
 {
 	std::map<std::string, Texture*>::iterator iter = m_pLoadedTextures.begin();
+	std::cout << "TEXTURE LOOP STARTED!\n";
+
 	while (iter != m_pLoadedTextures.end())
 	{
+		std::cout << iter->first << "\n";
 		Texture* pTexture = iter->second;
 		delete pTexture;
 		++iter;
 	}
+	std::cout << "TEXTURE LOOP ENDED!\n";
 	m_pLoadedTextures.clear();
 }
 bool TextureManager::Initialise

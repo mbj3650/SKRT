@@ -79,6 +79,25 @@ void UpgradeList::Initialize(Renderer& renderer, PlayerObject* player) {
 
 UpgradeList::~UpgradeList()
 {
+	delete Menu;
+	Menu = 0;
+	delete NameHover;
+	NameHover = 0;
+	delete Skip;
+	Skip = 0;
+	delete SkipSpecial;
+	SkipSpecial = 0;
+	delete DescriptionHover;
+	DescriptionHover = 0;
+	for (int i = 0; i < 100; i++) {
+		delete spritelist[i];
+		spritelist[i] = 0;
+	}
+
+	for (int i = 0; i < 3; i++) {
+		delete spritestodraw[i];
+		spritestodraw[i] = 0;
+	}
 }
 
 void UpgradeList::AllUpgrades() {

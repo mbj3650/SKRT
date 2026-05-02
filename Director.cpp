@@ -25,7 +25,11 @@ Timepassed(0)
 };
 Director::~Director()
 {
-
+	for (int i = 0; i < m_pDirectorArray->size(); i++) {
+		delete m_pDirectorArray->at(i);
+		m_pDirectorArray->at(i) = 0;
+	}
+	m_pDirectorArray->clear();
 };
 
 bool Director::Initialise(Renderer& renderer, std::vector<EnemyBase*> &EnemyArray, PlayerObject* m_pPlayerChar ,b2WorldId WorldP)

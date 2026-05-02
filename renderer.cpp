@@ -19,6 +19,7 @@
 #include "lib/imgui/imgui.h"
 #include "lib/imgui/imgui_impl_sdl2.h"
 #include "lib/imgui/imgui_impl_opengl3.h"
+#include <iostream>
 Renderer::Renderer()
 	: m_pTextureManager(0)
 	, m_pSpriteShader(0)
@@ -36,12 +37,16 @@ Renderer::~Renderer()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
+	std::cout << "IMGUI\n";
 	delete m_pSpriteShader;
 	m_pSpriteShader = 0;
+	std::cout << "SHADER\n";
 	delete m_pSpriteVertexData;
 	m_pSpriteVertexData = 0;
+	std::cout << "VERTEX DATA\n";
 	delete m_pTextureManager;
 	m_pTextureManager = 0;
+	std::cout << "TEXTURE MANAGER\n";
 	SDL_DestroyWindow(m_pWindow);
 	IMG_Quit();
 	SDL_Quit();

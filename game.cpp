@@ -39,13 +39,23 @@ Game::Game() : m_pRenderer(0), m_bLooping(true)
 }
 Game::~Game()
 {
+	for (int i = 0; i < m_scenes.size(); i++) {
+		delete m_scenes.at(i);
+		m_scenes.at(i) = 0;
+	}
+	
 	m_pSounds.clear();
 	delete m_pInputSystem;
 	m_pInputSystem = 0;
+	std::cout << "INPUT SYSTEM DESTROYED!\n";
 	m_scenes.clear();
 	system->release();
+	std::cout << "SOUND SYSTEM AND SCENES CLEARED!";
+
+	//m_pRenderer->~Renderer();
 	delete m_pRenderer;
 	m_pRenderer = 0;
+	std::cout << "RENDERER DELETED!\n";
 }
 void Game::Quit()
 {
