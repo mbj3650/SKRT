@@ -68,7 +68,7 @@ class UpgradeList
 		Sprite* Skip;
 		Sprite* SkipSpecial;
 		Sprite* DescriptionHover;
-		Sprite* spritelist[100];
+		std::vector <Sprite*> spritelist;
 		Sprite* spritestodraw[3];
 	private:
 

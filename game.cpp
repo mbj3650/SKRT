@@ -39,6 +39,8 @@ Game::Game() : m_pRenderer(0), m_bLooping(true)
 }
 Game::~Game()
 {
+	system->release();
+	std::cout << "SYSTEM DESTROYED!\n";
 	for (int i = 0; i < m_scenes.size(); i++) {
 		delete m_scenes.at(i);
 		m_scenes.at(i) = 0;
@@ -49,7 +51,7 @@ Game::~Game()
 	m_pInputSystem = 0;
 	std::cout << "INPUT SYSTEM DESTROYED!\n";
 	m_scenes.clear();
-	system->release();
+
 	std::cout << "SOUND SYSTEM AND SCENES CLEARED!";
 
 	//m_pRenderer->~Renderer();
@@ -79,10 +81,11 @@ bool Game::Initialise()
 		printf("FMOD error! (%d) %s\n", result, FMOD_ErrorString(result));
 		exit(-1);
 	}
+
 	FMOD::Sound* newSound = nullptr;
 	system->createSound("..\\lib\\FMOD\\sound_samples\\swish.wav", FMOD_DEFAULT, NULL, &newSound);
 	m_pSounds.push_back(newSound);
-	system->playSound(m_pSounds.front(),NULL,false,NULL);
+	
 	int bbWidth = 1920;
 	int bbHeight = 1200;
 	m_pRenderer = new Renderer();
@@ -103,11 +106,15 @@ bool Game::Initialise()
 	pSplash->Initialise(*m_pRenderer);
 	m_scenes.push_back(pSplash);
 
-
-	Scene* pMainGame = 0;
+	system->playSound(m_pSounds.front(), NULL, false, NULL);
+	SceneMainGame* pMainGame = 0;
 	pMainGame = new SceneMainGame();
+	pMainGame->SetSystem(system);
 	pMainGame->Initialise(*m_pRenderer);
+	std::cout << system;
+
 	m_scenes.push_back(pMainGame);
+
 
 	//// Load static text textures into the Texture Manager...
 	//m_pRenderer->CreateStaticText("Auckland University of Technology", 50);

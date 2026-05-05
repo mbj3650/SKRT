@@ -9,6 +9,7 @@
 // Forward declarations:
 class Renderer;
 class InputSystem;
+class AnimatedSprite;
 class PlayerObject;
 class EnemyBase;
 class b2WorldDef;
@@ -38,7 +39,7 @@ public:
 	void Restart();
 	virtual void Draw(Renderer& renderer);
 	virtual void DebugDraw();
-	void SetSystem(FMOD::System& system);
+	void SetSystem(FMOD::System* system);
 protected:
 private:
 	SceneMainGame(const SceneMainGame& SceneMainGame);
@@ -51,7 +52,7 @@ protected:
 	FMOD::System* SoundSystem;
 	std::vector <ParticleEmitter*> m_pParticleEmitter;
 	std::vector<EnemyBase*>* m_pEntityArray;
-
+	std::vector<FMOD::Sound*> soundlist;
 
 	//world variables
 	int ScenesubStepCount;
@@ -77,6 +78,16 @@ protected:
 	Sprite* m_pPause;
 	float timebeforeunpause; //pause variables
 	bool paused;
+
+	enum SoundTypes {
+		KILL,
+		LEVELUP,
+		EXPLOSION,
+		MINELAYING,
+		SKIP,
+		SELECT,
+		HIT,
+	};
 
 	UpgradeList UpgradeCopy;
 	std::vector<UpgradeList::Template> applicableupgrades;

@@ -6,6 +6,7 @@
 // Local includes:
 #include "renderer.h"
 #include "sprite.h"
+#include <iostream>
 // Library includes:
 #include <cassert>
 #include "inlinehelpers.h"
@@ -187,7 +188,9 @@ void EnemyBase::ProcessDamageCollision(b2BodyId collidingwith) {//player damage
 			if (address->CanHeal()) {
 				address->AddHealth(bloodback, (health <= 0));//add health, and if enemy is dead (true) then dont lose momentum
 			}
-			
+			if (needssound.empty() && TimerPostCollide <= 0) {//play hit sound
+				needssound.push_back(1);
+			}
 			if (health <= 0) {
 				m_bAlive = false;
 			}

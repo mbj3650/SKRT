@@ -71,6 +71,14 @@ Director::Process(float deltaTime)
 			else {//else spawn the enemy
 				CreateEnemy(current);
 				Credits -= totalcost;
+				for (int g = 0; g < Arraysize; g++) {
+					if (g != current) {//if g doesnt equal chosen enemy
+						EnemyPriceMultiplier[g] -= 1 + (1 / EnemyPrice[g] * 5);
+						if (EnemyPriceMultiplier[g] < 0) {
+							EnemyPriceMultiplier[g] = 0;
+						}
+					}
+				}
 			}
 		}
 		
@@ -112,7 +120,7 @@ Director::DebugDraw()
 {
 	ImGui::Text("DIRECTOR INFORMATION:");
 	ImGui::Text("Credits: %f", Credits);
-	ImGui::Text("Demon Price: %f", EnemyPriceMultiplier[0]);
-	ImGui::Text("Demon2 Price: %f", EnemyPriceMultiplier[1]);
-	ImGui::Text("Demon3 Price: %f", EnemyPriceMultiplier[2]);
+	ImGui::Text("Demon Price: %f", EnemyPrice[0] + EnemyPriceMultiplier[0]);
+	ImGui::Text("Demon2 Price: %f", EnemyPrice[1] + EnemyPriceMultiplier[1]);
+	ImGui::Text("Demon3 Price: %f", EnemyPrice[2] + EnemyPriceMultiplier[2]);
 };

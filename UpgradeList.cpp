@@ -65,20 +65,23 @@ void UpgradeList::Initialize(Renderer& renderer, PlayerObject* player) {
 		spritepath.append(".png");
 		m_upgrades.at(i).SpritePointer = i;
 		Sprite* newsprite = renderer.CreateSprite(spritepath.c_str());
-		spritelist[i] = newsprite;//create the list
-		spritelist[i]->SetScale((64 / newsprite->GetWidth()));
+		spritelist.push_back(newsprite);//create the list
+		spritelist.at(i)->SetScale((64 / newsprite->GetWidth()));
 		if (m_upgrades.at(i).tier == 1) {
 			applicableupgrades.push_back(m_upgrades.at(i));
 		}
-
 	}
-	for (int i = 0; i < m_upgrades.size(); i++) {
 
+
+	for (int i = 0; i < m_upgrades.size(); i++) {
+		renderer.CreateStaticText(m_upgrades.at(i).name.c_str(), 16);
+		renderer.CreateStaticText(m_upgrades.at(i).description.c_str(), 16);
 	}
 }
 
 UpgradeList::~UpgradeList()
 {
+
 	delete Menu;
 	Menu = 0;
 	delete NameHover;
@@ -89,15 +92,23 @@ UpgradeList::~UpgradeList()
 	SkipSpecial = 0;
 	delete DescriptionHover;
 	DescriptionHover = 0;
-	for (int i = 0; i < 100; i++) {
-		delete spritelist[i];
-		spritelist[i] = 0;
+	std::cout << "DELETED BASICS\n";
+	for (int i = 0; i < spritelist.size(); i++) {
+			std::cout << "DELETED SPRITELIST\n" << i;
+			delete spritelist.at(i);
+			spritelist.at(i) = 0;
 	}
-
+	std::cout << "DELETED ARRAY 1\n";
 	for (int i = 0; i < 3; i++) {
-		delete spritestodraw[i];
-		spritestodraw[i] = 0;
+		if (spritestodraw[i] != NULL) {
+			spritestodraw[i] = 0;
+		}
 	}
+	SpecialIDs.clear();//holds all special ids from upgradeabless
+	m_upgrades.clear();
+	specialapplicableupgrades.clear();
+	applicableupgrades.clear();
+	std::cout << "DELETED ARRAYS\n";
 }
 
 void UpgradeList::AllUpgrades() {
@@ -283,8 +294,6 @@ void UpgradeList::Draw(Renderer& renderer)
 		Menu->Draw(renderer);
 		if (selection.size() > 0) {
 			if (selected >= 0 && selected < 10) {
-				renderer.CreateStaticText(selection.at(selected).name.c_str(), 16);
-				renderer.CreateStaticText(selection.at(selected).description.c_str(), 16);
 				NameHover = renderer.CreateSprite(selection.at(selected).name.c_str());
 				DescriptionHover = renderer.CreateSprite(selection.at(selected).description.c_str());
 				NameHover->SetX(Menu->GetX());
@@ -297,6 +306,9 @@ void UpgradeList::Draw(Renderer& renderer)
 				NameHover->Draw(renderer);
 				DescriptionHover->Draw(renderer);
 
+				delete NameHover;
+				delete DescriptionHover;
+				NameHover, DescriptionHover = 0;
 			}
 		}
 		if (anticipationskip == true) {

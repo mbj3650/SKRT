@@ -2,7 +2,9 @@
 #ifndef __EnemyBase_H__
 #define __EnemyBase_H__
 #include "vector2.h"
+#include "stdio.h"
 #include "box2d.h"
+#include <vector>
 // Forward declarations:
 class Renderer;
 class Sprite;
@@ -51,6 +53,7 @@ public:
 	int type;
 	float experiencetodrop;//experience on death
 	float bloodback; //how much  health should be returned on collision
+	std::vector<int> needssound;//the game  will check this vector to see if it needs to run any sounds
 protected:
 	float health;
 	float damage;
@@ -66,7 +69,7 @@ protected:
 	Vector2 m_boundaryLow;
 	Vector2 m_boundaryHigh;
 	bool m_bAlive;
-	
+
 	//movement and interaction variables
 	float angle;
 	float speed;
@@ -76,6 +79,9 @@ protected:
 	static bool Hittingboundary;
 	static float sm_fBoundaryWidth;
 	static float sm_fBoundaryHeight;
+
+
+
 private:
 
 };

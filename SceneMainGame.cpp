@@ -10,6 +10,7 @@
 #include "UpgradeList.h"
 #include "PlayerObject.h"
 #include "Experience.h"
+#include "AnimatedSprite.h"
 #include "EnemyBase.h"
 #include "Minelayer.h"
 #include "Mine.h"
@@ -37,7 +38,9 @@ SceneMainGame::~SceneMainGame()
 	for (int k = 0; k < m_pEntityArray->size(); ++k)
 	{
 		try{
-			b2DestroyBody(m_pEntityArray->at(k)->ID);
+			if (b2Body_IsValid(m_pEntityArray->at(k)->ID)) {
+				b2DestroyBody(m_pEntityArray->at(k)->ID);
+			}
 		}
 		catch (...) {
 
@@ -45,6 +48,7 @@ SceneMainGame::~SceneMainGame()
 		delete m_pEntityArray->at(k);
 		m_pEntityArray->at(k) = 0;
 	}
+
 	std::cout << "BODY DESTROYED\n";
 	for (int i = 0; i < m_pParticleEmitter.size(); i++) {
 		delete m_pParticleEmitter.at(i);
@@ -63,16 +67,8 @@ SceneMainGame::~SceneMainGame()
 	m_pDirector = 0;
 	std::cout << "DIRECTOR DESTROYED\n";
 
-
-	std::cout << "PLAYER DESTROYED\n";
-	SoundSystem->release();
-	delete SoundSystem;
-	SoundSystem = 0;
-	std::cout << "SOUND DESTROYED\n";
-
 	b2DestroyWorld(WorldPointer);
 	delete World;
-	World = 0;
 	std::cout << "WORLD DESTROYED\n";
 };
 
@@ -95,6 +91,39 @@ SceneMainGame::Initialise(Renderer& renderer)
 	m_pPlayerChar->Initialise(renderer, WorldPointer);
 	int SCREEN_WIDTH = renderer.GetWidth();
 	int SCREEN_HEIGHT = renderer.GetHeight();
+
+
+	FMOD::Sound* kill = nullptr;
+	FMOD::Sound* levelup = nullptr;
+	FMOD::Sound* explosion = nullptr;
+	FMOD::Sound* minelaying = nullptr;
+	FMOD::Sound* skip = nullptr;
+	FMOD::Sound* upgrade = nullptr;
+	FMOD::Sound* hit = nullptr;
+
+	SoundSystem->createSound("..\\assets\\sounds\\kill.wav", FMOD_DEFAULT, NULL, &kill);
+	soundlist.push_back(kill);
+
+	SoundSystem->createSound("..\\assets\\sounds\\level_up.wav", FMOD_DEFAULT, NULL, &levelup);
+	soundlist.push_back(levelup);
+
+	SoundSystem->createSound("..\\assets\\sounds\\mine_explosion.wav", FMOD_DEFAULT, NULL, &explosion);
+	soundlist.push_back(explosion);
+
+	SoundSystem->createSound("..\\assets\\sounds\\minelaying.wav", FMOD_DEFAULT, NULL, &minelaying);
+	soundlist.push_back(minelaying);
+
+	SoundSystem->createSound("..\\assets\\sounds\\skip.wav", FMOD_DEFAULT, NULL, &skip);
+	soundlist.push_back(skip);
+
+	SoundSystem->createSound("..\\assets\\sounds\\upgrade_select.wav", FMOD_DEFAULT, NULL, &upgrade);
+	soundlist.push_back(upgrade);
+
+	SoundSystem->createSound("..\\assets\\sounds\\hit.wav", FMOD_DEFAULT, NULL, &hit);
+
+	soundlist.push_back(hit);
+
+
 
 	//PARTICLE SET UP
 
@@ -125,8 +154,6 @@ SceneMainGame::Initialise(Renderer& renderer)
 
 	m_pParticleEmitter.push_back(mineparticles);
 
-	
-
 	UpgradeCopy.Initialize(renderer, m_pPlayerChar);
 	m_pDirector->Initialise(renderer, *m_pEntityArray, m_pPlayerChar, WorldPointer);
 
@@ -146,7 +173,8 @@ void SceneMainGame::Restart() {
 void
 SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 {
-
+	SoundSystem->update();
+	m_pCursor->Process(deltatime);
 	if (m_pPlayerChar->isAlive() == false) {//if player is dead respawn
 		Restart();
 	}
@@ -169,10 +197,12 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 		if (timebeforeunpause <= 0) {
 			timebeforeunpause = 2;
 			if (paused == true) {
+			
 				paused = false;
 				UpgradeCopy.pausemenuupgrades = false;
 			}
 			else {
+			
 				UpgradeCopy.pausemenuupgrades = true;
 				paused = true;
 			}
@@ -181,7 +211,9 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 	}
 	if (m_pPlayerChar->PlayerNeedsUpgrade == true) {//if player needs upgrade let them select one and pause simulation
 		if (UpgradeCopy.showingupgrades == false) {
+			
 			UpgradeCopy.PickThree();
+			SoundSystem->playSound(soundlist.at(LEVELUP), NULL, false, NULL);
 		}
 		UpgradeCopy.Process(deltatime, inputsystem);
 		deltatime = 0;
@@ -234,6 +266,7 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 					Minelayer* MineEntity = reinterpret_cast<Minelayer*>(m_pEntityArray->at(i));
 					if (MineEntity->needsmine == true) {//if needs mine
 						SpawnMine(b2Body_GetPosition(m_pEntityArray->at(i)->ID));
+						SoundSystem->playSound(soundlist.at(MINELAYING), NULL, false, NULL);
 						MineEntity->MinePlaced();//turn off mine call
 					}
 				}
@@ -246,11 +279,13 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 						//do mine explosion
 						m_pParticleEmitter.at(2)->SetParticlePosition(b2Body_GetPosition(m_pEntityArray->at(i)->ID));
 						m_pParticleEmitter.at(2)->Spawn();
+						SoundSystem->playSound(soundlist.at(EXPLOSION), NULL, false, NULL);
 					}
 					else {
 						//else generic enemy X
 						m_pParticleEmitter.at(1)->SetParticlePosition(b2Body_GetPosition(m_pEntityArray->at(i)->ID));
 						m_pParticleEmitter.at(1)->Spawn();
+						SoundSystem->playSound(soundlist.at(KILL), NULL, false, NULL);
 					}
 					b2DestroyBody(m_pEntityArray->at(i)->ID);//destroy impact body
 				}
@@ -326,8 +361,10 @@ void SceneMainGame::DebugDraw//debug menu
 	//m_pParticleEmitter->DebugDraw();
 }
 
-void SceneMainGame::SetSystem(FMOD::System& system) {//sound init
-	*SoundSystem = system;
+void SceneMainGame::SetSystem(FMOD::System* system) {//sound init
+	std::cout << "SET!\n";
+	std::cout << system;
+	SoundSystem = system;
 }
 
 void SceneMainGame::SpawnExp(b2Vec2 EnemyPosition, float experiencetodrop) {//spawn xp on enemy death
@@ -372,6 +409,8 @@ SceneMainGame::EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2) {//entity col
 				break;
 			case 100:
 			case 102:
+				SoundSystem->playSound(soundlist.at(HIT), NULL, false, NULL);
+
 				if (isplayer == 1) {
 					address->ProcessDamageCollision(bodyA);
 				}

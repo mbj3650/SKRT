@@ -31,11 +31,10 @@ private:
 public:
 	bool needsmine;
 protected:
-	
 	float minetimer;//wait till leaving the spot aka "minelaying" phase
 	Vector2 target;
 	bool travelling;//go to a specific point and when in range drop a mine
-	Sprite* m_pSprite;
+	AnimatedSprite* m_pASprite;
 private:
 
 };

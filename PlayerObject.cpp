@@ -66,7 +66,7 @@ PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 	DamageBase=20;
 	SpeedBase=1.2;
 	reboundlossbase=0.75;
-	experience=0;
+	experience=50;
 	level=1;
 	health=100;
 	infinitedamage=false;

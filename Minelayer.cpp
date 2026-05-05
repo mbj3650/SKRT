@@ -29,13 +29,14 @@ Minelayer::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	experiencetodrop = GetRandom(1, 5);
 	m_pPlayer = playerAddress;
 	TimerPostCollide = 0;
-	m_pSprite = renderer.CreateSprite("..\\assets\\enemies\\minelayer.png");
-	//m_pSprite->SetupFrames(66, 66);
-	//m_pSprite->SetFrameDuration(0.2);
-	//m_pSprite->SetLooping(true);
-	//m_pSprite->Animate();
+	m_pASprite = renderer.CreateAnimatedSprite("..\\assets\\enemies\\minelayeranim.png");
+	m_pASprite->SetupFrames(64, 64);
+	m_pASprite->SetFrameDuration(0.1);
+	m_pASprite->SetLooping(true);
+
+
 	const float MAX_SPEED = 250.0f;
-	const int EDGE_LIMIT = m_pSprite->GetWidth();
+	const int EDGE_LIMIT = m_pASprite->GetWidth();
 	SCREEN_WIDTH = renderer.GetWidth();
 	SCREEN_HEIGHT = renderer.GetHeight();
 	target.x = GetRandom(100, SCREEN_WIDTH - 100);
@@ -47,7 +48,7 @@ Minelayer::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	speed = GetRandom(50, 80);
 	sm_fBoundaryWidth = static_cast<float>(SCREEN_WIDTH);
 	sm_fBoundaryHeight = static_cast<float>(SCREEN_HEIGHT);
-	m_pSprite->SetScale(0.1f * 307/m_pSprite->GetWidth());
+	m_pASprite->SetScale(0.1f * 307/m_pASprite->GetWidth());
 	needsmine = false;
 	//CREATE BODY FOR THE WORLD TO USE AS SHAPE REFERENCE
 	b2BodyDef WorldObj = b2DefaultBodyDef();
@@ -55,23 +56,23 @@ Minelayer::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 		int sidetospawn = rand() % 4;//pick a random side to spawn from
 		switch (sidetospawn) {
 		case 1:
-			WorldObj.position.x = 0 - m_pSprite->GetWidth();
+			WorldObj.position.x = 0 - m_pASprite->GetWidth();
 			WorldObj.position.y = static_cast<float>(GetRandom(0, SCREEN_HEIGHT));
 			//spawn on left anywhere
 			break;
 		case 2:
-			WorldObj.position.x = static_cast<float>(SCREEN_WIDTH) + m_pSprite->GetWidth();
+			WorldObj.position.x = static_cast<float>(SCREEN_WIDTH) + m_pASprite->GetWidth();
 			WorldObj.position.y = static_cast<float>(GetRandom(0, SCREEN_HEIGHT));
 			//spawn on right anywhere
 			break;
 		case 3:
 			WorldObj.position.x = static_cast<float>(GetRandom(0, SCREEN_WIDTH));
-			WorldObj.position.y = static_cast<float>(SCREEN_HEIGHT) + m_pSprite->GetHeight();
+			WorldObj.position.y = static_cast<float>(SCREEN_HEIGHT) + m_pASprite->GetHeight();
 			//spawn on bottom anywhere
 			break;
 		default:
 			WorldObj.position.x = static_cast<float>(GetRandom(0, SCREEN_WIDTH));
-			WorldObj.position.y = 0 - m_pSprite->GetHeight();
+			WorldObj.position.y = 0 - m_pASprite->GetHeight();
 			//spawn top anywhere
 			break;
 		}
@@ -101,7 +102,7 @@ Minelayer::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 	b2Body_SetAwake(ID, true);
 	return true;
 	b2Shape_EnableContactEvents(shapeId, true);
-	b2Vec2 speedVec = { speed * (cos(m_pSprite->GetAngle())) , speed * (sin(m_pSprite->GetAngle())) };
+	b2Vec2 speedVec = { speed * (cos(m_pASprite->GetAngle())) , speed * (sin(m_pASprite->GetAngle())) };
 	b2Body_SetLinearVelocity(ID, speedVec);
 	ComputeBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
 	return true;
@@ -113,8 +114,8 @@ void Minelayer::PickNewSpot() {
 	target.x = GetRandom(100, SCREEN_WIDTH - 100);//pick new spot
 	target.y = GetRandom(100, SCREEN_HEIGHT - 100);
 	travelling = true;//start moving
-	m_pSprite->SetBlueTint(1);
-	m_pSprite->SetGreenTint(1);
+	m_pASprite->SetBlueTint(1);
+	m_pASprite->SetGreenTint(1);
 }
 
 void Minelayer::MinePlaced() {
@@ -128,7 +129,7 @@ Minelayer::Process(float deltaTime)
 		sqrt(
 			pow(((b2Body_GetPosition(ID).x) - (target.x)), 2)
 			+ pow(((b2Body_GetPosition(ID).y) - (target.y)), 2)
-		) - m_pSprite->GetWidth()/2;//get distance to player
+		) - m_pASprite->GetWidth()/2;//get distance to player
 
 
 	if (distance < 1 && TimerPostCollide <= 0) {//if reached spot
@@ -149,8 +150,11 @@ Minelayer::Process(float deltaTime)
 	else {//if isnt stunned, then see if laying a mine now
 		if (minetimer > 0) {//if currently laying mine
 			minetimer -= deltaTime;
-			m_pSprite->SetBlueTint(1 * (minetimer) / 2);
-			m_pSprite->SetGreenTint(1 * (minetimer) / 2);
+			m_pASprite->Animate();
+			m_pASprite->SetLooping(true);
+			m_pASprite->SetAngle(0);
+			m_pASprite->SetBlueTint(1 * (minetimer) / 2);
+			m_pASprite->SetGreenTint(1 * (minetimer) / 2);
 			b2Body_SetLinearVelocity(ID, { 0,0 });
 		}
 	}
@@ -162,6 +166,9 @@ Minelayer::Process(float deltaTime)
 		//LAYMINE FUNCTION HERE
 			needsmine = true;
 			PickNewSpot();
+			m_pASprite->SetLooping(false);
+			m_pASprite->StopAnimating();
+			m_pASprite->Restart();
 		}
 		
 	}
@@ -184,17 +191,20 @@ Minelayer::Process(float deltaTime)
 		b2Body_SetLinearVelocity(ID, velocityVec);
 		
 	}
-	m_pSprite->SetAngle(-angle * (180 / M_PI) - 90);
-	m_pSprite->SetX(static_cast<int>(b2Body_GetPosition(ID).x));
-	m_pSprite->SetY(static_cast<int>(b2Body_GetPosition(ID).y));
-	m_pSprite->Process(deltaTime);
+	if (!m_pASprite->IsAnimating()) {//if not animating
+		m_pASprite->SetAngle(-angle * (180 / M_PI) - 90);
+	}
+
+	m_pASprite->SetX(static_cast<int>(b2Body_GetPosition(ID).x));
+	m_pASprite->SetY(static_cast<int>(b2Body_GetPosition(ID).y));
+	m_pASprite->Process(deltaTime);
 };
 void
 Minelayer::Draw(Renderer& renderer)//draw
 {
 	if (m_bAlive)
 	{
-		m_pSprite->Draw(renderer);
+		m_pASprite->Draw(renderer);
 	}
 };
 
@@ -223,6 +233,9 @@ Minelayer::ProcessDamageCollision(b2BodyId collidingwith) {
 	}
 	PickNewSpot();
 	TimerPostCollide = 3;//also stun him for a while
+	m_pASprite->SetLooping(false);
+	m_pASprite->StopAnimating();
+	m_pASprite->Restart();
 	travelling == false;
 	float angle = atan2(b2Body_GetLocalCenterOfMass(collidingwith).y - m_position.y, b2Body_GetLocalCenterOfMass(collidingwith).x - m_position.x);
 	offsetvelocity.x += (b2Body_GetLinearVelocity(collidingwith).x * (cos(angle))) / 5;

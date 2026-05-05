@@ -19,6 +19,7 @@ public:
 	void Draw(Renderer& renderer);
 	void SetLooping(bool loop);
 	void Animate();
+	void StopAnimating();
 	bool IsAnimating() const;
 	void Restart();
 	void SetFrameDuration(float seconds);

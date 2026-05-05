@@ -35,12 +35,9 @@ ParticleEmitter::~ParticleEmitter() {
 	}
 	m_particles.clear();
 	
-	try {
+	if(m_pSharedSprite != NULL){
 		delete(m_pSharedSprite);
 		m_pSharedSprite = 0;
-	}
-	catch (...) {
-
 	}
 }
 bool ParticleEmitter::Initialise(Renderer& renderer, 
