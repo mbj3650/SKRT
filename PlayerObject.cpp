@@ -22,6 +22,7 @@ PlayerObject::PlayerObject()
 };
 PlayerObject::~PlayerObject()
 {
+	std::cout << "DELETING PLAYER INSTANCE\n";
 	delete sm_pInstance;
 	sm_pInstance = 0;
 	std::cout << "PLAYER INSTANCE DESTROYED\n";
@@ -33,6 +34,7 @@ PlayerObject::~PlayerObject()
 	
 	
 	for (int i = 0; i < Tracer.size(); i++) {
+		std::cout << "TRACER: " << i << "\n";
 		delete Tracer.at(i);
 		Tracer.at(i) = 0;
 	}
@@ -66,7 +68,7 @@ PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 	DamageBase=20;
 	SpeedBase=1.2;
 	reboundlossbase=0.75;
-	experience=50;
+	experience=52;
 	level=1;
 	health=100;
 	infinitedamage=false;

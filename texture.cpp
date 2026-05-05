@@ -19,6 +19,7 @@ Texture::Texture()
 }
 Texture::~Texture()
 {
+	std::cout << "DELETING TEXTURE\n";
 	glDeleteTextures(1, &m_uiTextureId);
 }
 bool Texture::Initialise(const char* pcFilename)

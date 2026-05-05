@@ -45,7 +45,7 @@ Game::~Game()
 		delete m_scenes.at(i);
 		m_scenes.at(i) = 0;
 	}
-	
+	std::cout << "SCENES DESTROYED!\n";
 	m_pSounds.clear();
 	delete m_pInputSystem;
 	m_pInputSystem = 0;

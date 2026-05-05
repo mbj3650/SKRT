@@ -24,6 +24,7 @@ EnemyBase::EnemyBase()
 EnemyBase::~EnemyBase()
 {
 	try {
+		std::cout << "DELETED ENEMYBASE SPRITE\n";
 		delete m_pSprite;
 		m_pSprite = 0;
 	}

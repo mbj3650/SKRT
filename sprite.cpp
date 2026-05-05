@@ -24,8 +24,8 @@ Sprite::Sprite()
 Sprite::~Sprite()
 {
 	//delete m_pTexture;
-	//m_pTexture = 0;
-	//std::cout << "SPRITE DESTROYED!\n";
+	m_pTexture = 0;
+	std::cout << "SPRITE DESTROYED!\n";
 }
 bool
 Sprite::Initialise(Texture& texture)

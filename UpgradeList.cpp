@@ -81,6 +81,7 @@ void UpgradeList::Initialize(Renderer& renderer, PlayerObject* player) {
 
 UpgradeList::~UpgradeList()
 {
+	std::cout << "DELETING UPGRADELIST\n";
 
 	delete Menu;
 	Menu = 0;

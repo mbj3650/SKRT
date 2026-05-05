@@ -20,7 +20,14 @@ Mine::Mine()
 };
 Mine::~Mine()
 {
-	m_pSprite = 0;
+	try {
+		std::cout << "DELETED MINE SPRITE\n";
+		delete m_pSprite;
+		m_pSprite = 0;
+	}
+	catch (...) {
+
+	}
 };
 
 bool

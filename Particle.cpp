@@ -11,6 +11,7 @@ Particle::Particle()
 }
 Particle::~Particle()
 {
+	m_pSharedSprite = 0;
 }
 bool
 Particle::Initialise(Sprite& sprite)

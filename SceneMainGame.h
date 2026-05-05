@@ -48,7 +48,6 @@ private:
 public:
 protected:
 
-	static SceneMainGame* sm_MainGameInstance;
 	FMOD::System* SoundSystem;
 	std::vector <ParticleEmitter*> m_pParticleEmitter;
 	std::vector<EnemyBase*>* m_pEntityArray;

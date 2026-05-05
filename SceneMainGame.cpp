@@ -23,7 +23,6 @@
 #include <iostream>
 #include "box2d.h"
 #include "particleemitter.h"
-SceneMainGame* SceneMainGame::sm_MainGameInstance = 0;
 SceneMainGame::SceneMainGame()
 	: m_iShowCount(0)
 	, m_pEntityArray{ 0 }
@@ -60,9 +59,6 @@ SceneMainGame::~SceneMainGame()
 	delete m_pEntityArray;
 	std::cout << "ENTITY ARRAY DESTROYED\n";
 
-	delete m_pCursor;
-	delete m_pPause;
-
 	delete m_pDirector;
 	m_pDirector = 0;
 	std::cout << "DIRECTOR DESTROYED\n";
@@ -70,6 +66,11 @@ SceneMainGame::~SceneMainGame()
 	b2DestroyWorld(WorldPointer);
 	delete World;
 	std::cout << "WORLD DESTROYED\n";
+
+	delete m_pCursor;
+	delete m_pPause;
+	std::cout << "CURSOR PAUSE DESTROYED\n";
+
 };
 
 

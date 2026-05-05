@@ -11,6 +11,7 @@
 #include "lib/imgui/imgui.h"
 #include "box2d.h"
 #include "inlinehelpers.h"
+#include <iostream>
 //Sprite* m_pSharedSprite;
 //std::vector<Particle*> m_particles;
 //float m_fTimeElapsed;
@@ -29,16 +30,27 @@ ParticleEmitter::ParticleEmitter() :
 
 }
 ParticleEmitter::~ParticleEmitter() {
+	std::cout << "DELETING PARTICLES\n";
 	for (int i = 0; i < m_particles.size(); i++) {
-		delete m_particles.at(i);
-		m_particles.at(i) = 0;
+		if (m_particles.at(i) != NULL) {
+			delete m_particles.at(i);
+			m_particles.at(i) = 0;
+		}
+
 	}
 	m_particles.clear();
-	
+	std::cout << "DELETED PARTICLES\n";
 	if(m_pSharedSprite != NULL){
-		delete(m_pSharedSprite);
-		m_pSharedSprite = 0;
+		try {
+			delete(m_pSharedSprite);
+			m_pSharedSprite = 0;
+		}
+		catch (...) {
+
+		}
+		
 	}
+	std::cout << "DELETING PARTICLE SPRITE\n";
 }
 bool ParticleEmitter::Initialise(Renderer& renderer, 
 	const char* texture, 
