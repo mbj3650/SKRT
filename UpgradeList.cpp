@@ -85,25 +85,23 @@ UpgradeList::~UpgradeList()
 
 	delete Menu;
 	Menu = 0;
-	delete NameHover;
-	NameHover = 0;
+	std::cout << "DELETING SKIP\n";
+
 	delete Skip;
 	Skip = 0;
 	delete SkipSpecial;
 	SkipSpecial = 0;
-	delete DescriptionHover;
-	DescriptionHover = 0;
+
 	std::cout << "DELETED BASICS\n";
 	for (int i = 0; i < spritelist.size(); i++) {
-			std::cout << "DELETED SPRITELIST\n" << i;
+			std::cout << i;
 			delete spritelist.at(i);
 			spritelist.at(i) = 0;
 	}
-	std::cout << "DELETED ARRAY 1\n";
+	std::cout << "DELETED SPRITELIST\n";
 	for (int i = 0; i < 3; i++) {
-		if (spritestodraw[i] != NULL) {
-			spritestodraw[i] = 0;
-		}
+		std::cout << spritestodraw[i] << "\n";
+		spritestodraw[i] = 0;
 	}
 	SpecialIDs.clear();//holds all special ids from upgradeabless
 	m_upgrades.clear();

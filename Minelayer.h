@@ -12,7 +12,7 @@ class Minelayer : public EnemyBase
 	// Member methods:
 public:
 	Minelayer();
-	~Minelayer();
+	~Minelayer() override;
 
 	bool Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position) override;
 	void PickNewSpot();

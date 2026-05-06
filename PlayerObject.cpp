@@ -22,9 +22,7 @@ PlayerObject::PlayerObject()
 };
 PlayerObject::~PlayerObject()
 {
-	std::cout << "DELETING PLAYER INSTANCE\n";
-	delete sm_pInstance;
-	sm_pInstance = 0;
+
 	std::cout << "PLAYER INSTANCE DESTROYED\n";
 	delete	m_pBoostPointer;
 	m_pBoostPointer = 0;
@@ -33,21 +31,26 @@ PlayerObject::~PlayerObject()
 	std::cout << "PLAYER SPRITE DESTROYED\n";
 	
 	
-	for (int i = 0; i < Tracer.size(); i++) {
-		std::cout << "TRACER: " << i << "\n";
+	for (int i = 0; i < 11; i++) {
+		std::cout << "TRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACER: " << i << "\n";
 		delete Tracer.at(i);
 		Tracer.at(i) = 0;
 	}
 	Tracer.clear();
 	std::cout << "TRACER DESTROYED\n";
+	
+	std::cout << "DELETING PLAYER INSTANCE\n";
+	//delete sm_pInstance;
+	//sm_pInstance = 0;
+
 };
 
 
-PlayerObject& PlayerObject::GetInstance()//single instance
-{
-	static PlayerObject onlyInstance;
-	return onlyInstance;
-}
+//PlayerObject& PlayerObject::GetInstance()//single instance
+//{
+//	static PlayerObject onlyInstance;
+//	return onlyInstance;
+//}
 
 
 bool PlayerObject::isAlive() {//living or dead

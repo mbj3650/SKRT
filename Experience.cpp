@@ -23,15 +23,9 @@ Experience::Experience()
 };
 Experience::~Experience()
 {
-	std::cout << "DELETED EXPERIENCE SPRITE\n";
-	try {
-
-		delete m_pSprite;
-		m_pSprite = 0;
-	}
-	catch (...) {
-
-	}
+	std::cout << "DELETED EXPERIENCE SPRITEDELETED EXPERIENCE SPRITEDELETED EXPERIENCE SPRITEDELETED EXPERIENCE SPRITE\n";
+	delete m_pSprite;
+	m_pSprite = 0;
 };
 
 bool

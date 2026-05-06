@@ -19,7 +19,7 @@ class EnemyBase
 	// Member methods:
 public:
 	EnemyBase();
-	~EnemyBase();
+	virtual ~EnemyBase();
 
 	virtual bool Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID);
 	virtual bool Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position);

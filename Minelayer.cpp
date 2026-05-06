@@ -19,16 +19,12 @@ Minelayer::Minelayer()
 };
 Minelayer::~Minelayer()
 {
-	try {
 		std::cout << "DELETED MINELAYER SPRITE\n";
 		delete m_pSprite;
 		delete m_pASprite;
 		m_pASprite = 0;
 		m_pSprite = 0;
-	}
-	catch (...) {
 
-	}
 };
 
 bool

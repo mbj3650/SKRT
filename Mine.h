@@ -11,7 +11,7 @@ class Mine : public EnemyBase
 	// Member methods:
 public:
 	Mine();
-	~Mine();
+	~Mine() override;
 
 	bool Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position);
 	void Process(float deltaTime);

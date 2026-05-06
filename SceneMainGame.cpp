@@ -59,6 +59,10 @@ SceneMainGame::~SceneMainGame()
 	delete m_pEntityArray;
 	std::cout << "ENTITY ARRAY DESTROYED\n";
 
+
+	delete m_pPlayerChar;
+	m_pPlayerChar = 0;
+
 	delete m_pDirector;
 	m_pDirector = 0;
 	std::cout << "DIRECTOR DESTROYED\n";
@@ -88,7 +92,7 @@ SceneMainGame::Initialise(Renderer& renderer)
 	ScenesubStepCount = 16;
 	gamespeed = 2;
 	storage = &renderer;
-	m_pPlayerChar = &m_pPlayerChar->GetInstance();
+	m_pPlayerChar = new PlayerObject();
 	m_pPlayerChar->Initialise(renderer, WorldPointer);
 	int SCREEN_WIDTH = renderer.GetWidth();
 	int SCREEN_HEIGHT = renderer.GetHeight();
@@ -290,7 +294,9 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 					}
 					b2DestroyBody(m_pEntityArray->at(i)->ID);//destroy impact body
 				}
-					m_pEntityArray->erase(m_pEntityArray->begin()+i);//erase 
+				delete(m_pEntityArray->at(i));
+				m_pEntityArray->at(i) = 0;
+				m_pEntityArray->erase(m_pEntityArray->begin()+i);//erase 
 			}
 		}
 	}

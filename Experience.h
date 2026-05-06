@@ -18,7 +18,7 @@ class Experience : public EnemyBase
 	// Member methods:
 public:
 	Experience();
-	~Experience();
+	~Experience() override;
 
 	bool Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position, float experiencetodrop) override;
 	float getExperienceAngle();
