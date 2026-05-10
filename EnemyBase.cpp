@@ -90,7 +90,7 @@ EnemyBase::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Worl
 
 
 	shapeDef.filter.categoryBits = 0x0002;//i am
-	shapeDef.filter.maskBits = 0x0001 | 0x0002;//i collide with
+	shapeDef.filter.maskBits = 0x0001 | 0x0002 | 0x1022;//i collide with all things
 
 	shapeId = b2CreatePolygonShape(ID, &shapeDef, &box);
 

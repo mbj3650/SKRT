@@ -23,7 +23,7 @@ Experience::Experience()
 };
 Experience::~Experience()
 {
-	std::cout << "DELETED EXPERIENCE SPRITEDELETED EXPERIENCE SPRITEDELETED EXPERIENCE SPRITEDELETED EXPERIENCE SPRITE\n";
+	std::cout << "DELETED EXPERIENCE SPRITE\n";
 	delete m_pSprite;
 	m_pSprite = 0;
 };
@@ -46,7 +46,7 @@ Experience::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Wor
 	m_pSprite->SetRedTint(0.0f);
 	sm_fBoundaryWidth = static_cast<float>(SCREEN_WIDTH);
 	sm_fBoundaryHeight = static_cast<float>(SCREEN_HEIGHT);
-	m_pSprite->SetScale(0.05f* experiencetodrop/2);
+	m_pSprite->SetScale(0.07f* experiencetodrop/2);
 
 	//CREATE BODY FOR THE WORLD TO USE AS SHAPE REFERENCE
 	b2BodyDef Exp = b2DefaultBodyDef();

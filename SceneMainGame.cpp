@@ -13,6 +13,8 @@
 #include "AnimatedSprite.h"
 #include "EnemyBase.h"
 #include "Minelayer.h"
+#include "Slower.h"
+#include "Bigboss.h"
 #include "Mine.h"
 // Library includes:
 #include <cassert>
@@ -59,7 +61,6 @@ SceneMainGame::~SceneMainGame()
 	delete m_pEntityArray;
 	std::cout << "ENTITY ARRAY DESTROYED\n";
 
-
 	delete m_pPlayerChar;
 	m_pPlayerChar = 0;
 
@@ -74,7 +75,6 @@ SceneMainGame::~SceneMainGame()
 	delete m_pCursor;
 	delete m_pPause;
 	std::cout << "CURSOR PAUSE DESTROYED\n";
-
 };
 
 
@@ -105,6 +105,7 @@ SceneMainGame::Initialise(Renderer& renderer)
 	FMOD::Sound* skip = nullptr;
 	FMOD::Sound* upgrade = nullptr;
 	FMOD::Sound* hit = nullptr;
+	FMOD::Sound* radiation = nullptr;
 
 	SoundSystem->createSound("..\\assets\\sounds\\kill.wav", FMOD_DEFAULT, NULL, &kill);
 	soundlist.push_back(kill);
@@ -125,10 +126,10 @@ SceneMainGame::Initialise(Renderer& renderer)
 	soundlist.push_back(upgrade);
 
 	SoundSystem->createSound("..\\assets\\sounds\\hit.wav", FMOD_DEFAULT, NULL, &hit);
-
 	soundlist.push_back(hit);
 
-
+	SoundSystem->createSound("..\\assets\\sounds\\radiationcharge.wav", FMOD_DEFAULT, NULL, &radiation);
+	soundlist.push_back(radiation);
 
 	//PARTICLE SET UP
 
@@ -172,6 +173,7 @@ void SceneMainGame::Restart() {
 	m_pPlayerChar->Initialise(*storage, WorldPointer);
 	UpgradeCopy.Initialize(*storage, m_pPlayerChar);
 	m_pDirector->Initialise(*storage, *m_pEntityArray, m_pPlayerChar, WorldPointer);
+	m_pDirector->SpawnTrees();
 }
 
 
@@ -186,11 +188,11 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 	else {
 
 
-	if (!m_pPlayerChar->Aiming()) {//if not aiming, make crosshair follow mouse
+	if (!m_pPlayerChar->Aiming() || (UpgradeCopy.showingupgrades == true)) {//if not aiming or showing upgrades, make crosshair follow mouse
 		m_pCursor->SetX(inputsystem.GetMousePosition().x);
 		m_pCursor->SetY(inputsystem.GetMousePosition().y);
 	}
-	else {//else use it as spot for initial tracer
+	else{//else use it as spot for initial tracer
 		m_pCursor->SetX(m_pPlayerChar->clickpos.x);
 		m_pCursor->SetY(m_pPlayerChar->clickpos.y);
 	}
@@ -265,6 +267,7 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 
 	for (int i = 0; i < m_pEntityArray->size(); i++) {//process all entities in array
 			m_pEntityArray->at(i)->Process(deltatime);
+			
 			if (m_pEntityArray->at(i)->type == 102) {//minelayer check
 				
 				try {//attempt minespawn
@@ -273,6 +276,29 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 						SpawnMine(b2Body_GetPosition(m_pEntityArray->at(i)->ID));
 						SoundSystem->playSound(soundlist.at(MINELAYING), NULL, false, NULL);
 						MineEntity->MinePlaced();//turn off mine call
+					}
+				}
+				catch (...) {
+				}
+			}
+			if (m_pEntityArray->at(i)->type == 152) {
+				try {//attempt cast
+					Slower* SlowerObj = reinterpret_cast<Slower*>(m_pEntityArray->at(i));
+					if (SlowerObj->playingsound == true) {//if needs sound
+						SoundSystem->playSound(soundlist.at(RADIATION), NULL, false, NULL);
+						SlowerObj->playingsound = false;
+					}
+				}
+				catch (...) {
+				}
+			}
+			if (m_pEntityArray->at(i)->type == 222) {//minelayer check
+				try {//attempt minespawn
+					Bigboss* BigBoss = reinterpret_cast<Bigboss*>(m_pEntityArray->at(i));
+					if (BigBoss->summonfriends == true) {//if needs mine
+						m_pDirector->CreateFriends();
+						SoundSystem->playSound(soundlist.at(MINELAYING), NULL, false, NULL);
+						BigBoss->summonfriends = false;
 					}
 				}
 				catch (...) {
@@ -322,12 +348,12 @@ SceneMainGame::Draw(Renderer& renderer)
 
 	m_pPlayerChar->Draw(renderer);
 	UpgradeCopy.Draw(renderer);
-	m_pCursor->Draw(renderer);
+
 	if (paused) {
 		m_pPause->Draw(renderer);
 
 	}
-
+	m_pCursor->Draw(renderer);
 };
 
 
@@ -361,6 +387,8 @@ void SceneMainGame::DebugDraw//debug menu
 	{
 		UpgradeCopy.AllUpgrades();
 	}
+
+	
 	//ImGui::Text("Total Entities %d", m_pEntityArray->size());
 	m_pPlayerChar->DebugDraw();
 	UpgradeCopy.DebugDraw();
@@ -415,6 +443,9 @@ SceneMainGame::EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2) {//entity col
 
 				break;
 			case 100:
+			case 111:
+			case 222:
+			case 152:
 			case 102:
 				SoundSystem->playSound(soundlist.at(HIT), NULL, false, NULL);
 
@@ -427,6 +458,11 @@ SceneMainGame::EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2) {//entity col
 				if (!address->isAlive()) {
 					b2Vec2 Position = b2Body_GetPosition(bodyB);
 					SpawnExp(Position, address->experiencetodrop);
+					if (getType == 222) {
+						for (int i = 0; i < 9; i++) {
+							SpawnExp(Position, address->experiencetodrop);
+						}
+					}
 				}
 				break;
 			}

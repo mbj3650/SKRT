@@ -41,6 +41,10 @@ void UpgradeList::Initialize(Renderer& renderer, PlayerObject* player) {
 	m_upgrades.push_back({ 322,"Whip-back",2,"rebound_2","Decreases player speed loss on collision by 20%",323,"3,020" });
 	m_upgrades.push_back({ 323,"Boomerang",3,"rebound_3","Decreases player speed loss on collision by 45%",-10,"3,045" });
 
+	m_upgrades.push_back({ 401,"Healthy",1,"health_1","Exp has a chance to heal you",402,"-1" });
+	m_upgrades.push_back({ 402,"Hearty",2,"health_2","Exp has a greater chance to heal you",0,"-1" });
+
+
 	m_upgrades.push_back({ -10,"Ricochet",4,"ricochet","Upon hitting an enemy, automatically bounce towards another enemy",0,"-1" });
 	selected = -1;
 

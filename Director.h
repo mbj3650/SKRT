@@ -22,12 +22,15 @@ public:
 		DEMON,
 		RANGER,
 		SLOWER,
+		BOSS
 	};
 	bool Initialise(Renderer& renderer, std::vector<EnemyBase*> &EnemyArray, PlayerObject* m_pPlayerChar, b2WorldId WorldP);
+	void SpawnTrees();
 	void Process(float deltaTime);
 	void Draw(Renderer& renderer);
 	void AddCredits(int exp);
 	void CreateEnemy(Enemies input);
+	void CreateFriends();
 	void DebugDraw();
 protected:
 
@@ -37,8 +40,8 @@ private:
 
 	// Member data:
 public:
-	float EnemyPrice[3];
-	float EnemyPriceMultiplier[3];
+	float EnemyPrice[4];
+	float EnemyPriceMultiplier[4];
 	std::vector<EnemyBase*>* m_pDirectorArray;
 	PlayerObject* m_pPlayer;
 	Renderer* storage;
@@ -48,6 +51,9 @@ public:
 	float Timetospawn = 1;
 	float Timepassed = 0;
 	int Arraysize;
+	int totaltrees;
+	bool Spawnboss;
+	bool spawnedtrees;
 protected:
 
 private:

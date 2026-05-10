@@ -86,6 +86,7 @@ protected:
 		SKIP,
 		SELECT,
 		HIT,
+		RADIATION,
 	};
 
 	UpgradeList UpgradeCopy;

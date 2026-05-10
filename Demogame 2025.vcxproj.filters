@@ -162,6 +162,21 @@
     <ClCompile Include="EnemyBase.cpp">
       <Filter>Source Files\Scenes\MainGame\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="IniParser.cpp">
+      <Filter>Source Files\Required</Filter>
+    </ClCompile>
+    <ClCompile Include="Tree.cpp">
+      <Filter>Source Files\Scenes\MainGame\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Slower.cpp">
+      <Filter>Source Files\Scenes\MainGame\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Bigboss.cpp">
+      <Filter>Source Files\Scenes\MainGame\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Hud.cpp">
+      <Filter>Source Files\Scenes\MainGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\imgui\imconfig.h">
@@ -298,6 +313,21 @@
     </ClInclude>
     <ClInclude Include="Experience.h">
       <Filter>Header Files\Scenes\MainGame\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="IniParser.h">
+      <Filter>Header Files\Scenes\Required</Filter>
+    </ClInclude>
+    <ClInclude Include="Tree.h">
+      <Filter>Header Files\Scenes\MainGame\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Slower.h">
+      <Filter>Header Files\Scenes\MainGame\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Bigboss.h">
+      <Filter>Header Files\Scenes\MainGame\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Hud.h">
+      <Filter>Header Files\Scenes\MainGame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -151,9 +151,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnimatedSprite.cpp" />
+    <ClCompile Include="Bigboss.cpp" />
     <ClCompile Include="Director.cpp" />
     <ClCompile Include="EnemyBase.cpp" />
     <ClCompile Include="Experience.cpp" />
+    <ClCompile Include="Hud.cpp" />
+    <ClCompile Include="IniParser.cpp" />
     <ClCompile Include="lib\FMOD\include\common.cpp" />
     <ClCompile Include="lib\FMOD\include\common_platform.cpp" />
     <ClCompile Include="Mine.cpp" />
@@ -178,9 +181,11 @@
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="SceneSplashAut.cpp" />
+    <ClCompile Include="Slower.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="Tree.cpp" />
     <ClCompile Include="UpgradeList.cpp" />
     <ClCompile Include="vector2.cpp" />
     <ClCompile Include="VertexArray.cpp" />
@@ -188,9 +193,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedSprite.h" />
+    <ClInclude Include="Bigboss.h" />
     <ClInclude Include="Director.h" />
     <ClInclude Include="EnemyBase.h" />
     <ClInclude Include="Experience.h" />
+    <ClInclude Include="Hud.h" />
+    <ClInclude Include="IniParser.h" />
     <ClInclude Include="lib\FMOD\include\common.h" />
     <ClInclude Include="lib\FMOD\include\common_platform.h" />
     <ClInclude Include="lib\FMOD\include\fmod.h" />
@@ -225,9 +233,11 @@
     <ClInclude Include="scene.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="SceneSplashAut.h" />
+    <ClInclude Include="Slower.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="Tree.h" />
     <ClInclude Include="UpgradeList.h" />
     <ClInclude Include="vector2.h" />
     <ClInclude Include="VertexArray.h" />

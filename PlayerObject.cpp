@@ -7,12 +7,15 @@
 #include "sprite.h"
 #include "lib/imgui/imgui.h"
 #include "inputsystem.h"
+#include "IniParser.h"
+#include "particleemitter.h"
 // Library includes:
 #include <cassert>
 #include <string>
 #include <box2d.h>
 #include <iostream>
-#include "particleemitter.h"
+#include "inlinehelpers.h"
+
 float PlayerObject::sm_fBoundaryWidth = 0.0f;
 float PlayerObject::sm_fBoundaryHeight = 0.0f;
 PlayerObject* PlayerObject::sm_pInstance = 0;
@@ -66,14 +69,21 @@ bool PlayerObject::isAlive() {//living or dead
 bool
 PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 {
-	SpeedminBase = 250;
-	maxdistance=200;
-	DamageBase=20;
-	SpeedBase=1.2;
-	reboundlossbase=0.75;
-	experience=52;
-	level=1;
-	health=100;
+
+	IniParser parser;
+	parser.LoadIniFile("..\\assets\\ini\\playersettings.ini");
+	SpeedminBase = parser.GetValueAsInt("SPEEDMINIMUM");
+	DamageBase= parser.GetValueAsInt("DAMAGE");
+	std::cout << DamageBase << "\n";
+	SpeedBase= parser.GetValueAsFloat("SPEEDBASE");
+	reboundlossbase= parser.GetValueAsFloat("REBOUNDLOSSBASE");
+	experience= parser.GetValueAsFloat("EXP");
+	level= parser.GetValueAsFloat("LEVEL");
+	health= parser.GetValueAsInt("HEALTH");
+
+
+	slowdowntimer = 0;
+	maxdistance = 200;
 	infinitedamage=false;
 	nospeedloss=false;
 	godmode = false;
@@ -140,7 +150,7 @@ PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 	b2Body_SetAwake(ID, false);
 
 	shapeDef.filter.categoryBits = 0x0001;//i am
-	shapeDef.filter.maskBits = 0x0008 | 0x0002;//i collide with enemies and exp (usually dont need to set this 
+	shapeDef.filter.maskBits = 0x0008 | 0x0002 | 0x0111;//i collide with enemies and exp (usually dont need to set this 
 	//since setting maskbits for other entities will mirror it
 	//onto the recieving entity
 
@@ -175,6 +185,22 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 			Drifting = false;//drifting to false
 			driftpos.x = 0;//reset values
 			driftpos.y = 0;
+		}
+
+		if (slowdowntimer > 0) {
+			slowdowntimer -= deltaTime;
+		}
+		else {
+			slowdowntimer = 0;
+		}
+
+
+		
+		if (CollideOffsetTimer > 0) {
+			CollideOffsetTimer -= deltaTime;
+		}
+		else {
+			CollideOffsetTimer = 0;
 		}
 
 		if (IFrames > 0) {//timer tick down animation
@@ -302,7 +328,10 @@ PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
 
 
 
-		b2Vec2 velocity = { Player_speed.x, Player_speed.y };
+		b2Vec2 velocity = { Player_speed.x * (1-slowdowntimer), Player_speed.y * (1 - slowdowntimer)};
+		//add offset velocity
+		velocity.x += CollideOffsetTimer/2 * offsetvelocity.x;
+		velocity.y += CollideOffsetTimer/2 * offsetvelocity.y;
 		b2Body_SetLinearVelocity(ID, velocity);//set velocity for obejct to move with
 
 	}
@@ -339,6 +368,12 @@ bool PlayerObject::isDrifting() {//as it says on the fucntion
 	return Drifting;
 }
 
+void PlayerObject::Flip() {
+	Player_speed.x *= -1.0f;
+	Player_speed.y *= -1.0f;
+	losemomentum();
+}
+
 void PlayerObject::losemomentum() {//decrease player speed as a punishment
 	if (reboundloss * (speed / SpeedBase) < 1) {//make sure the player doesnt get FASTER if their speed is fast enough
 		Player_speed.x *= reboundloss * (speed / SpeedBase); //if player speed is 1.5 while the base is 1.2, that means that rebound loss upon hitting an enemy wont be as bad
@@ -370,7 +405,24 @@ b2Vec2 PlayerObject::Position() {
 	return b2Body_GetPosition(ID);
 }
 
+
+void PlayerObject::slowdown() {
+	slowdowntimer = 0.75;
+}
+
 void PlayerObject::AddExp(float experienceamount) {//add exp on pickup
+	if (HasUpgrade(401)) {
+		int chance = (GetRandom(0, 7));
+		if (chance == 2) {
+			health += experience;
+		}
+	}
+	if (HasUpgrade(402)) {
+		int chance = (GetRandom(0, 5));
+		if (chance == 2) {
+			health += experience;
+		}
+	}
 	experience += experienceamount;
 	if (experience > exptolevel) {
 		level += 1;
@@ -433,7 +485,8 @@ float PlayerObject::GetShipAngle() {
 //check if player is fast enough to damage
 bool PlayerObject::CanDamage() {
 	float playerspeed = sqrt(pow((b2Body_GetLinearVelocity(ID).x), 2) + pow((b2Body_GetLinearVelocity(ID).y), 2));
-		return playerspeed > Speedmin;//compare speed to speed minimum to damage
+	std::cout << playerspeed << "\n";
+	return playerspeed > Speedmin;//compare speed to speed minimum to damage
 }
 
 bool PlayerObject::CanTakeDamage() {
@@ -558,6 +611,13 @@ bool PlayerObject::HasUpgrade(int ID)//does player have a certain upgrade?
 		}
 	}
 	return false;
+}
+
+void PlayerObject::BigHit(b2BodyId collidingwith) {
+	float angle = atan2(b2Body_GetLocalCenterOfMass(collidingwith).y - m_position.y, b2Body_GetLocalCenterOfMass(collidingwith).x - m_position.x);
+	offsetvelocity.x += (b2Body_GetLinearVelocity(collidingwith).x * (cos(angle))) / 3;
+	offsetvelocity.y += (b2Body_GetLinearVelocity(collidingwith).y * (sin(angle))) / 3;
+	CollideOffsetTimer = 2;
 }
 
 void PlayerObject::DebugDraw(){//debug

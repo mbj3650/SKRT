@@ -12,12 +12,15 @@
 #include "PlayerObject.h"
 #include "box2d.h"
 #include <iostream>
+#include "Tree.h"
+#include "Bigboss.h"
 #include <vector>
+#include "IniParser.h"
 #include "lib/imgui/imgui.h"
+#include "Slower.h"
 #include "inlinehelpers.h"
 Director::Director():
-EnemyPrice { 2,4,8 },
-EnemyPriceMultiplier { 0,0,0 },
+EnemyPriceMultiplier { 0,0,0,0 },
 Timetospawn(1),
 Timepassed(0)
 {
@@ -34,20 +37,41 @@ Director::~Director()
 
 bool Director::Initialise(Renderer& renderer, std::vector<EnemyBase*> &EnemyArray, PlayerObject* m_pPlayerChar ,b2WorldId WorldP)
 {
-;
-Credits = 0;
+	Credits = 1;
+	Spawnboss = true;//if true, director can spawn boss
 	Arraysize = sizeof(EnemyPrice) / sizeof(EnemyPrice[0]);
 	storage = &renderer;
 	m_pPlayer = m_pPlayerChar;
 	Worldref = WorldP;
 	m_pDirectorArray = &EnemyArray;
-
+	IniParser Parser;
+	Parser.LoadIniFile("..\\assets\\ini\\enemyprices.ini");
+	EnemyPrice[0] = Parser.GetValueAsInt("DEMON");
+	EnemyPrice[1] = Parser.GetValueAsInt("SLOWER");
+	EnemyPrice[2] = Parser.GetValueAsInt("MINELAYER");
+	EnemyPrice[3] = Parser.GetValueAsInt("BIGBOSS");
+	//we get the area and then divide by the tree value to get how many trees to spawn
+	totaltrees = Parser.GetValueAsInt("TREES");
+	std::cout << totaltrees << "\n";
+	spawnedtrees = false;
 	return true;
 };
+
+void Director::SpawnTrees() {
+	spawnedtrees = true;
+	for (int i = 0; i < totaltrees; i++) {
+		m_pDirectorArray->push_back(new Tree());
+		m_pDirectorArray->at(m_pDirectorArray->size() - 1)->Initialise(*storage, m_pPlayer->ID, Worldref);
+	}
+}
 
 void
 Director::Process(float deltaTime)
 {
+
+	if (spawnedtrees == false) {
+		SpawnTrees();
+	}
 	if (Credits < 150) {
 		float timepasscreditbonus = deltaTime * (Timepassed / 100);// slowly gain more credits overtime
 		Credits += timepasscreditbonus + deltaTime;
@@ -57,9 +81,16 @@ Director::Process(float deltaTime)
 		EnemyPriceMultiplier[i] += deltaTime * (Timepassed / 100 / EnemyPrice[i]);
 	}
 	if (Timetospawn <= 0) {//if time between enemies is not on cooldown
+
 		
 		Timetospawn = GetRandom(0, 2);//pick a random time to spawn next enemy
-		Enemies current = SLOWER;//pick end enemy		
+		Enemies current;
+		if (Spawnboss == true) {//if can spawn boss
+			current = BOSS;//pick Boss
+		}
+		else {
+			current = SLOWER;//pick end enemy		
+		}
 		for (int i = 0; i < Arraysize; i++) {//go trhough all possible enemies
 			int totalcost = EnemyPrice[current] + (EnemyPriceMultiplier[current]);//to stop the game from spamming the same enemy, make it more expensive until the game spawns something else
 			if (totalcost > Credits) {//if enemyprice is too expensive
@@ -100,11 +131,14 @@ void Director::AddCredits(int exp) {
 
 void Director::CreateEnemy(Enemies input) {
 			switch (input) {//spawn corressponding enemy
+			case 3:
+				m_pDirectorArray->push_back(new Bigboss());
+				break;
 			case 2:
 				m_pDirectorArray->push_back(new Minelayer());
 				break;
 			case 1:
-				m_pDirectorArray->push_back(new EnemyBase());
+				m_pDirectorArray->push_back(new Slower());
 				break;
 			case 0:
 				m_pDirectorArray->push_back(new EnemyBase());
@@ -112,6 +146,20 @@ void Director::CreateEnemy(Enemies input) {
 			}
 			TotalEntities++;
 			m_pDirectorArray->at(m_pDirectorArray->size()-1)->Initialise(*storage, m_pPlayer->ID, Worldref, {-9999,-9999});
+}
+
+void Director::CreateFriends() {
+	m_pDirectorArray->push_back(new Minelayer());
+	m_pDirectorArray->at(m_pDirectorArray->size() - 1)->Initialise(*storage, m_pPlayer->ID, Worldref, { -9999,-9999 });
+	m_pDirectorArray->push_back(new Slower());
+	m_pDirectorArray->at(m_pDirectorArray->size() - 1)->Initialise(*storage, m_pPlayer->ID, Worldref, { -9999,-9999 });
+	m_pDirectorArray->push_back(new Slower());
+	m_pDirectorArray->at(m_pDirectorArray->size() - 1)->Initialise(*storage, m_pPlayer->ID, Worldref, { -9999,-9999 });
+	m_pDirectorArray->push_back(new EnemyBase());
+	m_pDirectorArray->at(m_pDirectorArray->size() - 1)->Initialise(*storage, m_pPlayer->ID, Worldref, { -9999,-9999 });
+	m_pDirectorArray->push_back(new EnemyBase());
+	m_pDirectorArray->at(m_pDirectorArray->size() - 1)->Initialise(*storage, m_pPlayer->ID, Worldref, { -9999,-9999 });
+	TotalEntities+= 5;
 }
 
 

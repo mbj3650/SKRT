@@ -31,6 +31,7 @@ public:
 	void Process(float deltaTime, InputSystem& inputSystem);
 	void Draw(Renderer& renderer);
 	void Kill();
+	void slowdown();
 	void AddExp(float experienceamount);
 	void CheckLevel();
 	void AddHealth(float healthtoadd,bool isdead);
@@ -42,6 +43,7 @@ public:
 	bool CanDamage();
 	bool CanTakeDamage();
 	bool isDrifting();
+	void Flip();
 	void losemomentum();
 	Vector2 getDriftAngle();
 	float getDamage();
@@ -50,6 +52,7 @@ public:
 	bool AddUpgrade(int upgrade);
 	void UpdateStats();
 	bool HasUpgrade(int ID);
+	void BigHit(b2BodyId collidingwith);
 	void ActivateCheat(int Cheat);
 	bool isAlive();
 	bool Aiming();
@@ -75,7 +78,7 @@ protected:
 	float experience;
 	float level;
 	bool Drifting;
-
+	
 	//base values for reference
 	float SpeedminBase;
 	float SpeedBase;
@@ -88,13 +91,14 @@ protected:
 	int maxdistance;
 	bool IsAiming;
 	float Damage;
-	
+	float slowdowntimer;
 	float Speedmin;
 	float reboundloss;
-
+	float CollideOffsetTimer;
 	int health;
 	float IFrames;
 	//position stuff
+	Vector2 offsetvelocity;
 	Vector2 driftpos;
 	Vector2 Player_speed;
 	float storedvelocity;
