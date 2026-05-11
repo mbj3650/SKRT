@@ -19,7 +19,7 @@ TextureManager::~TextureManager()
 
 	while (iter != m_pLoadedTextures.end())
 	{
-		std::cout << iter->first << "\n";
+		std::cout << "DELETING: "<< iter->first << "\n";
 		Texture* pTexture = iter->second;
 		delete pTexture;
 		++iter;

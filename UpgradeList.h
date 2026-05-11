@@ -33,6 +33,7 @@ class UpgradeList
 		void AllUpgrades();
 		void PickThree();
 		Sprite* CreateText(char string[]);
+		void Restart(Renderer& renderer, PlayerObject* player);
 		void Process(float deltaTime, InputSystem& inputSystem);
 		void Draw(Renderer& renderer);
 		void ReplaceApplicableupgrade(Template Upgradetograb);

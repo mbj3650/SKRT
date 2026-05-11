@@ -190,6 +190,33 @@ Sprite* UpgradeList::CreateText(char string[]) {
 	return NULL;
 }
 
+void UpgradeList::Restart(Renderer& renderer, PlayerObject* player) {
+	this->player = player;
+	SCREEN_WIDTH = renderer.GetWidth();
+	SCREEN_HEIGHT = renderer.GetHeight();
+
+	//int ID;
+	//std::string name;
+	//int tier;
+	//int effect;
+	//std::string iconpath;
+	//std::string description;
+	//int upgradesinto;
+	// stateffect 
+	//Sprite object
+
+	//Name, cost, effect, icon, description,stateffect
+	selected = -1;
+	applicableupgrades.clear();
+	//set up  the applicable starting list (contains all tier 1s at the start)
+	for (int i = 0; i < m_upgrades.size(); i++) {
+		if (m_upgrades.at(i).tier == 1) {
+			applicableupgrades.push_back(m_upgrades.at(i));
+		}
+	}
+
+}
+
 
 void
 UpgradeList::Process(float deltaTime, InputSystem& inputSystem)
@@ -288,7 +315,7 @@ void UpgradeList::Draw(Renderer& renderer)
 		Sprite* currentsprite;//go through all player upgrades
 		for (int i = 0; i < player->GetUgprades().size(); i++) {//rows of 7 upgrades each row
 			currentsprite = spritelist[player->GetUgprades().at(i).SpritePointer];
-			currentsprite->SetX(32 + (currentsprite->GetWidth() * (i%7)));
+			currentsprite->SetX(SCREEN_WIDTH- 32 -(currentsprite->GetWidth() * (i%7)));
 			currentsprite->SetY(32 + (currentsprite->GetHeight() * (i / 7)));
 			currentsprite->Draw(renderer);
 		}

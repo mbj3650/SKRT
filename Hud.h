@@ -4,7 +4,10 @@
 
 // Forward declarations:
 class Renderer;
-
+class Sprite;
+class PlayerObject;
+#include <string>;
+#include <vector>;
 // Class declaration:
 class Hud
 {
@@ -13,8 +16,12 @@ public:
 	Hud();
 	~Hud();
 
-	bool Initialise(Renderer& renderer);
+	bool Initialise(Renderer& renderer, PlayerObject* player);
+	void updatestats();
+	void DisplayScore();
 	void Process(float deltaTime);
+	void GameWipe();
+	void SetPlayer(PlayerObject* player);
 	void Draw(Renderer& renderer);
 
 protected:
@@ -27,7 +34,15 @@ private:
 public:
 
 protected:
-
+	Sprite* m_pSpriteHealth;
+	Sprite* HealthText;
+	std::string gameover;
+	std::string restart;
+	Renderer* storage;
+	Sprite* text;
+		Sprite* text2;
+		std::vector <Sprite*> spritelist;
+	PlayerObject* m_pPlayer;
 private:
 
 };

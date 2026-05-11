@@ -14,6 +14,7 @@
 #include "EnemyBase.h"
 #include "Minelayer.h"
 #include "Slower.h"
+#include "Hud.h"
 #include "Bigboss.h"
 #include "Mine.h"
 // Library includes:
@@ -51,6 +52,10 @@ SceneMainGame::~SceneMainGame()
 	}
 
 	std::cout << "BODY DESTROYED\n";
+
+	delete UserInfo;
+	UserInfo = 0;
+	std::cout << "USERINFO DESTROYED\n";
 	for (int i = 0; i < m_pParticleEmitter.size(); i++) {
 		delete m_pParticleEmitter.at(i);
 		m_pParticleEmitter.at(i) = 0;
@@ -63,6 +68,9 @@ SceneMainGame::~SceneMainGame()
 
 	delete m_pPlayerChar;
 	m_pPlayerChar = 0;
+
+	delete UpgradeCopy;
+	UpgradeCopy = 0;
 
 	delete m_pDirector;
 	m_pDirector = 0;
@@ -83,97 +91,140 @@ bool
 SceneMainGame::Initialise(Renderer& renderer)
 {
 	srand(time(NULL));
-	m_pEntityArray = new std::vector<EnemyBase*>;
-	m_pDirector = new Director();
-	World = new b2WorldDef();
-	*World = b2DefaultWorldDef();
-	WorldPointer = b2CreateWorld(World);
-	b2World_SetGravity(WorldPointer,{ 0,0 });
-	ScenesubStepCount = 16;
-	gamespeed = 2;
-	storage = &renderer;
-	m_pPlayerChar = new PlayerObject();
-	m_pPlayerChar->Initialise(renderer, WorldPointer);
 	int SCREEN_WIDTH = renderer.GetWidth();
 	int SCREEN_HEIGHT = renderer.GetHeight();
 
+	if (World == NULL) {
+		World = new b2WorldDef();
+		*World = b2DefaultWorldDef();
+		WorldPointer = b2CreateWorld(World);
+		b2World_SetGravity(WorldPointer, { 0,0 });
+		ScenesubStepCount = 16;
+		gamespeed = 2;
+	}
 
-	FMOD::Sound* kill = nullptr;
-	FMOD::Sound* levelup = nullptr;
-	FMOD::Sound* explosion = nullptr;
-	FMOD::Sound* minelaying = nullptr;
-	FMOD::Sound* skip = nullptr;
-	FMOD::Sound* upgrade = nullptr;
-	FMOD::Sound* hit = nullptr;
-	FMOD::Sound* radiation = nullptr;
+	if (soundlist.empty()) {
 
-	SoundSystem->createSound("..\\assets\\sounds\\kill.wav", FMOD_DEFAULT, NULL, &kill);
-	soundlist.push_back(kill);
+		FMOD::Sound* kill = nullptr;
+		FMOD::Sound* levelup = nullptr;
+		FMOD::Sound* explosion = nullptr;
+		FMOD::Sound* minelaying = nullptr;
+		FMOD::Sound* skip = nullptr;
+		FMOD::Sound* upgrade = nullptr;
+		FMOD::Sound* hit = nullptr;
+		FMOD::Sound* radiation = nullptr;
 
-	SoundSystem->createSound("..\\assets\\sounds\\level_up.wav", FMOD_DEFAULT, NULL, &levelup);
-	soundlist.push_back(levelup);
+		SoundSystem->createSound("..\\assets\\sounds\\kill.wav", FMOD_DEFAULT, NULL, &kill);
+		soundlist.push_back(kill);
 
-	SoundSystem->createSound("..\\assets\\sounds\\mine_explosion.wav", FMOD_DEFAULT, NULL, &explosion);
-	soundlist.push_back(explosion);
+		SoundSystem->createSound("..\\assets\\sounds\\level_up.wav", FMOD_DEFAULT, NULL, &levelup);
+		soundlist.push_back(levelup);
 
-	SoundSystem->createSound("..\\assets\\sounds\\minelaying.wav", FMOD_DEFAULT, NULL, &minelaying);
-	soundlist.push_back(minelaying);
+		SoundSystem->createSound("..\\assets\\sounds\\mine_explosion.wav", FMOD_DEFAULT, NULL, &explosion);
+		soundlist.push_back(explosion);
 
-	SoundSystem->createSound("..\\assets\\sounds\\skip.wav", FMOD_DEFAULT, NULL, &skip);
-	soundlist.push_back(skip);
+		SoundSystem->createSound("..\\assets\\sounds\\minelaying.wav", FMOD_DEFAULT, NULL, &minelaying);
+		soundlist.push_back(minelaying);
 
-	SoundSystem->createSound("..\\assets\\sounds\\upgrade_select.wav", FMOD_DEFAULT, NULL, &upgrade);
-	soundlist.push_back(upgrade);
+		SoundSystem->createSound("..\\assets\\sounds\\skip.wav", FMOD_DEFAULT, NULL, &skip);
+		soundlist.push_back(skip);
 
-	SoundSystem->createSound("..\\assets\\sounds\\hit.wav", FMOD_DEFAULT, NULL, &hit);
-	soundlist.push_back(hit);
+		SoundSystem->createSound("..\\assets\\sounds\\upgrade_select.wav", FMOD_DEFAULT, NULL, &upgrade);
+		soundlist.push_back(upgrade);
 
-	SoundSystem->createSound("..\\assets\\sounds\\radiationcharge.wav", FMOD_DEFAULT, NULL, &radiation);
-	soundlist.push_back(radiation);
+		SoundSystem->createSound("..\\assets\\sounds\\hit.wav", FMOD_DEFAULT, NULL, &hit);
+		soundlist.push_back(hit);
 
+		SoundSystem->createSound("..\\assets\\sounds\\radiationcharge.wav", FMOD_DEFAULT, NULL, &radiation);
+		soundlist.push_back(radiation);
+	}
 	//PARTICLE SET UP
+	if (m_pParticleEmitter.empty()) {
+		float defaultcolor[3] = { 1,1,1 };//dont change color of particle
 
-	float defaultcolor[3] = { 1,1,1 };//dont change color of particle
+		ParticleEmitter* smokeparticles = new ParticleEmitter();
+		std::string particle = "..\\assets\\drift.png";
 
-	ParticleEmitter* smokeparticles = new ParticleEmitter();
-	std::string particle = "..\\assets\\drift.png";
+		smokeparticles->Initialise(renderer, particle.c_str(), 0.1, 0.3, 600, defaultcolor, 0, 360, 3);
 
-	smokeparticles->Initialise(renderer, particle.c_str(),0.1,0.3,600, defaultcolor,0,360,3);
+		m_pParticleEmitter.push_back(smokeparticles);
 
-	m_pParticleEmitter.push_back(smokeparticles);
+		ParticleEmitter* deathparticles = new ParticleEmitter();
+		particle = "..\\assets\\deathexplosion.png";
+		deathparticles->Initialise(renderer, particle.c_str(), -1, 0.3, 0, defaultcolor, 0, 360, 1);
 
-	m_pCursor = renderer.CreateSprite("..\\assets\\crosshair.png");
-	m_pPause = renderer.CreateSprite("..\\assets\\pausemenu.png");
-	m_pPause->SetScale(0.25);
-	m_pPause->SetX(SCREEN_WIDTH / 2);
-	m_pPause->SetY(SCREEN_HEIGHT / 2);
-	ParticleEmitter* deathparticles = new ParticleEmitter();
-	particle = "..\\assets\\deathexplosion.png";
-	deathparticles->Initialise(renderer, particle.c_str(), -1, 0.3, 0, defaultcolor, 0, 360, 1);
-
-	m_pParticleEmitter.push_back(deathparticles);
+		m_pParticleEmitter.push_back(deathparticles);
 
 
-	ParticleEmitter* mineparticles = new ParticleEmitter();
-	particle = "..\\assets\\mineexplosion.png";
-	mineparticles->Initialise(renderer, particle.c_str(), -1, 0.3, 0, defaultcolor, 0, 360, 1);
+		ParticleEmitter* mineparticles = new ParticleEmitter();
+		particle = "..\\assets\\mineexplosion.png";
+		mineparticles->Initialise(renderer, particle.c_str(), -1, 0.3, 0, defaultcolor, 0, 360, 1);
 
-	m_pParticleEmitter.push_back(mineparticles);
+		m_pParticleEmitter.push_back(mineparticles);
+	}
+	
+	if (m_pCursor == NULL) {
+		m_pCursor = renderer.CreateSprite("..\\assets\\crosshair.png");
+		m_pPause = renderer.CreateSprite("..\\assets\\pausemenu.png");
+		m_pPause->SetScale(0.25);
+		m_pPause->SetX(SCREEN_WIDTH / 2);
+		m_pPause->SetY(SCREEN_HEIGHT / 2);
+	}
+	
+	storage = &renderer;
+	m_pPlayerChar = new PlayerObject();
+	m_pPlayerChar->Initialise(renderer, WorldPointer);
 
-	UpgradeCopy.Initialize(renderer, m_pPlayerChar);
+	m_pEntityArray = new std::vector<EnemyBase*>;
+	if (UpgradeCopy == NULL) {
+		UpgradeCopy = new UpgradeList();
+		UpgradeCopy->Initialize(renderer, m_pPlayerChar);
+	}
+	else {
+		UpgradeCopy->Restart(renderer, m_pPlayerChar);
+	}
+	
+
+
+	m_pDirector = new Director();
 	m_pDirector->Initialise(renderer, *m_pEntityArray, m_pPlayerChar, WorldPointer);
+	if (UserInfo == NULL) {
+		UserInfo = new Hud();
+		UserInfo->Initialise(renderer, m_pPlayerChar);
+	}
+	else {
+		UserInfo->SetPlayer(m_pPlayerChar);
+	}
 
 	return true;
 };
 
 void SceneMainGame::Restart() {
-	srand(time(NULL));
+	for (int k = 0; k < m_pEntityArray->size(); ++k)
+	{
+		try {
+			if (b2Body_IsValid(m_pEntityArray->at(k)->ID)) {
+				b2DestroyBody(m_pEntityArray->at(k)->ID);
+			}
+		}
+		catch (...) {
+
+		}
+		delete m_pEntityArray->at(k);
+		m_pEntityArray->at(k) = 0;
+	}
 	m_pEntityArray->clear();
-	m_pEntityArray = new std::vector<EnemyBase*>;
-	m_pPlayerChar->Initialise(*storage, WorldPointer);
-	UpgradeCopy.Initialize(*storage, m_pPlayerChar);
-	m_pDirector->Initialise(*storage, *m_pEntityArray, m_pPlayerChar, WorldPointer);
-	m_pDirector->SpawnTrees();
+	delete m_pEntityArray;
+	std::cout << "ENTITY ARRAY DESTROYED\n";
+
+	delete m_pPlayerChar;
+	m_pPlayerChar = 0;
+
+	delete m_pDirector;
+	m_pDirector = 0;
+	std::cout << "DIRECTOR DESTROYED\n";
+
+	this->Initialise(*storage);
 }
 
 
@@ -182,13 +233,20 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 {
 	SoundSystem->update();
 	m_pCursor->Process(deltatime);
+	UserInfo->Process(deltatime);
+	if (hasclicked == false && m_pPlayerChar->Aiming()) {
+		//remove tutorial sprite
+	}
 	if (m_pPlayerChar->isAlive() == false) {//if player is dead respawn
-		Restart();
+		if (inputsystem.GetKeyState((SDL_SCANCODE_R)) == BS_HELD) {
+			UserInfo->GameWipe();
+			Restart();
+		}
 	}
 	else {
 
 
-	if (!m_pPlayerChar->Aiming() || (UpgradeCopy.showingupgrades == true)) {//if not aiming or showing upgrades, make crosshair follow mouse
+	if (!m_pPlayerChar->Aiming() || (UpgradeCopy->showingupgrades == true)) {//if not aiming or showing upgrades, make crosshair follow mouse
 		m_pCursor->SetX(inputsystem.GetMousePosition().x);
 		m_pCursor->SetY(inputsystem.GetMousePosition().y);
 	}
@@ -206,23 +264,23 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 			if (paused == true) {
 			
 				paused = false;
-				UpgradeCopy.pausemenuupgrades = false;
+				UpgradeCopy->pausemenuupgrades = false;
 			}
 			else {
 			
-				UpgradeCopy.pausemenuupgrades = true;
+				UpgradeCopy->pausemenuupgrades = true;
 				paused = true;
 			}
 		}
 
 	}
 	if (m_pPlayerChar->PlayerNeedsUpgrade == true) {//if player needs upgrade let them select one and pause simulation
-		if (UpgradeCopy.showingupgrades == false) {
+		if (UpgradeCopy->showingupgrades == false) {
 			
-			UpgradeCopy.PickThree();
+			UpgradeCopy->PickThree();
 			SoundSystem->playSound(soundlist.at(LEVELUP), NULL, false, NULL);
 		}
-		UpgradeCopy.Process(deltatime, inputsystem);
+		UpgradeCopy->Process(deltatime, inputsystem);
 		deltatime = 0;
 	}
 
@@ -347,11 +405,11 @@ SceneMainGame::Draw(Renderer& renderer)
 	}
 
 	m_pPlayerChar->Draw(renderer);
-	UpgradeCopy.Draw(renderer);
+	UpgradeCopy->Draw(renderer);
 
+	UserInfo->Draw(renderer);
 	if (paused) {
 		m_pPause->Draw(renderer);
-
 	}
 	m_pCursor->Draw(renderer);
 };
@@ -385,13 +443,13 @@ void SceneMainGame::DebugDraw//debug menu
 	}
 	if (ImGui::Button("All Upgrades"))
 	{
-		UpgradeCopy.AllUpgrades();
+		UpgradeCopy->AllUpgrades();
 	}
 
 	
 	//ImGui::Text("Total Entities %d", m_pEntityArray->size());
 	m_pPlayerChar->DebugDraw();
-	UpgradeCopy.DebugDraw();
+	UpgradeCopy->DebugDraw();
 	m_pDirector->DebugDraw();
 	//m_pParticleEmitter->DebugDraw();
 }

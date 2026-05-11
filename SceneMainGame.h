@@ -15,6 +15,7 @@ class EnemyBase;
 class b2WorldDef;
 class Director;
 class Player;
+class Hud;
 class b2WorldId;
 class Sprite;
 class UpgradeList;
@@ -65,10 +66,11 @@ protected:
 	Director* m_pDirector;
 	int m_iShowCount;
 	int selectedentity;
-
+	Hud* UserInfo;
 
 	int gamespeed;
 	bool Shooting;
+	bool hasclicked;
 	int cooldown;
 	int TotalEntities;
 	int Score;
@@ -89,7 +91,7 @@ protected:
 		RADIATION,
 	};
 
-	UpgradeList UpgradeCopy;
+	UpgradeList* UpgradeCopy;
 	std::vector<UpgradeList::Template> applicableupgrades;
 private:
 

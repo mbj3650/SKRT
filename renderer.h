@@ -24,6 +24,7 @@ public:
 	void GetClearColour(unsigned char& r, unsigned char& g, unsigned char& b);
 	int GetWidth() const;
 	int GetHeight() const;
+	void DeleteSprite(const char* pcFilename);
 	Sprite* CreateSprite(const char* pcFilename);
 	void DrawSprite(Sprite& sprite);
 	AnimatedSprite* CreateAnimatedSprite(const char* pcFilename);

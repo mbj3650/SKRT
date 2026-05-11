@@ -28,6 +28,7 @@ public:
 	bool Initialise(Renderer& renderer, Player* playerAddress);
 	void SetPosition(b2Vec2 position);
 	bool Initialise(Renderer& renderer, b2WorldId WorldId);
+	int GetHealth();
 	void Process(float deltaTime, InputSystem& inputSystem);
 	void Draw(Renderer& renderer);
 	void Kill();
@@ -37,6 +38,7 @@ public:
 	void AddHealth(float healthtoadd,bool isdead);
 	bool CanHeal();
 	void takedamage(float damagetotake);
+	int GetScore();
 	float getSpeed();
 	float GetRadius();
 	b2Vec2 Position();
@@ -84,7 +86,7 @@ protected:
 	float SpeedBase;
 	float DamageBase;
 	float reboundlossbase;
-
+	int score;
 	//values that will be used in the game
 	float ratio;
 	float speed;

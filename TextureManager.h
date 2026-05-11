@@ -15,6 +15,7 @@ public:
 	bool Initialise();
 	Texture* GetTexture(const char* pcFilename);
 	void AddTexture(const char* key, Texture* pTexture);
+	void DeleteTexture(const char* key);
 	void DebugDraw();
 protected:
 private:

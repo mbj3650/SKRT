@@ -35,9 +35,12 @@ PlayerObject::~PlayerObject()
 	
 	
 	for (int i = 0; i < 11; i++) {
-		std::cout << "TRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACERTRACER: " << i << "\n";
-		delete Tracer.at(i);
-		Tracer.at(i) = 0;
+		std::cout << "TRACER: " << i << "\n";
+		if (Tracer.at(i) != NULL) {
+			delete Tracer.at(i);
+			Tracer.at(i) = 0;
+		}
+		
 	}
 	Tracer.clear();
 	std::cout << "TRACER DESTROYED\n";
@@ -167,7 +170,9 @@ PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 	return true;
 };
 
-
+int PlayerObject::GetHealth() {
+	return health;
+}
 
 void
 PlayerObject::Process(float deltaTime, InputSystem& inputSystem)
@@ -411,6 +416,7 @@ void PlayerObject::slowdown() {
 }
 
 void PlayerObject::AddExp(float experienceamount) {//add exp on pickup
+	score += experience;
 	if (HasUpgrade(401)) {
 		int chance = (GetRandom(0, 7));
 		if (chance == 2) {
@@ -437,9 +443,14 @@ void PlayerObject::CheckLevel() {
 }
 
 void PlayerObject::AddHealth(float healthtoadd, bool isdead) {
-	health += healthtoadd;
+	if (health + healthtoadd > 100) {
+		health = 100;
+	}
+	else {
+		health += healthtoadd;
+	}
 	healthdelay = 0.2;//timer before health can be added
-	if (isdead == true && IFrames <= 0) {//if enemy is dead from the hit and player can take damage
+	if (isdead != true && IFrames <= 0) {//if enemy is dead from the hit and player can take damage
 		losemomentum();//lose momentum
 	}
 }
@@ -471,6 +482,10 @@ void PlayerObject::takedamage(float damagetotake)
 		}
 		
 	}
+}
+
+int PlayerObject::GetScore() {
+	return score;
 }
 
 bool PlayerObject::Aiming()
