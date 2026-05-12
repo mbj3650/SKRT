@@ -32,6 +32,7 @@ SceneMainGame::SceneMainGame()
 	, cooldown(0)//time between shooting
 	, Score(0)
 	, timebeforeunpause(0)
+	, hasclicked(false)
 {
 
 };
@@ -80,9 +81,10 @@ SceneMainGame::~SceneMainGame()
 	delete World;
 	std::cout << "WORLD DESTROYED\n";
 
+	delete m_pTutorial;
 	delete m_pCursor;
 	delete m_pPause;
-	std::cout << "CURSOR PAUSE DESTROYED\n";
+	std::cout << "MISC SPRITES DESTROYED\n";
 };
 
 
@@ -163,10 +165,12 @@ SceneMainGame::Initialise(Renderer& renderer)
 		m_pParticleEmitter.push_back(mineparticles);
 	}
 	
-	if (m_pCursor == NULL) {
+	if (m_pCursor == NULL) {//if sprites uninitialized, initialize them, otherwise dont to avoid texture manager memory leak issues
+		m_pTutorial = renderer.CreateSprite("..\\assets\\tutorial.png");
 		m_pCursor = renderer.CreateSprite("..\\assets\\crosshair.png");
 		m_pPause = renderer.CreateSprite("..\\assets\\pausemenu.png");
 		m_pPause->SetScale(0.25);
+		m_pTutorial->SetScale(0.5);
 		m_pPause->SetX(SCREEN_WIDTH / 2);
 		m_pPause->SetY(SCREEN_HEIGHT / 2);
 	}
@@ -174,7 +178,8 @@ SceneMainGame::Initialise(Renderer& renderer)
 	storage = &renderer;
 	m_pPlayerChar = new PlayerObject();
 	m_pPlayerChar->Initialise(renderer, WorldPointer);
-
+	m_pTutorial->SetX(m_pPlayerChar->Position().x);
+	m_pTutorial->SetY(m_pPlayerChar->Position().y);
 	m_pEntityArray = new std::vector<EnemyBase*>;
 	if (UpgradeCopy == NULL) {
 		UpgradeCopy = new UpgradeList();
@@ -234,8 +239,11 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 	SoundSystem->update();
 	m_pCursor->Process(deltatime);
 	UserInfo->Process(deltatime);
-	if (hasclicked == false && m_pPlayerChar->Aiming()) {
-		//remove tutorial sprite
+	if (hasclicked == false) {
+		if (m_pPlayerChar->Aiming()) {
+			hasclicked = true;
+		}
+		
 	}
 	if (m_pPlayerChar->isAlive() == false) {//if player is dead respawn
 		if (inputsystem.GetKeyState((SDL_SCANCODE_R)) == BS_HELD) {
@@ -394,6 +402,9 @@ SceneMainGame::CheckCollisions() {
 void
 SceneMainGame::Draw(Renderer& renderer)
 {
+	if (hasclicked == false) {
+		m_pTutorial->Draw(renderer);
+	}
 	//draw everything
 	for (int i = 0; i < m_pParticleEmitter.size(); i++) {
 		if (m_pParticleEmitter.at(i) != NULL) {

@@ -194,6 +194,9 @@ void Game::Process(float deltaTime)
 		//	
 		//}
 		m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
+		if (m_pInputSystem->GetKeyState(SDL_SCANCODE_ESCAPE)== BS_HELD) {
+			Quit();
+		}
 	}
 
 }

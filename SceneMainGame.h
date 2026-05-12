@@ -77,9 +77,9 @@ protected:
 	bool helddown;
 	Sprite* m_pCursor;
 	Sprite* m_pPause;
+	Sprite* m_pTutorial;
 	float timebeforeunpause; //pause variables
 	bool paused;
-
 	enum SoundTypes {
 		KILL,
 		LEVELUP,
@@ -90,7 +90,7 @@ protected:
 		HIT,
 		RADIATION,
 	};
-
+	
 	UpgradeList* UpgradeCopy;
 	std::vector<UpgradeList::Template> applicableupgrades;
 private:

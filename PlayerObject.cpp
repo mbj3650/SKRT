@@ -417,16 +417,16 @@ void PlayerObject::slowdown() {
 
 void PlayerObject::AddExp(float experienceamount) {//add exp on pickup
 	score += experience;
-	if (HasUpgrade(401)) {
-		int chance = (GetRandom(0, 7));
+	if (HasUpgrade(402)) {
+		int chance = (GetRandom(0, 6));
 		if (chance == 2) {
-			health += experience;
+			AddHealth(experience, true);
 		}
 	}
-	if (HasUpgrade(402)) {
-		int chance = (GetRandom(0, 5));
+	else if (HasUpgrade(401)) {
+		int chance = (GetRandom(0, 9));
 		if (chance == 2) {
-			health += experience;
+			AddHealth(experience, true);
 		}
 	}
 	experience += experienceamount;
