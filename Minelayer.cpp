@@ -20,6 +20,9 @@ Minelayer::Minelayer()
 Minelayer::~Minelayer()
 {
 		std::cout << "DELETED MINELAYER SPRITE\n";
+		if (b2Body_IsValid(ID)) {
+			b2DestroyBody(ID);//destroy impact body
+		}
 		delete m_pSprite;
 		delete m_pASprite;
 		m_pASprite = 0;

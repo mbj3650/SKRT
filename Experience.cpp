@@ -23,6 +23,9 @@ Experience::Experience()
 };
 Experience::~Experience()
 {
+	if(b2Body_IsValid(ID)){
+		b2DestroyBody(ID);//destroy impact body
+	}
 	std::cout << "DELETED EXPERIENCE SPRITE\n";
 	delete m_pSprite;
 	m_pSprite = 0;
@@ -32,7 +35,7 @@ bool
 Experience::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position, float experiencetodrop)
 {
 	type = 50;
-	Experiencesize = experiencetodrop;
+	Experiencesize = experiencetodrop*1.01;
 	m_pPlayer = playerAddress;
 	m_pSprite = renderer.CreateSprite("..\\assets\\exp.png");
 	const float MAX_SPEED = 250.0f;
@@ -55,7 +58,7 @@ Experience::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId Wor
 	ID = b2CreateBody(WorldID, &Exp);
 	b2Body_SetType(ID, b2_dynamicBody);
 	b2Body_SetUserData(ID, this);
-	b2Polygon box = b2MakeBox(experiencetodrop * experiencetodrop * 1.15, experiencetodrop * experiencetodrop * 1.15);
+	b2Polygon box = b2MakeRoundedBox(experiencetodrop * experiencetodrop * 1.25, experiencetodrop * experiencetodrop * 1.25, (experiencetodrop * experiencetodrop * 1.25 / 2));
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
 	shapeDef.density = 1.0f;
 	shapeDef.friction = 1.0f;

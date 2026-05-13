@@ -19,11 +19,16 @@ Bigboss::Bigboss()
 };
 Bigboss::~Bigboss()
 {
+	if (b2Body_IsValid(ID)) {
+		b2DestroyBody(ID);//destroy impact body
+	}
 	std::cout << "DELETED SLOWER SPRITE\n";
 	delete m_pSprite;
 	m_pSprite = 0;
 	delete m_pBooster;
 	m_pBooster = 0;
+	delete m_pSaws;
+	m_pSaws = 0;
 };
 
 bool Bigboss::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID, b2Vec2 position)
@@ -123,7 +128,7 @@ Bigboss::Process(float deltaTime)
 	m_position.x = b2Body_GetPosition(ID).x;//position set to box2d position
 	m_position.y = b2Body_GetPosition(ID).y;
 
-
+	
 	//IF ATTACK UNCHOSEN
 	if (attack == -1) {//-1 is default chasing ai
 		m_pSprite->SetBlueTint(1.0f);
@@ -318,7 +323,7 @@ void Bigboss::ProcessDamageCollision(b2BodyId collidingwith) {//player damage
 		PlayerObject* address = reinterpret_cast<PlayerObject*>(b2Body_GetUserData(collidingwith));
 		std::cout << "Got address\n";
 		std::cout << "candamge : " << address->CanDamage() << "\n";
-		if (chargingtimer <= 0 && attack == -1) {//if not charging and attack is -1
+		if (chargingtimer <= 1 && attack != 1) {//if charging for a while and attack isnt the one with the sawblade shield
 			if (address->CanDamage()) {
 				std::cout << "ddamage ow\n";
 				health -= address->getDamage();

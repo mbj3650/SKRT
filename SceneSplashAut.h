@@ -25,9 +25,10 @@ private:
 public:
 protected:
 	Sprite* m_pCentre;
+	Sprite* title;
 	float Fade;
 	int AlphaDir;
-
+	float totaltime;
 private:
 };
 #endif // SCENESPLASHAUT_H

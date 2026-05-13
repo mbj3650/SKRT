@@ -106,7 +106,7 @@ SceneMainGame::Initialise(Renderer& renderer)
 	}
 
 	if (soundlist.empty()) {
-
+		std::cout << "MAKING SOUNDS\n\n\n\n\n";
 		FMOD::Sound* kill = nullptr;
 		FMOD::Sound* levelup = nullptr;
 		FMOD::Sound* explosion = nullptr;
@@ -176,7 +176,9 @@ SceneMainGame::Initialise(Renderer& renderer)
 	}
 	
 	storage = &renderer;
-	m_pPlayerChar = new PlayerObject();
+	if (m_pPlayerChar == NULL) {
+		m_pPlayerChar = new PlayerObject();
+	}
 	m_pPlayerChar->Initialise(renderer, WorldPointer);
 	m_pTutorial->SetX(m_pPlayerChar->Position().x);
 	m_pTutorial->SetY(m_pPlayerChar->Position().y);
@@ -200,7 +202,6 @@ SceneMainGame::Initialise(Renderer& renderer)
 	else {
 		UserInfo->SetPlayer(m_pPlayerChar);
 	}
-
 	return true;
 };
 
@@ -229,6 +230,11 @@ void SceneMainGame::Restart() {
 	m_pDirector = 0;
 	std::cout << "DIRECTOR DESTROYED\n";
 
+	delete World;
+	World = 0;
+	b2DestroyWorld(WorldPointer);
+	
+
 	this->Initialise(*storage);
 }
 
@@ -236,14 +242,13 @@ void SceneMainGame::Restart() {
 void
 SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 {
-	SoundSystem->update();
+	
 	m_pCursor->Process(deltatime);
 	UserInfo->Process(deltatime);
 	if (hasclicked == false) {
 		if (m_pPlayerChar->Aiming()) {
 			hasclicked = true;
 		}
-		
 	}
 	if (m_pPlayerChar->isAlive() == false) {//if player is dead respawn
 		if (inputsystem.GetKeyState((SDL_SCANCODE_R)) == BS_HELD) {
@@ -275,7 +280,6 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 				UpgradeCopy->pausemenuupgrades = false;
 			}
 			else {
-			
 				UpgradeCopy->pausemenuupgrades = true;
 				paused = true;
 			}
@@ -294,9 +298,14 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 
 	else if (paused == true) {//if paused or a menu is up, stop everything
 		deltatime = 0;
-	}
 
-	m_pDirector->Process(deltatime);//process stuff
+	}
+	//process stuff
+		SoundSystem->update();
+		if (hasclicked == true) {//dont spawn enemies until the player has clicked
+			m_pDirector->Process(deltatime);
+		}
+	
 	m_pPlayerChar->Process(deltatime, inputsystem);
 	if (m_pPlayerChar->CanDamage()){//if fast enough to damage
 		m_pParticleEmitter.at(0)->turnon();//enable for speed particles
@@ -384,7 +393,6 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 						m_pParticleEmitter.at(1)->Spawn();
 						SoundSystem->playSound(soundlist.at(KILL), NULL, false, NULL);
 					}
-					b2DestroyBody(m_pEntityArray->at(i)->ID);//destroy impact body
 				}
 				delete(m_pEntityArray->at(i));
 				m_pEntityArray->at(i) = 0;
@@ -517,12 +525,14 @@ SceneMainGame::EntityColliding(b2ShapeId Shape1, b2ShapeId Shape2) {//entity col
 			case 152:
 			case 102:
 				SoundSystem->playSound(soundlist.at(HIT), NULL, false, NULL);
-
 				if (isplayer == 1) {
 					address->ProcessDamageCollision(bodyA);
+				
+
 				}
 				else {
 					address->ProcessDamageCollision(bodyB);
+
 				}
 				if (!address->isAlive()) {
 					b2Vec2 Position = b2Body_GetPosition(bodyB);

@@ -84,7 +84,7 @@ PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 	level= parser.GetValueAsFloat("LEVEL");
 	health= parser.GetValueAsInt("HEALTH");
 
-
+	IFrames = 0;
 	slowdowntimer = 0;
 	maxdistance = 200;
 	infinitedamage=false;
@@ -141,28 +141,32 @@ PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 
 	//CREATE BODY FOR THE WORLD TO USE AS SHAPE REFERENCE
 	b2BodyDef WorldObj = b2DefaultBodyDef();
-	WorldObj.position.x = (SCREEN_WIDTH / 2); ;
-	WorldObj.position.y = SCREEN_HEIGHT / 2;;
-	ID = b2CreateBody(WorldId, &WorldObj);
-	b2Body_SetType(ID, b2_dynamicBody);
-	b2Polygon Playerbox = b2MakeRoundedBox(10.0f, 10.0f,1.0f);
-	b2Body_SetLinearDamping(ID, 0);
-	b2ShapeDef shapeDef = b2DefaultShapeDef();
-	shapeDef.density = 1000.0f;
-	shapeDef.friction = 1.0f;
-	b2Body_SetAwake(ID, false);
+	WorldObj.position.x = (SCREEN_WIDTH / 2);
+	WorldObj.position.y = SCREEN_HEIGHT / 2;
+	if (b2Body_IsValid(ID) == false) {//if body doesnt exist yet
+		ID = b2CreateBody(WorldId, &WorldObj);
 
-	shapeDef.filter.categoryBits = 0x0001;//i am
-	shapeDef.filter.maskBits = 0x0008 | 0x0002 | 0x0111;//i collide with enemies and exp (usually dont need to set this 
-	//since setting maskbits for other entities will mirror it
-	//onto the recieving entity
+		b2Body_SetType(ID, b2_dynamicBody);
+		b2Polygon Playerbox = b2MakeRoundedBox(10.0f, 10.0f, 1.0f);
+		b2Body_SetLinearDamping(ID, 0);
+		b2ShapeDef shapeDef = b2DefaultShapeDef();
+		shapeDef.density = 1000.0f;
+		shapeDef.friction = 1.0f;
+		b2Body_SetAwake(ID, false);
 
-
-	b2Body_SetUserData(ID, this);
-	shapeId = b2CreatePolygonShape(ID, &shapeDef, &Playerbox);
+		shapeDef.filter.categoryBits = 0x0001;//i am
+		shapeDef.filter.maskBits = 0x0008 | 0x0002 | 0x0111;//i collide with enemies and exp (usually dont need to set this 
+		//since setting maskbits for other entities will mirror it
+		//onto the recieving entity
 
 
-	b2Shape_EnableContactEvents(shapeId, true);
+		b2Body_SetUserData(ID, this);
+		shapeId = b2CreatePolygonShape(ID, &shapeDef, &Playerbox);
+
+
+		b2Shape_EnableContactEvents(shapeId, true);
+	}
+	
 	m_position.x = b2Body_GetPosition(ID).x;
 	m_position.y = b2Body_GetPosition(ID).y;
 	angle = 0;
@@ -500,7 +504,7 @@ float PlayerObject::GetShipAngle() {
 //check if player is fast enough to damage
 bool PlayerObject::CanDamage() {
 	float playerspeed = sqrt(pow((b2Body_GetLinearVelocity(ID).x), 2) + pow((b2Body_GetLinearVelocity(ID).y), 2));
-	std::cout << playerspeed << "\n";
+	//std::cout << playerspeed << "\n";
 	return playerspeed > Speedmin;//compare speed to speed minimum to damage
 }
 

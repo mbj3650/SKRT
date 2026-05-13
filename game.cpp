@@ -152,7 +152,7 @@ bool Game::DoGameLoop()
 			++innerLag;
 		}
 #endif //USE_LAG
-		if (m_fExecutionTime > 4 && m_iCurrentScene == 0) {
+		if (m_fExecutionTime > 6 && m_iCurrentScene == 0) {
 			m_iCurrentScene = 1;
 		}
 		

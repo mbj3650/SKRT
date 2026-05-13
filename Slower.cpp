@@ -20,6 +20,9 @@ Slower::Slower()
 };
 Slower::~Slower()
 {
+	if (b2Body_IsValid(ID)) {
+		b2DestroyBody(ID);//destroy impact body
+	}
 	std::cout << "DELETED SLOWER SPRITE\n";
 	delete m_pSprite;
 	delete m_pASprite;
@@ -49,11 +52,11 @@ Slower::Initialise(Renderer& renderer, b2BodyId playerAddress, b2WorldId WorldID
 	m_pSprite->SetRedTint(0);
 	m_pSprite->SetBlueTint(0);
 	m_pSprite->SetAlpha(0);
-	m_pSprite->SetScale(3);
+	m_pSprite->SetScale(4);
 
 	m_pCircle->SetRedTint(0);
 	m_pCircle->SetBlueTint(0);
-	m_pCircle->SetScale(3);
+	m_pCircle->SetScale(1);
 	m_pCircle->SetAlpha(0);
 
 	m_pASprite->SetupFrames(64, 64);
@@ -204,15 +207,26 @@ Slower::Process(float deltaTime)
 			if ((detonation < 0.25 && detonation > 0.20) || (detonation < 0.15 && detonation > 0.10) || (detonation < 0.05 && detonation > 0.00)) {
 				m_pCircle->SetAlpha(0.25);
 			}
-			else {
+			else if(m_pCircle->GetAlpha() == 0.25){
 				m_pCircle->SetAlpha(0);
+				if (m_pCircle->GetScale() < 4) {
+					m_pCircle->SetScale(m_pCircle->GetScale() + 1.35);
+				}
 			}
 			
 			m_pASprite->SetBlueTint(1 * (detonation) / 0.75);
 			m_pASprite->SetRedTint(1 * (detonation) / 0.75);
-
-			b2Vec2 velocityVec = { velocity.x/1.2, velocity.y / 1.2 };
-			b2Body_SetLinearVelocity(ID, velocityVec);
+			m_pSprite->SetAngle(m_pSprite->GetAngle() + 10 * deltaTime * (1 / (detonation) * (1 / (detonation))));
+			if (distance > 5) {
+				b2Vec2 velocityVec = { velocity.x * 1.8, velocity.y * 1.8 };
+				b2Body_SetLinearVelocity(ID, velocityVec);
+			}
+			else {
+				b2Vec2 velocityVec = { velocity.x / 1.2, velocity.y / 1.2 };
+				b2Body_SetLinearVelocity(ID, velocityVec);
+			}
+			
+			
 		}
 	}
 
@@ -226,15 +240,17 @@ Slower::Process(float deltaTime)
 					pow(((b2Body_GetPosition(ID).x) - (target.x)), 2)
 					+ pow(((b2Body_GetPosition(ID).y) - (target.y)), 2)
 				) - (m_pSprite->GetWidth() / 2) - address->GetRadius();//get distance to player
-			if (distance < 15) {
+			if (distance < 13) {
 				address->slowdown();
 			}
 			cooldown = 2;
 			PickNewSpot();
+			
 			m_pASprite->SetLooping(false);
 			m_pASprite->StopAnimating();
 			m_pASprite->Restart();
 			m_pSprite->SetAlpha(0);
+			m_pCircle->SetScale(1);
 			m_pCircle->SetAlpha(0);
 		}
 

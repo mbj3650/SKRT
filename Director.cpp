@@ -37,7 +37,7 @@ Director::~Director()
 
 bool Director::Initialise(Renderer& renderer, std::vector<EnemyBase*> &EnemyArray, PlayerObject* m_pPlayerChar ,b2WorldId WorldP)
 {
-	Credits = 1;
+	Credits = 100;
 	Spawnboss = true;//if true, director can spawn boss
 	Arraysize = sizeof(EnemyPrice) / sizeof(EnemyPrice[0]);
 	storage = &renderer;
@@ -46,10 +46,10 @@ bool Director::Initialise(Renderer& renderer, std::vector<EnemyBase*> &EnemyArra
 	m_pDirectorArray = &EnemyArray;
 	IniParser Parser;
 	Parser.LoadIniFile("..\\assets\\ini\\enemyprices.ini");
-	EnemyPrice[0] = Parser.GetValueAsInt("DEMON");
-	EnemyPrice[1] = Parser.GetValueAsInt("SLOWER");
-	EnemyPrice[2] = Parser.GetValueAsInt("MINELAYER");
-	EnemyPrice[3] = Parser.GetValueAsInt("BIGBOSS");
+	EnemyPrice[DEMON] = Parser.GetValueAsInt("DEMON");
+	EnemyPrice[SLOWER] = Parser.GetValueAsInt("SLOWER");
+	EnemyPrice[MINELAYER] = Parser.GetValueAsInt("MINELAYER");
+	EnemyPrice[BOSS] = Parser.GetValueAsInt("BIGBOSS");
 	//we get the area and then divide by the tree value to get how many trees to spawn
 	totaltrees = Parser.GetValueAsInt("TREES");
 	std::cout << totaltrees << "\n";
@@ -68,17 +68,31 @@ void Director::SpawnTrees() {
 void
 Director::Process(float deltaTime)
 {
-
+	if (bosstimer > 0) {//after a boss is spawned, set th etimer to 60 seconds and when it reaches 0 allow the boss to be spawned again
+		bosstimer -= deltaTime;
+	}
+	else if(Spawnboss == false){
+		Spawnboss = true;
+	}
 	if (spawnedtrees == false) {
 		SpawnTrees();
 	}
-	if (Credits < 150) {
+	if (Credits > 150) {
 		float timepasscreditbonus = deltaTime * (Timepassed / 100);// slowly gain more credits overtime
 		Credits += timepasscreditbonus + deltaTime;
 	}
 	for (int i = 0; i < Arraysize; i++) {//for every enemy
 		//increase price overtime, this works in a way that common enemies become rarer overtime, and rarer ones more common
 		EnemyPriceMultiplier[i] += deltaTime * (Timepassed / 100 / EnemyPrice[i]);
+	}
+
+	for (int z = 0; z < Arraysize; z++) {
+		if (EnemyPriceMultiplier[z] > 0) {
+			EnemyPriceMultiplier[z] -= deltaTime/10;
+			if (EnemyPriceMultiplier[z] < 0) {
+				EnemyPriceMultiplier[z] = 0;
+			}
+		}
 	}
 	if (Timetospawn <= 0) {//if time between enemies is not on cooldown
 
@@ -92,7 +106,7 @@ Director::Process(float deltaTime)
 			current = SLOWER;//pick end enemy		
 		}
 		for (int i = 0; i < Arraysize; i++) {//go trhough all possible enemies
-			int totalcost = EnemyPrice[current] + (EnemyPriceMultiplier[current]);//to stop the game from spamming the same enemy, make it more expensive until the game spawns something else
+			int totalcost = EnemyPrice[current] * (1 + (EnemyPriceMultiplier[current]));//to stop the game from spamming the same enemy, make it more expensive until the game spawns something else
 			if (totalcost > Credits) {//if enemyprice is too expensive
 				current = static_cast<Enemies>(current - 1);//go down an enemy
 				if (current == -1) {//if cant spawn enemy
@@ -101,10 +115,11 @@ Director::Process(float deltaTime)
 			}
 			else {//else spawn the enemy
 				CreateEnemy(current);
+				EnemyPriceMultiplier[current] += 1;
 				Credits -= totalcost;
 				for (int g = 0; g < Arraysize; g++) {
 					if (g != current) {//if g doesnt equal chosen enemy
-						EnemyPriceMultiplier[g] -= 1 + (1 / EnemyPrice[g] * 5);
+						EnemyPriceMultiplier[g] -= (1 / EnemyPrice[g] * 5);
 						if (EnemyPriceMultiplier[g] < 0) {
 							EnemyPriceMultiplier[g] = 0;
 						}
@@ -131,16 +146,18 @@ void Director::AddCredits(int exp) {
 
 void Director::CreateEnemy(Enemies input) {
 			switch (input) {//spawn corressponding enemy
-			case 3:
+			case BOSS:
 				m_pDirectorArray->push_back(new Bigboss());
+				Spawnboss = false;
+				bosstimer = 60;
 				break;
-			case 2:
-				m_pDirectorArray->push_back(new Minelayer());
-				break;
-			case 1:
+			case SLOWER:
 				m_pDirectorArray->push_back(new Slower());
 				break;
-			case 0:
+			case MINELAYER:
+				m_pDirectorArray->push_back(new Minelayer());
+				break;
+			case DEMON:
 				m_pDirectorArray->push_back(new EnemyBase());
 				break;
 			}
@@ -168,7 +185,9 @@ Director::DebugDraw()
 {
 	ImGui::Text("DIRECTOR INFORMATION:");
 	ImGui::Text("Credits: %f", Credits);
-	ImGui::Text("Demon Price: %f", EnemyPrice[0] + EnemyPriceMultiplier[0]);
-	ImGui::Text("Demon2 Price: %f", EnemyPrice[1] + EnemyPriceMultiplier[1]);
-	ImGui::Text("Demon3 Price: %f", EnemyPrice[2] + EnemyPriceMultiplier[2]);
+	ImGui::Text("BOSS TIMER: %f", bosstimer);
+	ImGui::Text("Demon Price: %f",  EnemyPriceMultiplier[0]);
+	ImGui::Text("Demon2 Price: %f",   EnemyPriceMultiplier[1]);
+	ImGui::Text("Demon3 Price: %f",  EnemyPriceMultiplier[2]);
+	ImGui::Text("Demon4 Price: %f",  EnemyPriceMultiplier[3]);
 };

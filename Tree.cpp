@@ -23,7 +23,11 @@ Tree::Tree()
 };
 Tree::~Tree()
 {
+
 	std::cout << "DELETED Tree SPRITE\n";
+	if (b2Body_IsValid(ID)) {
+		b2DestroyBody(ID);//destroy impact body
+	}
 	delete m_pSprite;
 	m_pSprite = 0;
 };

@@ -20,7 +20,7 @@ public:
 	enum Enemies
 	{
 		DEMON,
-		RANGER,
+		MINELAYER,
 		SLOWER,
 		BOSS
 	};
@@ -53,6 +53,7 @@ public:
 	int Arraysize;
 	int totaltrees;
 	bool Spawnboss;
+	float bosstimer;
 	bool spawnedtrees;
 protected:
 
