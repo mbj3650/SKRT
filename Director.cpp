@@ -119,7 +119,7 @@ Director::Process(float deltaTime)
 				Credits -= totalcost;
 				for (int g = 0; g < Arraysize; g++) {
 					if (g != current) {//if g doesnt equal chosen enemy
-						EnemyPriceMultiplier[g] -= (1 / EnemyPrice[g] * 5);
+						EnemyPriceMultiplier[g] -= ((1 / EnemyPrice[g]) * 5);
 						if (EnemyPriceMultiplier[g] < 0) {
 							EnemyPriceMultiplier[g] = 0;
 						}

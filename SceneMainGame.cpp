@@ -386,6 +386,7 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 						m_pParticleEmitter.at(2)->SetParticlePosition(b2Body_GetPosition(m_pEntityArray->at(i)->ID));
 						m_pParticleEmitter.at(2)->Spawn();
 						SoundSystem->playSound(soundlist.at(EXPLOSION), NULL, false, NULL);
+						m_pDirector->AddCredits(1);
 					}
 					else {
 						//else generic enemy X

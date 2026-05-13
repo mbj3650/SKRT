@@ -94,7 +94,7 @@ PlayerObject::Initialise(Renderer& renderer, b2WorldId WorldId)
 	Damage = DamageBase;
 	speed = SpeedBase;
 	reboundloss = reboundlossbase;
-	exptolevel = (level / 2 * 100) + (2/level);//xp algo
+	exptolevel = (level / 2 * 100) + (2/level)*0.85;//xp algo
 	//CREATE SPRITE TO FOLLOW SHAPE
 	if (m_pSprite == NULL) {
 		m_pSprite = renderer.CreateSprite("..\\assets\\cursor.png");
@@ -436,7 +436,7 @@ void PlayerObject::AddExp(float experienceamount) {//add exp on pickup
 	experience += experienceamount;
 	if (experience > exptolevel) {
 		level += 1;
-		exptolevel = (level / 5 * 100) * (level / 50) + 50;
+		exptolevel = ((level / 5 * 100) * (level / 50) + 50) * 0.85;
 		experience -= exptolevel;
 		PlayerNeedsUpgrade = true;
 	}
