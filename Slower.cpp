@@ -217,7 +217,7 @@ Slower::Process(float deltaTime)
 			m_pASprite->SetBlueTint(1 * (detonation) / 0.75);
 			m_pASprite->SetRedTint(1 * (detonation) / 0.75);
 			m_pSprite->SetAngle(m_pSprite->GetAngle() + 10 * deltaTime * (1 / (detonation) * (1 / (detonation))));
-			if (distance > 5) {
+			if (distance > 6) {
 				b2Vec2 velocityVec = { velocity.x * 1.8, velocity.y * 1.8 };
 				b2Body_SetLinearVelocity(ID, velocityVec);
 			}

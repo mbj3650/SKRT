@@ -37,7 +37,7 @@ Director::~Director()
 
 bool Director::Initialise(Renderer& renderer, std::vector<EnemyBase*> &EnemyArray, PlayerObject* m_pPlayerChar ,b2WorldId WorldP)
 {
-	Credits = 100;
+	Credits = 0;
 	Spawnboss = true;//if true, director can spawn boss
 	Arraysize = sizeof(EnemyPrice) / sizeof(EnemyPrice[0]);
 	storage = &renderer;
@@ -77,7 +77,7 @@ Director::Process(float deltaTime)
 	if (spawnedtrees == false) {
 		SpawnTrees();
 	}
-	if (Credits > 150) {
+	if (Credits < 150) {
 		float timepasscreditbonus = deltaTime * (Timepassed / 100);// slowly gain more credits overtime
 		Credits += timepasscreditbonus + deltaTime;
 	}
