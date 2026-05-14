@@ -223,7 +223,6 @@ void
 Minelayer::ProcessDamageCollision(b2BodyId collidingwith) {
 	try {//attempt player damage
 		PlayerObject* address = reinterpret_cast<PlayerObject*>(b2Body_GetUserData(collidingwith));
-		if (address->CanDamage()) {
 			health -= address->getDamage();
 			if (address->CanHeal()) {
 				address->AddHealth(bloodback, (health <= 0));//add health, and if enemy is dead (true) then dont lose momentum
@@ -232,7 +231,6 @@ Minelayer::ProcessDamageCollision(b2BodyId collidingwith) {
 			if (health <= 0) {
 				m_bAlive = false;
 			}
-		}
 		else if (address->CanTakeDamage() && travelling == true) {//if travelling and not laying mine then damage players
 			address->takedamage(damage);
 		}

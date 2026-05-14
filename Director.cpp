@@ -94,6 +94,8 @@ Director::Process(float deltaTime)
 			}
 		}
 	}
+
+
 	if (Timetospawn <= 0) {//if time between enemies is not on cooldown
 
 		
@@ -115,7 +117,10 @@ Director::Process(float deltaTime)
 			}
 			else {//else spawn the enemy
 				CreateEnemy(current);
-				EnemyPriceMultiplier[current] += 1;
+				if (EnemyPrice[current]* (EnemyPriceMultiplier[current] + 1) < 30) {//we dont want the multiplier to reach a point that it cant spawn a certain enemy, so we cap it out the big boost at 30
+					EnemyPriceMultiplier[current] += 1;
+				}
+			
 				Credits -= totalcost;
 				for (int g = 0; g < Arraysize; g++) {
 					if (g != current) {//if g doesnt equal chosen enemy

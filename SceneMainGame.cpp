@@ -349,6 +349,7 @@ SceneMainGame::Process(float deltatime,InputSystem& inputsystem)
 					Minelayer* MineEntity = reinterpret_cast<Minelayer*>(m_pEntityArray->at(i));
 					if (MineEntity->needsmine == true) {//if needs mine
 						SpawnMine(b2Body_GetPosition(m_pEntityArray->at(i)->ID));
+						m_pDirector->AddCredits(3);
 						SoundSystem->playSound(soundlist.at(MINELAYING), NULL, false, NULL);
 						MineEntity->MinePlaced();//turn off mine call
 					}
